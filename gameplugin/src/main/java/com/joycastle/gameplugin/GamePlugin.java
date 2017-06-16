@@ -20,7 +20,6 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void init(Application application) {
         SystemUtil.setApplication(application);
-        NativeUtil.nativeInit();
         AnalyticHelper.getInstance().init(application);
         AdvertiseHelper.getInstance().init(application);
         IabHelper.getInstance().init(application);
