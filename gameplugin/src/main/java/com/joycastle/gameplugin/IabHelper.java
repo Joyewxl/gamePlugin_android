@@ -32,7 +32,7 @@ public class IabHelper implements IabDelegate {
     public void init(Application application) {
         try {
             Class clazz = Class.forName("com.joycastle.iab.googleplay.GoogleIabHelper");
-            Method method = clazz.getMethod("getInstance", null);
+            Method method = clazz.getMethod("getInstance");
             IabDelegate delegate = (IabDelegate) method.invoke(null);
             delegates.add(delegate);
             delegate.init(application);

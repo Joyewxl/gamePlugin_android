@@ -117,7 +117,7 @@ public class AnalyticHelper implements AnalyticDelegate{
     public void init(Application application) {
         try {
             Class clazz = Class.forName("com.joycastle.analytic.flurry.FLAnalyticHelper");
-            Method method = clazz.getMethod("getInstance", null);
+            Method method = clazz.getMethod("getInstance");
             AnalyticDelegate delegate = (AnalyticDelegate) method.invoke(null);
             delegates.add(delegate);
             delegate.init(application);

@@ -1,4 +1,4 @@
-package com.joycastle.gameplugin;
+package com.joycastle.app;
 
 import org.junit.Test;
 

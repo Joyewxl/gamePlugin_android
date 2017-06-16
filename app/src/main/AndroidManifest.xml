@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.joycastle.gameplugin">
+    package="com.joycastle.app">
 
     <application
         android:allowBackup="true"
@@ -8,8 +8,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
-        android:name="com.joycastle.gameplugin.MyApplication">
-        <activity android:name=".MainActivity">
+        android:name="com.joycastle.app.MyApplication">
+        <activity android:name="com.joycastle.app.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

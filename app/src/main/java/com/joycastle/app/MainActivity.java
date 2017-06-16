@@ -1,4 +1,4 @@
-package com.joycastle.gameplugin;
+package com.joycastle.app;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -12,14 +12,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.joycastle.my_gameplugin.AdvertiseHelper;
-import com.joycastle.my_gameplugin.AnalyticHelper;
-import com.joycastle.my_gameplugin.GamePlugin;
-import com.joycastle.my_gameplugin.IabHelper;
+import com.joycastle.gameplugin.AdvertiseHelper;
+import com.joycastle.gameplugin.AnalyticHelper;
+import com.joycastle.gameplugin.GamePlugin;
+import com.joycastle.gameplugin.IabHelper;
+import com.joycastle.gameplugin.R;
 import com.joycastle.my_gameplugin_base.AdvertiseDelegate;
 import com.joycastle.my_gameplugin_base.IabDelegate;
 import com.joycastle.my_gameplugin_base.SystemUtil;
-import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
