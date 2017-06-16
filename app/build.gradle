@@ -15,7 +15,7 @@ android {
 
     defaultConfig {
         applicationId "com.joycastle.app"
-        minSdkVersion 25
+        minSdkVersion 18
         targetSdkVersion 25
         versionCode 122
         versionName "1.0"
@@ -23,7 +23,12 @@ android {
     buildTypes {
         release {
             minifyEnabled true
+            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        debug{
+            multiDexEnabled true
         }
     }
 }

@@ -7,6 +7,7 @@
       <module fileurl="file://$PROJECT_DIR$/advertise_admob/advertise_admob.iml" filepath="$PROJECT_DIR$/advertise_admob/advertise_admob.iml" />
       <module fileurl="file://$PROJECT_DIR$/analytic_flurry/analytic_flurry.iml" filepath="$PROJECT_DIR$/analytic_flurry/analytic_flurry.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gamePlugin_android.iml" filepath="$PROJECT_DIR$/gamePlugin_android.iml" />
       <module fileurl="file://$PROJECT_DIR$/gameplugin/gameplugin.iml" filepath="$PROJECT_DIR$/gameplugin/gameplugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/gameplugin_base/gameplugin_base.iml" filepath="$PROJECT_DIR$/gameplugin_base/gameplugin_base.iml" />
       <module fileurl="file://$PROJECT_DIR$/iap_googleplay/iap_googleplay.iml" filepath="$PROJECT_DIR$/iap_googleplay/iap_googleplay.iml" />
