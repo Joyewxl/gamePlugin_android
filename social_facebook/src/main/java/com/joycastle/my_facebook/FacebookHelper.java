@@ -30,9 +30,8 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
-import com.joycastle.my_gameplugin_base.LifeCycleDelegate;
+import com.joycastle.gamepluginbase.LifeCycleDelegate;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 

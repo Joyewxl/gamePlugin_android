@@ -101,7 +101,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     public void init(Application application) {
         try {
             Class clazz = Class.forName("com.joycastle.advertise.admob.AMAdvertiseHelper");
-            Method method = clazz.getMethod("getInstance", null);
+            Method method = clazz.getMethod("getInstance");
             AdvertiseDelegate delegate = (AdvertiseDelegate) method.invoke(null);
             delegates.add(delegate);
             delegate.init(application);
@@ -110,7 +110,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
         }
         try {
             Class clazz = Class.forName("com.joycastle.advertise.adcolony.ACAdvertiseHelper");
-            Method method = clazz.getMethod("getInstance", null);
+            Method method = clazz.getMethod("getInstance");
             AdvertiseDelegate delegate = (AdvertiseDelegate) method.invoke(null);
             delegates.add(delegate);
             delegate.init(application);

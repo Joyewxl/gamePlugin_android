@@ -1,8 +1,8 @@
-package com.joycastle.gameplugin;
+package com.joycastle.app;
 
 import android.app.Application;
 
-import com.joycastle.my_gameplugin.GamePlugin;
+import com.joycastle.gameplugin.GamePlugin;
 
 /**
  * Created by geekgy on 16/4/23.
