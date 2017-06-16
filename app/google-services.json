@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "432643375444",
+    "firebase_url": "https://gameplugin-dc5d9.firebaseio.com",
+    "project_id": "gameplugin-dc5d9",
+    "storage_bucket": "gameplugin-dc5d9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:432643375444:android:304eb2367ba4248c",
+        "android_client_info": {
+          "package_name": "com.joycastle.gameplugin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "432643375444-4qba3802i904a5h4p186gk7t5saqujn9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhs7USvZNlA3T_A6CbFzdEd0fhWl-98O4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

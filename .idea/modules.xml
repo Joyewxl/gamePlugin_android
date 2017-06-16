@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/GamePlugin.iml" filepath="$PROJECT_DIR$/GamePlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/my_advertise_adcolony/my_advertise_adcolony.iml" filepath="$PROJECT_DIR$/my_advertise_adcolony/my_advertise_adcolony.iml" />
+      <module fileurl="file://$PROJECT_DIR$/my_advertise_admob/my_advertise_admob.iml" filepath="$PROJECT_DIR$/my_advertise_admob/my_advertise_admob.iml" />
+      <module fileurl="file://$PROJECT_DIR$/my_analytic_flurry/my_analytic_flurry.iml" filepath="$PROJECT_DIR$/my_analytic_flurry/my_analytic_flurry.iml" />
+      <module fileurl="file://$PROJECT_DIR$/my_facebook/my_facebook.iml" filepath="$PROJECT_DIR$/my_facebook/my_facebook.iml" />
+      <module fileurl="file://$PROJECT_DIR$/my_gameplugin/my_gameplugin.iml" filepath="$PROJECT_DIR$/my_gameplugin/my_gameplugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/my_gameplugin_base/my_gameplugin_base.iml" filepath="$PROJECT_DIR$/my_gameplugin_base/my_gameplugin_base.iml" />
+      <module fileurl="file://$PROJECT_DIR$/my_iab_googleplay/my_iab_googleplay.iml" filepath="$PROJECT_DIR$/my_iab_googleplay/my_iab_googleplay.iml" />
+    </modules>
+  </component>
+</project>

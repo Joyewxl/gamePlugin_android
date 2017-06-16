@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">my_iab_googleplay</string>
+    <string name="google_iab_publickey">MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAq9FouEiXM0tfsESkafmWIoEXK4PzDSaxZj50ZrLDARwTy6NuRZ1IpCMObBN8TicLiqttxfpAau6FdkTOqbylIXGUD5GWqCXcEou2rYrODh3n6O2qqldpZR9qfW0kpgZ9AM/ia8As+30mQOdNhc/N2N391axDsVVwLmnix6kHdy66eUZSrqpe8P8PZynMqNPNdVCMnN0DopzEhGSn+OrGtK1gtv+VhJ7DksNSLM/KHtMfmaZgDeWLKw1uYVHpHGOJps46qh2VfwrC6rLqZWG91KWRzjhnYdE2qjPrEuP3PJ133HjgOcwhJ7Zebz/lPlSra8fk9lWy34auK1ccQCBB9wIDAQAB</string>
+</resources>

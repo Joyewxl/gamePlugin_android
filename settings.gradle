@@ -1,0 +1,1 @@
+include ':app', ':my_gameplugin', ':my_gameplugin_base', ':my_gameplugin_base', ':my_analytic_flurry', ':my_facebook', ':my_advertise_admob', ':my_advertise_adcolony', ':my_iab_googleplay'
