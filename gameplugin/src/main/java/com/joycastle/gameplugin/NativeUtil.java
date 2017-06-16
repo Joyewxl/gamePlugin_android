@@ -7,7 +7,6 @@ import com.joycastle.gamepluginbase.SystemUtil;
  */
 
 public class NativeUtil {
-    public static native void nativeInit();
     public static String invokeJavaMethod(String claxx, String method, String data, int requetId) {
         return String.valueOf(SystemUtil.getCpuTime());
     }

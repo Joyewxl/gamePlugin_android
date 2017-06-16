@@ -15,20 +15,16 @@ android {
 
     defaultConfig {
         applicationId "com.joycastle.app"
-        minSdkVersion 18
+        minSdkVersion 15
         targetSdkVersion 25
         versionCode 122
         versionName "1.0"
+        multiDexEnabled true
     }
     buildTypes {
         release {
             minifyEnabled true
-            multiDexEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-
-        debug{
-            multiDexEnabled true
         }
     }
 }
@@ -43,5 +39,6 @@ dependencies {
     compile project(path: ':advertise_admob')
     compile project(path: ':advertise_adcolony')
     compile project(path: ':iap_googleplay')
+    compile 'com.android.support:multidex:1.0.1'
 }
 apply plugin: 'com.google.gms.google-services'
