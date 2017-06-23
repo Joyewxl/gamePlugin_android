@@ -73,6 +73,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     public void login(Activity activity, List<String> permissions) {
         if (this.isLogin())
             return;
+
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
 
@@ -186,6 +187,7 @@ public class FacebookHelper implements LifeCycleDelegate {
 
     @Override
     public void init(Application application) {
+
         FacebookSdk.sdkInitialize(application.getApplicationContext());
         AppEventsLogger.activateApp(application);
         callbackManager = CallbackManager.Factory.create();
@@ -201,13 +203,14 @@ public class FacebookHelper implements LifeCycleDelegate {
 
             @Override
             public void onCancel() {
-
+                Log.e(TAG,"login cancel!");
             }
 
             @Override
             public void onError(FacebookException error) {
-
+                Log.e(TAG,"login failed!");
             }
+
         });
     }
 
