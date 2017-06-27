@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
+import com.joycastle.my_facebook.FacebookHelper;
 
 /**
  * Created by geekgy on 16/5/11.
@@ -73,5 +74,7 @@ public class GamePlugin implements LifeCycleDelegate {
         AnalyticHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         AdvertiseHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         IabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
+
+        FacebookHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
     }
 }

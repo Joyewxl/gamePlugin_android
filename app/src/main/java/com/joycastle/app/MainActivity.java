@@ -19,8 +19,10 @@ import com.joycastle.gameplugin.IabHelper;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
+import com.joycastle.my_facebook.FacebookHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,14 +36,23 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         void onClick();
     }
 
+    private MainActivity instance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         Log.e(TAG, "------------>"+ SystemUtil.getAppVersion());
 
         GamePlugin.getInstance().onCreate(this, savedInstanceState);
+
+        FacebookHelper.getInstance().init(getApplication());
+
+
+        instance = this;
 
         arrayList = new ArrayList<>();
         HashMap<String, OnClickListener> hashMap;
@@ -170,6 +181,38 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 AnalyticHelper.getInstance().onMissionFailed("collect", "timeout");
             }
         });
+
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("--------FaceBook", new OnClickListener() {
+            @Override
+            public void onClick() {
+                System.out.println("AnalyticHelper");
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("facebooklogin", new OnClickListener() {
+
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends"));
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("facebookIslogin", new OnClickListener() {
+
+            @Override
+            public void onClick() {
+                Log.e("Facebook","isLogin"+FacebookHelper.getInstance().isLogin());
+            }
+        });
+
+
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);

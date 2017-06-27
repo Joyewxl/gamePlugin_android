@@ -63,10 +63,10 @@ public class FacebookHelper implements LifeCycleDelegate {
 
     public boolean isLogin() {
         AccessToken token = AccessToken.getCurrentAccessToken();
-        if (null == token)
+        Log.v("facebook help","token:"+token);
+        if (token == null || token.isExpired()) {
             return false;
-        if (token.isExpired())
-            return false;
+        }
         return true;
     }
 
@@ -196,7 +196,7 @@ public class FacebookHelper implements LifeCycleDelegate {
             public void onSuccess(LoginResult loginResult) {
                 String userId = AccessToken.getCurrentAccessToken().getUserId();
                 String accessToken = AccessToken.getCurrentAccessToken().getToken();
-                Log.i(TAG, "userId = "+userId+", accessToken = "+accessToken);
+                Log.e(TAG, "userId = "+userId+", accessToken = "+accessToken);
                 if (null != FacebookHelper.this.loginListener)
                     FacebookHelper.this.loginListener.onLogin(userId, accessToken);
             }
