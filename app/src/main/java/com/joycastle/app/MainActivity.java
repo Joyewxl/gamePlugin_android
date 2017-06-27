@@ -204,6 +204,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
+        hashMap.put("facebooklogout", new OnClickListener() {
+
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().logout();
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
         hashMap.put("facebookIslogin", new OnClickListener() {
 
             @Override
