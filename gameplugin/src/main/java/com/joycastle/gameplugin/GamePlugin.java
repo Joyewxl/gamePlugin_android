@@ -74,7 +74,7 @@ public class GamePlugin implements LifeCycleDelegate {
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         AnalyticHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         AdvertiseHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
-        IabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
+//        IabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
 
         FacebookHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
     }
