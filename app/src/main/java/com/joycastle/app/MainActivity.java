@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         GamePlugin.getInstance().onCreate(this, savedInstanceState);
 
-        FacebookHelper.getInstance().init(getApplication());
+
 
 
         instance = this;
@@ -209,6 +209,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public void onClick() {
                 Log.e("Facebook","isLogin"+FacebookHelper.getInstance().isLogin());
+
+                Log.e("Facebook","name"+FacebookHelper.getInstance().getUserId());
             }
         });
 
