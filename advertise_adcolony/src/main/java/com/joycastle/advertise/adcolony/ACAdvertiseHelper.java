@@ -57,6 +57,7 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     @Override
     public boolean isVideoAdReady() {
         String status = AdColony.statusForZone(zone_id);
+        Log.i(TAG, "Adcolony isVideoAdReady  "+status);
         if (status.equals("active")) {
             return true;
         }
@@ -65,6 +66,7 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public boolean showVideoAd(VideoAdListener listener) {
+        Log.i(TAG, "Adcolony showVideoAd");
         if (this.isVideoAdReady()) {
             AdColonyV4VCAd ad = new AdColonyV4VCAd(zone_id);
             ad.show();
@@ -91,6 +93,7 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
         zone_id = SystemUtil.getMetaData(activity, "zone_id");
         String client_options = "version:"+ SystemUtil.getAppVersion()+",store:"+origin_store;
         AdColony.configure(activity, client_options, app_id, zone_id);
+        Log.i(TAG, "Adcolony onCreate");
         AdColony.addV4VCListener(new AdColonyV4VCListener() {
             @Override
             public void onAdColonyV4VCReward(AdColonyV4VCReward adColonyV4VCReward) {
