@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
@@ -29,6 +30,7 @@ public class GamePlugin implements LifeCycleDelegate {
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
+        Log.i("GamePlugin","GamePlugin onCreate");
         AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
         AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
         IabHelper.getInstance().onCreate(activity, savedInstanceState);
@@ -72,6 +74,8 @@ public class GamePlugin implements LifeCycleDelegate {
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+
+        Log.i("GamePlugin","GamePlugin onActivityResult");
         AnalyticHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         AdvertiseHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
 //        IabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
