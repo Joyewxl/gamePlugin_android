@@ -21,6 +21,8 @@ import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.my_facebook.FacebookHelper;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -33,7 +35,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private ArrayList<HashMap<String, OnClickListener>> arrayList = null;
 
     interface OnClickListener {
-        void onClick();
+        void onClick() throws JSONException;
     }
 
     private MainActivity instance;
@@ -198,7 +200,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends"));
+                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
             }
         });
 
@@ -221,6 +223,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 Log.e("Facebook","isLogin"+FacebookHelper.getInstance().isLogin());
 
                 Log.e("Facebook","name"+FacebookHelper.getInstance().getUserId());
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("getFacebookProfile", new OnClickListener() {
+
+            @Override
+            public void onClick() throws JSONException {
+               String str = FacebookHelper.getInstance().getUserProfile(null,null);
             }
         });
 
@@ -363,7 +375,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         HashMap<String, OnClickListener> hashMap = arrayList.get(i);
         OnClickListener listener = hashMap.entrySet().iterator().next().getValue();
-        listener.onClick();
+        try {
+            listener.onClick();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

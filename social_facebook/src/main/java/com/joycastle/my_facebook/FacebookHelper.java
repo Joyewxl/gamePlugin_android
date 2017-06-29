@@ -14,8 +14,9 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.Profile;
-import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.ShareApi;
@@ -31,6 +32,9 @@ import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -50,6 +54,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     private Activity activity;
     private OnLoginListener loginListener;
     private CallbackManager callbackManager;
+    private String userName;
     private static FacebookHelper instance = new FacebookHelper();
 
     public static FacebookHelper getInstance() {
@@ -75,6 +80,7 @@ public class FacebookHelper implements LifeCycleDelegate {
             return;
 
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
+
     }
 
     public String getUserId() {
@@ -89,9 +95,30 @@ public class FacebookHelper implements LifeCycleDelegate {
         return AccessToken.getCurrentAccessToken().getToken();
     }
 
-    public void getUserProfile(String userId, OnResultListener listener) {
+    public String getUserProfile(String userId,  OnResultListener listener) throws JSONException {
         // TODO: 16/4/25 获取指定userid的用户信息
-        listener.onResult(true, null);
+//
+
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+        GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject object, GraphResponse response) {
+                if (object != null) {
+//                   String name = object.optString("name");
+                    userName = object.optString("name");
+
+                    listener.onResult(true, null);
+                }
+            }
+        }).executeAsync();
+
+        JSONObject userP = new JSONObject();
+        userP.put("id",getUserId());
+        userP.put("name",userName);
+
+        return userP.toString();
     }
 
     /**
