@@ -96,10 +96,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
 
     public String getUserProfile(String userId,  OnResultListener listener) throws JSONException {
-        // TODO: 16/4/25 获取指定userid的用户信息
-//
-
-
+       
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
         GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
@@ -109,7 +106,7 @@ public class FacebookHelper implements LifeCycleDelegate {
 //                   String name = object.optString("name");
                     userName = object.optString("name");
 
-                    listener.onResult(true, null);
+//                    listener.onResult(true, null);
                 }
             }
         }).executeAsync();
