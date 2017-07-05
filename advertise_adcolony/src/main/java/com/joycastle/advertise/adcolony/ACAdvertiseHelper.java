@@ -6,10 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.jirbo.adcolony.AdColony;
-import com.jirbo.adcolony.AdColonyV4VCAd;
-import com.jirbo.adcolony.AdColonyV4VCListener;
-import com.jirbo.adcolony.AdColonyV4VCReward;
+import com.adcolony.sdk.*;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
@@ -24,6 +21,11 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
 
     private String zone_id = null;
     private VideoAdListener videoAdListener = null;
+
+    private Boolean isLoadAD = false;
+    private AdColonyInterstitial ad;
+    private AdColonyInterstitialListener ad_listener;
+    private AdColonyAdOptions ad_options;
 
     public static ACAdvertiseHelper getInstance() {
         return instance;
@@ -51,29 +53,26 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     @Override
     public boolean showInterstitialAd(InterstitialAdListener listener) {
         Log.i(TAG, "didn't support");
-        return false;
+
+        ad.show();
+        return true;
     }
 
     @Override
     public boolean isVideoAdReady() {
-        String status = AdColony.statusForZone(zone_id);
-        Log.i(TAG, "Adcolony isVideoAdReady  "+status);
-        if (status.equals("active")) {
-            return true;
-        }
-        return false;
+
+        return isLoadAD;
     }
 
     @Override
     public boolean showVideoAd(VideoAdListener listener) {
         Log.i(TAG, "Adcolony showVideoAd");
-        if (this.isVideoAdReady()) {
-            AdColonyV4VCAd ad = new AdColonyV4VCAd(zone_id);
-            ad.show();
-            videoAdListener = listener;
-            return true;
+        if(!isLoadAD)
+        {
+            AdColony.requestInterstitial(zone_id, ad_listener, ad_options);
         }
-        return false;
+        ad.show();
+        return true;
     }
 
     @Override
@@ -88,20 +87,65 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
+
         String origin_store = SystemUtil.getMetaData(activity, "origin_store");
         String app_id = SystemUtil.getMetaData(activity, "app_id");
         zone_id = SystemUtil.getMetaData(activity, "zone_id");
         String client_options = "version:"+ SystemUtil.getAppVersion()+",store:"+origin_store;
-        AdColony.configure(activity, client_options, app_id, zone_id);
+
+        AdColonyUserMetadata metadata = new AdColonyUserMetadata()
+                .setUserAge( 26 )
+                .setUserEducation( AdColonyUserMetadata.USER_EDUCATION_BACHELORS_DEGREE )
+                .setUserGender( AdColonyUserMetadata.USER_MALE );
+
+        ad_options = new AdColonyAdOptions()
+                .setUserMetadata( metadata );
+//                .enableConfirmationDialog(true)
+//                .enableResultsDialog(true);
+
+        AdColonyAppOptions app_options = new AdColonyAppOptions()
+                .setUserID( "unique_user_id" );
+
+        AdColony.configure(activity, app_options, app_id, zone_id);
         Log.i(TAG, "Adcolony onCreate");
-        AdColony.addV4VCListener(new AdColonyV4VCListener() {
+        ad_listener = new AdColonyInterstitialListener()
+        {
+            /** Ad passed back in request filled callback, ad can now be shown */
             @Override
-            public void onAdColonyV4VCReward(AdColonyV4VCReward adColonyV4VCReward) {
-                if (adColonyV4VCReward.success()) {
-                    videoAdListener.onResult(true, false);
-                }
+            public void onRequestFilled( AdColonyInterstitial ad )
+            {
+                ACAdvertiseHelper.this.ad = ad;
+                isLoadAD = true;
+                Log.d( TAG, "onRequestFilled" );
             }
-        });
+
+            /** Ad request was not filled */
+            @Override
+            public void onRequestNotFilled( AdColonyZone zone )
+            {
+
+                Log.d( TAG, "onRequestNotFilled");
+            }
+
+            /** Ad opened, reset UI to reflect state change */
+            @Override
+            public void onOpened( AdColonyInterstitial ad )
+            {
+
+                Log.d( TAG, "onOpened" );
+            }
+
+            /** Request a new ad if ad is expiring */
+            @Override
+            public void onExpiring( AdColonyInterstitial ad )
+            {
+                AdColony.requestInterstitial( zone_id, this, ad_options );
+                Log.d( TAG, "onExpiring" );
+            }
+        };
+//        AdColony.requestInterstitial(zone_id, ad_listener, ad_options);
+
+
     }
 
     @Override
@@ -111,12 +155,23 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void onResume(Activity activity) {
-        AdColony.resume(activity);
+//        AdColony.resume(activity);
+
+        if (ad == null || ad.isExpired())
+        {
+            /**
+             * Optionally update location info in the ad options for each request:
+             * LocationManager location_manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+             * Location location = location_manager.getLastKnownLocation( LocationManager.GPS_PROVIDER );
+             * ad_options.setUserMetadata( ad_options.getUserMetadata().setUserLocation( location ) );
+             */
+            AdColony.requestInterstitial( zone_id, ad_listener, ad_options );
+        }
     }
 
     @Override
     public void onPause(Activity activity) {
-        AdColony.pause();
+//        AdColony.pause();
     }
 
     @Override
