@@ -11,6 +11,8 @@ import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -37,7 +39,7 @@ public class SystemUtil {
      * 获取启动时间
      * @return
      */
-    public static long getCpuTime() {
+    public static long getCpuTime(JSONObject json) {
         return SystemClock.elapsedRealtime();
     }
 
