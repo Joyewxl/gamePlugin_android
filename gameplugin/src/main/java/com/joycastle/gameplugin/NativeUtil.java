@@ -25,7 +25,8 @@ public class NativeUtil {
 
         System.out.print("NativeUtil test###");
 
-        Log.e("native test log", "init: ", NativeUtil.nativeTest());
+        String cInfo =  nativeTest();
+        Log.e("NativeUtil test info", "init: "+cInfo );
     }
 
     public void Test(){
