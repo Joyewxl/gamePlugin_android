@@ -10,7 +10,10 @@ public class NativeUtil {
     private static NativeUtil _instance = new NativeUtil();
 
     //JNI 获取调用实例
-    public static Object getJavaObj(){ return _instance;}
+    public static Object getJavaObj(){
+        System.out.print("nativeUtil getJavaObj");
+        return _instance;
+    }
 
     public void init(){
         _instance = this;
