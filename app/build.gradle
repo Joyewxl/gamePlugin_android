@@ -23,6 +23,14 @@ android {
         versionCode 122
         versionName "1.0"
         multiDexEnabled true
+        ndk {
+            abiFilters "armeabi"
+        }
+        sourceSets.main {
+            assets.srcDir "src/main/assets"
+            jniLibs.srcDir 'src/main/libs'
+            jni.srcDirs = []
+        }
     }
     buildTypes {
         release {
