@@ -7,7 +7,23 @@ import com.joycastle.gamepluginbase.SystemUtil;
  */
 
 public class NativeUtil {
-    public static String invokeJavaMethod(String claxx, String method, String data, int requetId) {
+    private static NativeUtil _instance = new NativeUtil();
+
+    //JNI 获取调用实例
+    public static Object getJavaObj(){ return _instance;}
+
+    public void init(){
+        _instance = this;
+
+        System.out.print("NativeUtil test###");
+    }
+
+    public void Test(){
+        System.out.print("its native test function!");
+    }
+
+    public static String invokeJavaMethod(String claxx, String method, String data, int requestId) {
         return String.valueOf(SystemUtil.getCpuTime());
     }
+
 }
