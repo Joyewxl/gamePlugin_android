@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -108,11 +109,13 @@ public class SystemUtil {
         return "";
     }
 
-    public static void showAlertDialog(String title,
-                                       String message,
-                                       String cancelBtnTitle,
-                                       ArrayList<String> otherBtnTitles) {
-
+    public static void showAlertDialog(JSONObject json, InvokeJavaMethodDelegate delegate) {
+        Log.e(TAG, "showAlertDialog: "+json);
+        try {
+            delegate.onFinish(new JSONObject("{}"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void showProgressDialog(String message, int percent) {

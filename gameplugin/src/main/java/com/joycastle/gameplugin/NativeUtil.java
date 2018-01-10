@@ -1,5 +1,7 @@
 package com.joycastle.gameplugin;
 
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
+
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
@@ -10,9 +12,7 @@ import java.lang.reflect.Method;
 
 public class NativeUtil {
 
-    interface InvokeJavaMethodListener {
-        void onFinish(JSONObject resObject);
-    }
+
 
     private static final String TAG = "NativeUtil";
 
@@ -28,7 +28,7 @@ public class NativeUtil {
         if (requestId < 0) {
             return invokeJavaMethod(className, methodName, reqData);
         } else {
-            return invokeJavaMethodAsync(className, methodName, reqData, new InvokeJavaMethodListener() {
+            return invokeJavaMethodAsync(className, methodName, reqData, new InvokeJavaMethodDelegate() {
                 @Override
                 public void onFinish(JSONObject resObject) {
                     invokeCppMethod(requestId, resObject.toString());
@@ -68,12 +68,12 @@ public class NativeUtil {
      * @param listener 回调函数
      * @return json数据
      */
-    private static String invokeJavaMethodAsync(String className, String methodName, String reqData, InvokeJavaMethodListener listener) {
+    private static String invokeJavaMethodAsync(String className, String methodName, String reqData, InvokeJavaMethodDelegate listener) {
         String resData = "{}";
         try {
             JSONObject reqObject = new JSONObject(reqData);
             Class clazz = Class.forName(className);
-            Method method = clazz.getMethod(methodName, JSONObject.class, InvokeJavaMethodListener.class);
+            Method method = clazz.getMethod(methodName, JSONObject.class, InvokeJavaMethodDelegate.class);
             Object resObject = method.invoke(null, reqObject, listener);
             if (resObject != null) {
                 resData = resObject.toString();
