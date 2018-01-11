@@ -16,6 +16,7 @@ import com.joycastle.gameplugin.AdvertiseHelper;
 import com.joycastle.gameplugin.AnalyticHelper;
 import com.joycastle.gameplugin.GamePlugin;
 import com.joycastle.gameplugin.IabHelper;
+import com.joycastle.gameplugin.NativeUtil;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
@@ -200,7 +201,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
+//                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","login","{}",-1);
             }
         });
 
@@ -210,7 +212,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                FacebookHelper.getInstance().logout();
+//                FacebookHelper.getInstance().logout();
             }
         });
 
@@ -220,9 +222,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                Log.e("Facebook","isLogin"+FacebookHelper.getInstance().isLogin());
-
-                Log.e("Facebook","name"+FacebookHelper.getInstance().getUserId());
+//                Log.e("Facebook","isLogin"+FacebookHelper.getInstance().isLogin());
+//
+//                Log.e("Facebook","name"+FacebookHelper.getInstance().getUserId());
             }
         });
 
