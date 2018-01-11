@@ -99,17 +99,21 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
 
     public JSONObject getUserId(JSONObject json) throws JSONException {
-        if (!this._isLogin())
-            return new JSONObject("");
         JSONObject jobj = new JSONObject();
+        if (!this._isLogin())
+        {
+            return jobj;
+        }
         jobj.put("uid",Profile.getCurrentProfile().getId());
         return jobj;
     }
 
     public JSONObject getAccessToken(JSONObject json) throws JSONException {
-        if (!this._isLogin())
-            return new JSONObject("");
         JSONObject jobj = new JSONObject();
+        if (!this._isLogin())
+        {
+            return jobj;
+        }
         jobj.put("token",AccessToken.getCurrentAccessToken().getToken());
         return jobj;
     }
