@@ -69,40 +69,49 @@ public class FacebookHelper implements LifeCycleDelegate {
         this.loginListener = loginListener;
     }
 
-    public JSONObject isLogin(JSONObject json) {
+    public JSONObject isLogin(JSONObject json) throws JSONException {
         AccessToken token = AccessToken.getCurrentAccessToken();
         Log.v("facebook help","token:"+token);
         if (token == null || token.isExpired()) {
-            return JSONObject(islogin = false);
+            JSONObject jobj = new JSONObject();
+            jobj.put("islogin",false);
+            return jobj;
         }
-        return JSONObject(islogin = true);
+        JSONObject jobj = new JSONObject();
+        jobj.put("islogin",true);
+        return jobj;
+    }
+
+    public Boolean _isLogin(){
+        AccessToken token = AccessToken.getCurrentAccessToken();
+        Log.v("facebook help","token:"+token);
+        if (token == null || token.isExpired()) {
+            return false;
+        }
+        return true;
     }
 
     public void login(JSONObject json) {
-        if (this.isLogin(null))
+        if (this._isLogin())
             return;
         List<String> permissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday", "user_status");
         LoginManager.getInstance().logInWithReadPermissions(SystemUtil.activity, permissions);
     }
 
-    public JSONObject getUserId(JSONObject json) {
-        if (!this.isLogin(null))
-            try {
-                return new JSONObject("");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        return JSONObject(uid=Profile.getCurrentProfile().getId());
+    public JSONObject getUserId(JSONObject json) throws JSONException {
+        if (!this._isLogin())
+            return new JSONObject("");
+        JSONObject jobj = new JSONObject();
+        jobj.put("uid",Profile.getCurrentProfile().getId());
+        return jobj;
     }
 
-    public JSONObject getAccessToken(JSONObject json) {
-        if (!this.isLogin(null))
-            try {
-                return new JSONObject("");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        return JSONObject(token=AccessToken.getCurrentAccessToken().getToken());
+    public JSONObject getAccessToken(JSONObject json) throws JSONException {
+        if (!this._isLogin())
+            return new JSONObject("");
+        JSONObject jobj = new JSONObject();
+        jobj.put("token",AccessToken.getCurrentAccessToken().getToken());
+        return jobj;
     }
 
     public String getUserProfile(JSONObject json,  InvokeJavaMethodDelegate delegate) throws JSONException {
@@ -218,7 +227,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
 
     public void logout(JSONObject json) {
-        if (!this.isLogin(null))
+        if (!this._isLogin())
             return;
         LoginManager.getInstance().logOut();
     }
