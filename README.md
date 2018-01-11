@@ -1,5 +1,13 @@
 # GamePlugin
 
+build.gradle
+
+    compile project(path: ':gameplugin')
+
+strings.xml
+
+    <string name="fabricApiKey">11111111111111111111111</string>
+
 # Analytics
 
 ## Flurry
@@ -26,10 +34,11 @@ build.gradle
 
 strings.xml
 
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
-    <string name="interstitial_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="banner_ad_unit_id">ca-app-pub-9274282740568260/4259450900</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-9274282740568260/3965072900</string>
+    <string name="admob_test_device_id">43EDC6D96834B689D5D0AAF8CFF44CCB</string>
 
-## Facebook
+# Facebook
 
 build.gradle
     
