@@ -4,10 +4,6 @@ build.gradle
 
     compile project(path: ':gameplugin')
 
-strings.xml
-
-    <string name="fabricApiKey">11111111111111111111111</string>
-
 # Analytics
 
 ## Flurry

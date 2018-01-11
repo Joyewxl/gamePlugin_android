@@ -20,21 +20,19 @@ import com.joycastle.gameplugin.NativeUtil;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
-import com.joycastle.my_facebook.FacebookHelper;
 
 import org.json.JSONException;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
-
     static {
         System.loadLibrary("cocos2dlua");
     }
+
     private static final String TAG = "MainActivity";
 
     private ArrayList<HashMap<String, OnClickListener>> arrayList = null;
@@ -43,23 +41,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         void onClick() throws JSONException;
     }
 
-    private MainActivity instance;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-
-
 
         Log.e(TAG, "------------>"+ SystemUtil.getAppVersion());
 
         GamePlugin.getInstance().onCreate(this, savedInstanceState);
-
-
-
-
-        instance = this;
 
         arrayList = new ArrayList<>();
         HashMap<String, OnClickListener> hashMap;

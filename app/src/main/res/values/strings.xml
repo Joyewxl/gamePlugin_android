@@ -4,5 +4,4 @@
     <string name="banner_ad_unit_id">ca-app-pub-9274282740568260/4259450900</string>
     <string name="interstitial_ad_unit_id">ca-app-pub-9274282740568260/3965072900</string>
     <string name="admob_test_device_id">43EDC6D96834B689D5D0AAF8CFF44CCB</string>
-    <string name="fabricApiKey">11111111111111111111111</string>
 </resources>
