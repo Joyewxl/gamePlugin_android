@@ -31,11 +31,14 @@ import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
 import com.facebook.share.widget.ShareDialog;
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
+import com.joycastle.gamepluginbase.SystemUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +69,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         this.loginListener = loginListener;
     }
 
-    public boolean isLogin() {
+    public boolean isLogin(JSONObject json) {
         AccessToken token = AccessToken.getCurrentAccessToken();
         Log.v("facebook help","token:"+token);
         if (token == null || token.isExpired()) {
@@ -75,44 +78,47 @@ public class FacebookHelper implements LifeCycleDelegate {
         return true;
     }
 
-    public void login(Activity activity, List<String> permissions) {
-        if (this.isLogin())
+    public void login(JSONObject json) {
+        if (this.isLogin(null))
             return;
-
-        LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
-
+        List<String> permissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday", "user_status");
+        LoginManager.getInstance().logInWithReadPermissions(SystemUtil.activity, permissions);
     }
 
-    public String getUserId() {
-        if (!this.isLogin())
+    public String getUserId(JSONObject json) {
+        if (!this.isLogin(null))
             return null;
         return Profile.getCurrentProfile().getId();
     }
 
-    public String getAccessToken() {
-        if (!this.isLogin())
+    public String getAccessToken(JSONObject json) {
+        if (!this.isLogin(null))
             return null;
         return AccessToken.getCurrentAccessToken().getToken();
     }
 
-    public String getUserProfile(String userId,  OnResultListener listener) throws JSONException {
+    public String getUserProfile(JSONObject json,  InvokeJavaMethodDelegate delegate) throws JSONException {
        
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+        final InvokeJavaMethodDelegate tdelegate = delegate;
 
         GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
                 if (object != null) {
-//                   String name = object.optString("name");
+                    Log.e(TAG, "userProfile: "+object);
+//                  String name = object.optString("name");
                     userName = object.optString("name");
 
 //                    listener.onResult(true, null);
+                    tdelegate.onFinish(object);
                 }
             }
         }).executeAsync();
 
         JSONObject userP = new JSONObject();
-        userP.put("id",getUserId());
+        userP.put("id",getUserId(null));
         userP.put("name",userName);
 
         return userP.toString();
@@ -203,8 +209,8 @@ public class FacebookHelper implements LifeCycleDelegate {
         }
     }
 
-    public void logout() {
-        if (!this.isLogin())
+    public void logout(JSONObject json) {
+        if (!this.isLogin(null))
             return;
         LoginManager.getInstance().logOut();
     }

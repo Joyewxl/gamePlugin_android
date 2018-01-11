@@ -34,6 +34,7 @@ public class GamePlugin implements LifeCycleDelegate {
         assert(name!=null);
         
         Log.i("GamePlugin","GamePlugin onCreate");
+        SystemUtil.setActivity(activity);
         AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
         AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
         IabHelper.getInstance().onCreate(activity, savedInstanceState);
@@ -48,7 +49,6 @@ public class GamePlugin implements LifeCycleDelegate {
 
     @Override
     public void onResume(Activity activity) {
-        SystemUtil.setActivity(activity);
         AnalyticHelper.getInstance().onResume(activity);
         AdvertiseHelper.getInstance().onResume(activity);
         IabHelper.getInstance().onResume(activity);
