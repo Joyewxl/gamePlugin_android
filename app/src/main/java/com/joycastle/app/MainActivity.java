@@ -31,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+
+    static {
+        System.loadLibrary("cocos2dlua");
+    }
     private static final String TAG = "MainActivity";
 
     private ArrayList<HashMap<String, OnClickListener>> arrayList = null;
@@ -242,7 +246,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() throws JSONException {
-               String str = FacebookHelper.getInstance().getUserProfile(null,null);
+//               String str = FacebookHelper.getInstance().getUserProfile(null,null);
 
                 NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
             }
@@ -254,7 +258,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() throws JSONException {
-                String str = FacebookHelper.getInstance().getUserProfile(null,null);
+//                String str = FacebookHelper.getInstance().getUserProfile(null,null);
 
                 NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getAccessToken","{}",-1);
             }
