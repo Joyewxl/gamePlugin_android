@@ -84,7 +84,7 @@ public class FacebookHelper implements LifeCycleDelegate {
 
     public Boolean _isLogin(){
         AccessToken token = AccessToken.getCurrentAccessToken();
-        Log.v("facebook help","token:"+token);
+        Log.e("facebook help","token:"+token);
         if (token == null || token.isExpired()) {
             return false;
         }
@@ -104,6 +104,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         {
             return jobj;
         }
+        Log.e(TAG, "getUserId: "+ Profile.getCurrentProfile().getId());
         jobj.put("uid",Profile.getCurrentProfile().getId());
         return jobj;
     }
@@ -114,6 +115,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         {
             return jobj;
         }
+        Log.e(TAG, "getAccessToken: "+AccessToken.getCurrentAccessToken().getToken() );
         jobj.put("token",AccessToken.getCurrentAccessToken().getToken());
         return jobj;
     }
@@ -131,8 +133,6 @@ public class FacebookHelper implements LifeCycleDelegate {
                     Log.e(TAG, "userProfile: "+object);
 //                  String name = object.optString("name");
                     userName = object.optString("name");
-
-//                    listener.onResult(true, null);
                     tdelegate.onFinish(object);
                 }
             }
