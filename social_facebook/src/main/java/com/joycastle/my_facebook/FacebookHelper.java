@@ -87,13 +87,21 @@ public class FacebookHelper implements LifeCycleDelegate {
 
     public JSONObject getUserId(JSONObject json) {
         if (!this.isLogin(null))
-            return JSONObject({});
+            try {
+                return new JSONObject("");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         return JSONObject(uid=Profile.getCurrentProfile().getId());
     }
 
     public JSONObject getAccessToken(JSONObject json) {
         if (!this.isLogin(null))
-            return JSONObject({});
+            try {
+                return new JSONObject("");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         return JSONObject(token=AccessToken.getCurrentAccessToken().getToken());
     }
 
