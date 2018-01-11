@@ -16,6 +16,7 @@ import com.joycastle.gameplugin.AdvertiseHelper;
 import com.joycastle.gameplugin.AnalyticHelper;
 import com.joycastle.gameplugin.GamePlugin;
 import com.joycastle.gameplugin.IabHelper;
+import com.joycastle.gameplugin.NativeUtil;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
@@ -30,6 +31,10 @@ import java.util.List;
 import java.util.Map;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+
+    static {
+        System.loadLibrary("cocos2dlua");
+    }
     private static final String TAG = "MainActivity";
 
     private ArrayList<HashMap<String, OnClickListener>> arrayList = null;
@@ -200,7 +205,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
+//                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","login","{}",-1);
             }
         });
 
@@ -210,7 +216,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                FacebookHelper.getInstance().logout();
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","logout","{}",-1);
             }
         });
 
@@ -220,9 +226,17 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                Log.e("Facebook","isLogin"+FacebookHelper.getInstance().isLogin());
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","isLogin","{}",-1);
+            }
+        });
 
-                Log.e("Facebook","name"+FacebookHelper.getInstance().getUserId());
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("facebookGetUserId", new OnClickListener() {
+
+            @Override
+            public void onClick() {
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserId","{}",-1);
             }
         });
 
@@ -232,7 +246,21 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() throws JSONException {
-               String str = FacebookHelper.getInstance().getUserProfile(null,null);
+//               String str = FacebookHelper.getInstance().getUserProfile(null,null);
+
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("getAccessToken", new OnClickListener() {
+
+            @Override
+            public void onClick() throws JSONException {
+//                String str = FacebookHelper.getInstance().getUserProfile(null,null);
+
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getAccessToken","{}",-1);
             }
         });
 

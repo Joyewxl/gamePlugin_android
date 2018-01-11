@@ -49,8 +49,10 @@ public class NativeUtil {
         try {
             JSONObject reqObject = new JSONObject(reqData);
             Class clazz = Class.forName(className);
+            Method getInstanceMethod = clazz.getMethod("getInstance");
+            Object instance = getInstanceMethod.invoke(null);
             Method method = clazz.getMethod(methodName, JSONObject.class);
-            Object resObject = method.invoke(null, reqObject);
+            Object resObject = method.invoke(instance, reqObject);
             if (resObject != null) {
                 resData = resObject.toString();
             }
@@ -73,8 +75,10 @@ public class NativeUtil {
         try {
             JSONObject reqObject = new JSONObject(reqData);
             Class clazz = Class.forName(className);
+            Method getInstanceMethod = clazz.getMethod("getInstance");
+            Object instance = getInstanceMethod.invoke(null);
             Method method = clazz.getMethod(methodName, JSONObject.class, InvokeJavaMethodDelegate.class);
-            Object resObject = method.invoke(null, reqObject, listener);
+            Object resObject = method.invoke(instance, reqObject, listener);
             if (resObject != null) {
                 resData = resObject.toString();
             }
