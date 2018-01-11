@@ -6,15 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.my_facebook.FacebookHelper;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by geekgy on 16/5/11.
  */
 public class GamePlugin implements LifeCycleDelegate {
     public static final String TAG = "GamePlugin";
+
     private static GamePlugin instance = new GamePlugin();
     public static GamePlugin getInstance() { return instance; }
     private GamePlugin() {}
@@ -26,6 +30,7 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().init(application);
 //        IabHelper.getInstance().init(application);
         FacebookHelper.getInstance().init(application);
+        Fabric.with(application, new Crashlytics());
     }
 
     @Override
