@@ -30,7 +30,7 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().init(application);
 //        IabHelper.getInstance().init(application);
         FacebookHelper.getInstance().init(application);
-        Fabric.with(application, new Crashlytics());
+//        Fabric.with(application, new Crashlytics());
     }
 
     @Override
