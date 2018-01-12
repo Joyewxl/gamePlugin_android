@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.joycastle.gamepluginbase.AnalyticDelegate;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
@@ -32,7 +33,7 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void setAccoutInfo(JSONObject map) {
+    public void setAccoutInfo(JSONObject map) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.setAccoutInfo(map);
         }
@@ -46,49 +47,49 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void onEvent(String eventId, String eventLabel) {
+    public void onEvent(String eventId, String eventLabel) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.onEvent(eventId, eventLabel);
         }
     }
 
     @Override
-    public void onEvent(String eventId, JSONObject eventData) {
+    public void onEvent(String eventId, JSONObject eventData) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.onEvent(eventId, eventData);
         }
     }
 
     @Override
-    public void setLevel(int level) {
+    public void setLevel(int level) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.setLevel(level);
         }
     }
 
     @Override
-    public void charge(String iapId, double cash, double coin, int channal) {
+    public void charge(String iapId, double cash, double coin, int channal) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.charge(iapId, cash, coin, channal);
         }
     }
 
     @Override
-    public void reward(double coin, int reason) {
+    public void reward(double coin, int reason) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.reward(coin, reason);
         }
     }
 
     @Override
-    public void purchase(String good, int amount, double coin) {
+    public void purchase(String good, int amount, double coin) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.purchase(good, amount, coin);
         }
     }
 
     @Override
-    public void use(String good, int amount, double coin) {
+    public void use(String good, int amount, double coin) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.use(good, amount, coin);
         }

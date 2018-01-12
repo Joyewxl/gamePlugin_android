@@ -22,6 +22,7 @@ import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -67,8 +68,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("setAccoutInfo", new OnClickListener() {
             @Override
-            public void onClick() {
-                Map<String, String> map = new HashMap();
+            public void onClick() throws JSONException {
+//                Map<String, String> map = new HashMap();
+                JSONObject map = new JSONObject();
                 map.put("userId", "001");
                 map.put("gender", "female");
                 map.put("age", "10");
@@ -89,7 +91,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("onEventWithLabel", new OnClickListener() {
             @Override
-            public void onClick() {
+            public void onClick() throws JSONException {
                 AnalyticHelper.getInstance().onEvent("eventId", "eventLabel");
             }
         });
@@ -98,8 +100,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("onEventWithData", new OnClickListener() {
             @Override
-            public void onClick() {
-                Map<String, Object> map = new HashMap();
+            public void onClick() throws JSONException {
+//                Map<String, Object> map = new HashMap();
+                JSONObject map = new JSONObject();
                 map.put("userId", "001");
                 map.put("gender", "female");
                 map.put("age", "10");
@@ -111,7 +114,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("setLevel", new OnClickListener() {
             @Override
-            public void onClick() {
+            public void onClick() throws JSONException {
                 AnalyticHelper.getInstance().setLevel(10);
             }
         });
@@ -120,7 +123,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("charge", new OnClickListener() {
             @Override
-            public void onClick() {
+            public void onClick() throws JSONException {
                 AnalyticHelper.getInstance().charge("coin1", 1, 10, 1000);
             }
         });
@@ -129,7 +132,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("reward", new OnClickListener() {
             @Override
-            public void onClick() {
+            public void onClick() throws JSONException {
                 AnalyticHelper.getInstance().reward(10, 1000);
             }
         });
@@ -138,7 +141,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("purchase", new OnClickListener() {
             @Override
-            public void onClick() {
+            public void onClick() throws JSONException {
                 AnalyticHelper.getInstance().purchase("helmet", 1, 10);
             }
         });
@@ -147,7 +150,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("use", new OnClickListener() {
             @Override
-            public void onClick() {
+            public void onClick() throws JSONException {
                 AnalyticHelper.getInstance().use("helmet", 1, 10);
             }
         });
