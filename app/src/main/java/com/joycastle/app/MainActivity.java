@@ -196,7 +196,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public void onClick() {
 //                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","login","{}",-1);
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","[]",1);
             }
         });
 

@@ -12,7 +12,6 @@ import com.flurry.android.FlurryAgentListener;
 import com.joycastle.gamepluginbase.AnalyticDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -32,11 +31,10 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     private FLAnalyticHelper() {}
 
     @Override
-    public void setAccoutInfo(JSONObject map) throws JSONException {
-
-        String userId = map.getString("userId");
-        String gender = map.getString("gender");
-        String age = map.getString("age");
+    public void setAccoutInfo(Map<String, String> map) {
+        String userId = map.get("userId");
+        String gender = map.get("gender");
+        String age = map.get("age");
         if (userId != null) {
             FlurryAgent.setUserId(userId);
         }
@@ -76,9 +74,8 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void setLevel(JSONObject json) throws JSONException {
-        String lstr = json.getString("level");
-        this.onEvent("level", String.valueOf(lstr));
+    public void setLevel(int level) {
+        this.onEvent("level", String.valueOf(level));
     }
 
     @Override

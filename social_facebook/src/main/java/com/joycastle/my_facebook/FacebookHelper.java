@@ -69,7 +69,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         this.loginListener = loginListener;
     }
 
-    public JSONObject isLogin(JSONObject json) throws JSONException {
+    public JSONObject isLogin() throws JSONException {
         AccessToken token = AccessToken.getCurrentAccessToken();
         Log.v("facebook help","token:"+token);
         if (token == null || token.isExpired()) {
@@ -91,14 +91,22 @@ public class FacebookHelper implements LifeCycleDelegate {
         return true;
     }
 
-    public void login(JSONObject json) {
+    public void login(Integer id,JSONObject json){
+        Log.e(TAG, "login: ###############"+id);
+    }
+
+    public void login(Integer id,String str){
+        Log.e(TAG, "login: ############### "+id + str);
+    }
+
+    public void login() {
         if (this._isLogin())
             return;
         List<String> permissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday", "user_status");
         LoginManager.getInstance().logInWithReadPermissions(SystemUtil.activity, permissions);
     }
 
-    public JSONObject getUserId(JSONObject json) throws JSONException {
+    public JSONObject getUserId() throws JSONException {
         JSONObject jobj = new JSONObject();
         if (!this._isLogin())
         {
@@ -109,7 +117,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         return jobj;
     }
 
-    public JSONObject getAccessToken(JSONObject json) throws JSONException {
+    public JSONObject getAccessToken() throws JSONException {
         JSONObject jobj = new JSONObject();
         if (!this._isLogin())
         {
@@ -120,7 +128,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         return jobj;
     }
 
-    public String getUserProfile(JSONObject json,  InvokeJavaMethodDelegate delegate) throws JSONException {
+    public String getUserProfile(InvokeJavaMethodDelegate delegate) throws JSONException {
        
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
 
@@ -131,7 +139,6 @@ public class FacebookHelper implements LifeCycleDelegate {
             public void onCompleted(JSONObject object, GraphResponse response) {
                 if (object != null) {
                     Log.e(TAG, "userProfile: "+object);
-//                  String name = object.optString("name");
                     userName = object.optString("name");
                     tdelegate.onFinish(object);
                 }
@@ -139,7 +146,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         }).executeAsync();
 
         JSONObject userP = new JSONObject();
-        userP.put("id",getUserId(null));
+        userP.put("id",getUserId());
         userP.put("name",userName);
 
         return userP.toString();
@@ -230,7 +237,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         }
     }
 
-    public void logout(JSONObject json) {
+    public void logout() {
         if (!this._isLogin())
             return;
         LoginManager.getInstance().logOut();

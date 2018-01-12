@@ -2,6 +2,7 @@ package com.joycastle.gameplugin;
 
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
@@ -47,12 +48,18 @@ public class NativeUtil {
     private static String invokeJavaMethod(String className, String methodName, String reqData) {
         String resData = "{}";
         try {
-            JSONObject reqObject = new JSONObject(reqData);
+            JSONArray reqArray = new JSONArray(reqData);
             Class clazz = Class.forName(className);
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
-            Method method = clazz.getMethod(methodName, JSONObject.class);
-            Object resObject = method.invoke(instance, reqObject);
+            Class[] argsClass = new Class[reqArray.length()];
+            Object[] reqObj = new Object[reqArray.length()];
+            for(int i=0; i<reqArray.length(); i++) {
+                argsClass[i] = reqArray.get(i).getClass();  //获得每一个参数的实际类型
+                reqObj[i] = reqArray.get(i);
+            }
+            Method method = clazz.getMethod(methodName, argsClass);
+            Object resObject = method.invoke(instance, reqObj);
             if (resObject != null) {
                 resData = resObject.toString();
             }
@@ -73,12 +80,21 @@ public class NativeUtil {
     private static String invokeJavaMethodAsync(String className, String methodName, String reqData, InvokeJavaMethodDelegate listener) {
         String resData = "{}";
         try {
-            JSONObject reqObject = new JSONObject(reqData);
+            JSONArray reqArray = new JSONArray(reqData);
             Class clazz = Class.forName(className);
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
-            Method method = clazz.getMethod(methodName, JSONObject.class, InvokeJavaMethodDelegate.class);
-            Object resObject = method.invoke(instance, reqObject, listener);
+            int reqLength = reqArray.length();
+            Class[] argsClass = new Class[reqLength+1];
+            Object[] reqObj = new Object[reqLength+1];
+            for(int i=0; i<reqLength; i++) {
+                argsClass[i] = reqArray.get(i).getClass();  //获得每一个参数的实际类型
+                reqObj[i] = reqArray.get(i);
+            }
+            argsClass[reqLength] = InvokeJavaMethodDelegate.class;
+            reqObj[reqLength] = listener;
+            Method method = clazz.getMethod(methodName, argsClass);
+            Object resObject = method.invoke(instance, reqObj);
             if (resObject != null) {
                 resData = resObject.toString();
             }
