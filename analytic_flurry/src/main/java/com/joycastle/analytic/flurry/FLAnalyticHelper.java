@@ -33,10 +33,18 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     private FLAnalyticHelper() {}
 
     @Override
-    public void setAccoutInfo(JSONObject map) throws JSONException {
-        String userId = map.getString("userId");
-        String gender = map.getString("gender");
-        String age = map.getString("age");
+    public void setAccoutInfo(JSONObject map){
+        String userId = null;
+        String gender = null;
+        String age = null;
+        try {
+            userId = map.getString("userId");
+            gender = map.getString("gender");
+            age = map.getString("age");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         if (userId != null) {
             FlurryAgent.setUserId(userId);
         }
@@ -58,76 +66,102 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void onEvent(String eventId, String eventLabel) throws JSONException {
+    public void onEvent(String eventId, String eventLabel){
 //        Map<String, Object> eventData = new HashMap<>();
 //        eventData.put("default", eventLabel);
         JSONObject eventData = new JSONObject();
-        eventData.put("default",eventLabel);
+        try {
+            eventData.put("default",eventLabel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         this.onEvent(eventId, eventData);
     }
 
     @Override
-    public void onEvent(String eventId, JSONObject eventData) throws JSONException {
+    public void onEvent(String eventId, JSONObject eventData) {
         Map<String, String> hashMap = new HashMap<>();
-//        Map jsonMap = (Map) eventData;
-//        for (Map.Entry entry  : jsonMap.entrySet()) {
-//            String key = (String) entry.getKey();
-//            Object value = entry.getValue();
-//            hashMap.put(key, value.toString());
-//        }
         Iterator keyIterator = eventData.keys();
         while(keyIterator.hasNext()){
             String key = (String) keyIterator.next();
-            Object value = eventData.get(key);
+            Object value = null;
+            try {
+                value = eventData.get(key);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             hashMap.put(key, value.toString());
         }
         FlurryAgent.onEvent(eventId, hashMap);
     }
 
     @Override
-    public void setLevel(Integer level) throws JSONException {
-        this.onEvent("level", String.valueOf(level.intValue())
-        );
+    public void setLevel(Integer level){
+        try {
+            this.onEvent("level", String.valueOf(level.intValue())
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void charge(String iapId, Double cash, Double coin, Integer channal) throws JSONException {
+    public void charge(String iapId, Double cash, Double coin, Integer channal){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
-        eventData.put("name", iapId);
-        eventData.put("cash", String.valueOf(cash.doubleValue()));
-        eventData.put("coin", String.valueOf(coin.doubleValue()));
-        eventData.put("channal", String.valueOf(channal.intValue()));
-        this.onEvent("charge", eventData);
+        try {
+            eventData.put("name", iapId);
+            eventData.put("cash", String.valueOf(cash.doubleValue()));
+            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            eventData.put("channal", String.valueOf(channal.intValue()));
+            this.onEvent("charge", eventData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
-    public void reward(Double coin, Integer reason) throws JSONException {
+    public void reward(Double coin, Integer reason){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
-        eventData.put("coin", String.valueOf(coin.doubleValue()));
-        eventData.put("reason", String.valueOf(reason.intValue()));
-        this.onEvent("reward", eventData);
+        try {
+            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            eventData.put("reason", String.valueOf(reason.intValue()));
+            this.onEvent("reward", eventData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
-    public void purchase(String good, Integer amount, Double coin) throws JSONException {
+    public void purchase(String good, Integer amount, Double coin){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
-        eventData.put("name", good);
-        eventData.put("amount", String.valueOf(amount.intValue()));
-        eventData.put("coin", String.valueOf(coin.doubleValue()));
-        this.onEvent("purchase", eventData);
+        try {
+            eventData.put("name", good);
+            eventData.put("amount", String.valueOf(amount.intValue()));
+            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            this.onEvent("purchase", eventData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
-    public void use(String good, Integer amount, Double coin) throws JSONException {
+    public void use(String good, Integer amount, Double coin){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
-        eventData.put("name", good);
-        eventData.put("amount", String.valueOf(amount.intValue()));
-        eventData.put("coin", String.valueOf(coin.doubleValue()));
-        this.onEvent("use", eventData);
+        try {
+            eventData.put("name", good);
+            eventData.put("amount", String.valueOf(amount.intValue()));
+            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            this.onEvent("use", eventData);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override

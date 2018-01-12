@@ -13,7 +13,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * 设置账户信息
      * @param map（string，string）
      */
-    public void setAccoutInfo(JSONObject map) throws JSONException;
+    public void setAccoutInfo(JSONObject map);
 
     /**
      * 自定义事件
@@ -26,20 +26,20 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param eventId
      * @param eventLabel
      */
-    public void onEvent(String eventId, String eventLabel) throws JSONException;
+    public void onEvent(String eventId, String eventLabel);
 
     /**
      * 自定义事件
      * @param eventId
      * @param eventData  Map<String, Object>
      */
-    public void onEvent(String eventId,JSONObject eventData) throws JSONException;
+    public void onEvent(String eventId,JSONObject eventData);
 
     /**
      * 设置等级
      * @param level
      */
-    public void setLevel(Integer level) throws JSONException;
+    public void setLevel(Integer level);
 
     /**
      * 充值
@@ -48,14 +48,14 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param coin
      * @param channal
      */
-    public void charge(String iapId, Double cash, Double coin, Integer channal) throws JSONException;
+    public void charge(String iapId, Double cash, Double coin, Integer channal);
 
     /**
      * 奖励
      * @param coin
      * @param reason
      */
-    public void reward(Double coin, Integer reason) throws JSONException;
+    public void reward(Double coin, Integer reason);
 
     /**
      * 购买
@@ -63,7 +63,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void purchase(String good, Integer amount, Double coin) throws JSONException;
+    public void purchase(String good, Integer amount, Double coin);
 
     /**
      * 使用
@@ -71,7 +71,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void use(String good, Integer amount, Double coin) throws JSONException;
+    public void use(String good, Integer amount, Double coin);
 
     /**
      * 开始任务
