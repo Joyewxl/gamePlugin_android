@@ -1,5 +1,8 @@
 package com.joycastle.gamepluginbase;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Map;
 
 /**
@@ -8,9 +11,9 @@ import java.util.Map;
 public interface AnalyticDelegate extends LifeCycleDelegate {
     /**
      * 设置账户信息
-     * @param map
+     * @param map（string，string）
      */
-    public void setAccoutInfo(Map<String, String> map);
+    public void setAccoutInfo(JSONObject map) throws JSONException;
 
     /**
      * 自定义事件
@@ -23,20 +26,20 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param eventId
      * @param eventLabel
      */
-    public void onEvent(String eventId, String eventLabel);
+    public void onEvent(String eventId, String eventLabel) throws JSONException;
 
     /**
      * 自定义事件
      * @param eventId
-     * @param eventData
+     * @param eventData  Map<String, Object>
      */
-    public void onEvent(String eventId, Map<String, Object> eventData);
+    public void onEvent(String eventId,JSONObject eventData) throws JSONException;
 
     /**
      * 设置等级
      * @param level
      */
-    public void setLevel(int level);
+    public void setLevel(int level) throws JSONException;
 
     /**
      * 充值
@@ -45,14 +48,14 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param coin
      * @param channal
      */
-    public void charge(String iapId, double cash, double coin, int channal);
+    public void charge(String iapId, double cash, double coin, int channal) throws JSONException;
 
     /**
      * 奖励
      * @param coin
      * @param reason
      */
-    public void reward(double coin, int reason);
+    public void reward(double coin, int reason) throws JSONException;
 
     /**
      * 购买
@@ -60,7 +63,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void purchase(String good, int amount, double coin);
+    public void purchase(String good, int amount, double coin) throws JSONException;
 
     /**
      * 使用
@@ -68,7 +71,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void use(String good, int amount, double coin);
+    public void use(String good, int amount, double coin) throws JSONException;
 
     /**
      * 开始任务

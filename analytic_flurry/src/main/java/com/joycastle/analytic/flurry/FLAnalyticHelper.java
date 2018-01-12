@@ -12,9 +12,11 @@ import com.flurry.android.FlurryAgentListener;
 import com.joycastle.gamepluginbase.AnalyticDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -31,10 +33,10 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     private FLAnalyticHelper() {}
 
     @Override
-    public void setAccoutInfo(Map<String, String> map) {
-        String userId = map.get("userId");
-        String gender = map.get("gender");
-        String age = map.get("age");
+    public void setAccoutInfo(JSONObject map) throws JSONException {
+        String userId = map.getString("userId");
+        String gender = map.getString("gender");
+        String age = map.getString("age");
         if (userId != null) {
             FlurryAgent.setUserId(userId);
         }
@@ -56,31 +58,42 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void onEvent(String eventId, String eventLabel) {
-        Map<String, Object> eventData = new HashMap<>();
-        eventData.put("default", eventLabel);
+    public void onEvent(String eventId, String eventLabel) throws JSONException {
+//        Map<String, Object> eventData = new HashMap<>();
+//        eventData.put("default", eventLabel);
+        JSONObject eventData = new JSONObject();
+        eventData.put("default",eventLabel);
         this.onEvent(eventId, eventData);
     }
 
     @Override
-    public void onEvent(String eventId, Map<String, Object> eventData) {
+    public void onEvent(String eventId, JSONObject eventData) throws JSONException {
         Map<String, String> hashMap = new HashMap<>();
-        for (Map.Entry entry  : eventData.entrySet()) {
-            String key = (String) entry.getKey();
-            Object value = entry.getValue();
+//        Map jsonMap = (Map) eventData;
+//        for (Map.Entry entry  : jsonMap.entrySet()) {
+//            String key = (String) entry.getKey();
+//            Object value = entry.getValue();
+//            hashMap.put(key, value.toString());
+//        }
+        Iterator keyIterator = eventData.keys();
+        while(keyIterator.hasNext()){
+            String key = (String) keyIterator.next();
+            Object value = eventData.get(key);
             hashMap.put(key, value.toString());
         }
         FlurryAgent.onEvent(eventId, hashMap);
     }
 
     @Override
-    public void setLevel(int level) {
-        this.onEvent("level", String.valueOf(level));
+    public void setLevel(int level) throws JSONException {
+        this.onEvent("level", String.valueOf(level)
+        );
     }
 
     @Override
-    public void charge(String iapId, double cash, double coin, int channal) {
-        Map<String, Object> eventData = new HashMap<>();
+    public void charge(String iapId, double cash, double coin, int channal) throws JSONException {
+//        Map<String, Object> eventData = new HashMap<>();
+        JSONObject eventData = new JSONObject();
         eventData.put("name", iapId);
         eventData.put("cash", String.valueOf(cash));
         eventData.put("coin", String.valueOf(coin));
@@ -89,16 +102,18 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void reward(double coin, int reason) {
-        Map<String, Object> eventData = new HashMap<>();
+    public void reward(double coin, int reason) throws JSONException {
+//        Map<String, Object> eventData = new HashMap<>();
+        JSONObject eventData = new JSONObject();
         eventData.put("coin", String.valueOf(coin));
         eventData.put("reason", String.valueOf(reason));
         this.onEvent("reward", eventData);
     }
 
     @Override
-    public void purchase(String good, int amount, double coin) {
-        Map<String, Object> eventData = new HashMap<>();
+    public void purchase(String good, int amount, double coin) throws JSONException {
+//        Map<String, Object> eventData = new HashMap<>();
+        JSONObject eventData = new JSONObject();
         eventData.put("name", good);
         eventData.put("amount", String.valueOf(amount));
         eventData.put("coin", String.valueOf(coin));
@@ -106,8 +121,9 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void use(String good, int amount, double coin) {
-        Map<String, Object> eventData = new HashMap<>();
+    public void use(String good, int amount, double coin) throws JSONException {
+//        Map<String, Object> eventData = new HashMap<>();
+        JSONObject eventData = new JSONObject();
         eventData.put("name", good);
         eventData.put("amount", String.valueOf(amount));
         eventData.put("coin", String.valueOf(coin));

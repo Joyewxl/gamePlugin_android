@@ -8,6 +8,8 @@ import android.util.Log;
 
 import com.joycastle.gamepluginbase.AnalyticDelegate;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
@@ -30,7 +32,7 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void setAccoutInfo(Map<String, String> map) {
+    public void setAccoutInfo(JSONObject map) {
         for (AnalyticDelegate delegate : delegates) {
             delegate.setAccoutInfo(map);
         }
@@ -51,7 +53,7 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void onEvent(String eventId, Map<String, Object> eventData) {
+    public void onEvent(String eventId, JSONObject eventData) {
         for (AnalyticDelegate delegate : delegates) {
             delegate.onEvent(eventId, eventData);
         }
