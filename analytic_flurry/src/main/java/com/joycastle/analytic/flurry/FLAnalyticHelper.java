@@ -85,48 +85,48 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void setLevel(int level) throws JSONException {
-        this.onEvent("level", String.valueOf(level)
+    public void setLevel(Integer level) throws JSONException {
+        this.onEvent("level", String.valueOf(level.intValue())
         );
     }
 
     @Override
-    public void charge(String iapId, double cash, double coin, int channal) throws JSONException {
+    public void charge(String iapId, Double cash, Double coin, Integer channal) throws JSONException {
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
         eventData.put("name", iapId);
-        eventData.put("cash", String.valueOf(cash));
-        eventData.put("coin", String.valueOf(coin));
-        eventData.put("channal", String.valueOf(channal));
+        eventData.put("cash", String.valueOf(cash.doubleValue()));
+        eventData.put("coin", String.valueOf(coin.doubleValue()));
+        eventData.put("channal", String.valueOf(channal.intValue()));
         this.onEvent("charge", eventData);
     }
 
     @Override
-    public void reward(double coin, int reason) throws JSONException {
+    public void reward(Double coin, Integer reason) throws JSONException {
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
-        eventData.put("coin", String.valueOf(coin));
-        eventData.put("reason", String.valueOf(reason));
+        eventData.put("coin", String.valueOf(coin.doubleValue()));
+        eventData.put("reason", String.valueOf(reason.intValue()));
         this.onEvent("reward", eventData);
     }
 
     @Override
-    public void purchase(String good, int amount, double coin) throws JSONException {
+    public void purchase(String good, Integer amount, Double coin) throws JSONException {
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
         eventData.put("name", good);
-        eventData.put("amount", String.valueOf(amount));
-        eventData.put("coin", String.valueOf(coin));
+        eventData.put("amount", String.valueOf(amount.intValue()));
+        eventData.put("coin", String.valueOf(coin.doubleValue()));
         this.onEvent("purchase", eventData);
     }
 
     @Override
-    public void use(String good, int amount, double coin) throws JSONException {
+    public void use(String good, Integer amount, Double coin) throws JSONException {
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
         eventData.put("name", good);
-        eventData.put("amount", String.valueOf(amount));
-        eventData.put("coin", String.valueOf(coin));
+        eventData.put("amount", String.valueOf(amount.intValue()));
+        eventData.put("coin", String.valueOf(coin.doubleValue()));
         this.onEvent("use", eventData);
     }
 

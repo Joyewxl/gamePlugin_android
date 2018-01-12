@@ -39,7 +39,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * 设置等级
      * @param level
      */
-    public void setLevel(int level) throws JSONException;
+    public void setLevel(Integer level) throws JSONException;
 
     /**
      * 充值
@@ -48,14 +48,14 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param coin
      * @param channal
      */
-    public void charge(String iapId, double cash, double coin, int channal) throws JSONException;
+    public void charge(String iapId, Double cash, Double coin, Integer channal) throws JSONException;
 
     /**
      * 奖励
      * @param coin
      * @param reason
      */
-    public void reward(double coin, int reason) throws JSONException;
+    public void reward(Double coin, Integer reason) throws JSONException;
 
     /**
      * 购买
@@ -63,7 +63,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void purchase(String good, int amount, double coin) throws JSONException;
+    public void purchase(String good, Integer amount, Double coin) throws JSONException;
 
     /**
      * 使用
@@ -71,7 +71,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void use(String good, int amount, double coin) throws JSONException;
+    public void use(String good, Integer amount, Double coin) throws JSONException;
 
     /**
      * 开始任务

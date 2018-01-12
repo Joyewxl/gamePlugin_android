@@ -61,35 +61,35 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void setLevel(int level) throws JSONException {
+    public void setLevel(Integer level) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.setLevel(level);
         }
     }
 
     @Override
-    public void charge(String iapId, double cash, double coin, int channal) throws JSONException {
+    public void charge(String iapId, Double cash, Double coin, Integer channal) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.charge(iapId, cash, coin, channal);
         }
     }
 
     @Override
-    public void reward(double coin, int reason) throws JSONException {
+    public void reward(Double coin, Integer reason) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.reward(coin, reason);
         }
     }
 
     @Override
-    public void purchase(String good, int amount, double coin) throws JSONException {
+    public void purchase(String good, Integer amount, Double coin) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.purchase(good, amount, coin);
         }
     }
 
     @Override
-    public void use(String good, int amount, double coin) throws JSONException {
+    public void use(String good, Integer amount, Double coin) throws JSONException {
         for (AnalyticDelegate delegate : delegates) {
             delegate.use(good, amount, coin);
         }

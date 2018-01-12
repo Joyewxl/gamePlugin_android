@@ -124,7 +124,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("charge", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().charge("coin1", 1, 10, 1000);
+                AnalyticHelper.getInstance().charge("coin1", 1.0, 10.0, 1000);
             }
         });
 
@@ -133,7 +133,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("reward", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().reward(10, 1000);
+                AnalyticHelper.getInstance().reward(10.0, 1000);
             }
         });
 
@@ -142,7 +142,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("purchase", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().purchase("helmet", 1, 10);
+                AnalyticHelper.getInstance().purchase("helmet", 1, 10.0);
             }
         });
 
@@ -151,7 +151,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("use", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().use("helmet", 1, 10);
+                AnalyticHelper.getInstance().use("helmet", 1, 10.0);
             }
         });
 
