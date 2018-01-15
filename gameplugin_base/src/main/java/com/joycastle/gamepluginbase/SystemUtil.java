@@ -25,8 +25,10 @@ public class SystemUtil {
 
     public static Application application;
     public static Activity activity;
-
     private static KProgressHUD hud;
+
+    private static SystemUtil instance = new SystemUtil();
+    public static SystemUtil getInstance() { return instance; }
 
     public static void setApplication(Application application) {
         SystemUtil.application = application;
