@@ -48,7 +48,8 @@ public class NativeUtil {
     private static String invokeJavaMethod(String className, String methodName, String reqData) {
         String resData = "{}";
         try {
-            JSONArray reqArray = new JSONArray(reqData);
+            JSONObject reqObj = new JSONObject(reqData);
+            JSONArray reqArray = new JSONArray(reqObj.getString("json"));
             Class clazz = Class.forName(className);
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
@@ -80,7 +81,8 @@ public class NativeUtil {
     private static String invokeJavaMethodAsync(String className, String methodName, String reqData, InvokeJavaMethodDelegate listener) {
         String resData = "{}";
         try {
-            JSONArray reqArray = new JSONArray(reqData);
+            JSONObject reqObj = new JSONObject(reqData);
+            JSONArray reqArray = new JSONArray(reqObj.getString("json"));
             Class clazz = Class.forName(className);
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
