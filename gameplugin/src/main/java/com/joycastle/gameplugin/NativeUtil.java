@@ -50,7 +50,7 @@ public class NativeUtil {
         try {
             JSONObject rData = new JSONObject(reqData);
             String jsonStr = rData.getString("json");
-            JSONArray reqArray = new JSONArray(jsonStr == null ? jsonStr : "{}");
+            JSONArray reqArray = new JSONArray(jsonStr == null ? jsonStr : "[]");
             Class clazz = Class.forName(className);
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
@@ -84,7 +84,7 @@ public class NativeUtil {
         try {
             JSONObject rData = new JSONObject(reqData);
             String jsonStr = rData.getString("json");
-            JSONArray reqArray = new JSONArray(jsonStr == null ? jsonStr : "{}");
+            JSONArray reqArray = new JSONArray(jsonStr == null ? jsonStr : "[]");
             Class clazz = Class.forName(className);
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
