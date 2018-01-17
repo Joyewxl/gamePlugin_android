@@ -22,6 +22,7 @@ import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,16 +71,26 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("setAccoutInfo", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-//                Map<String, String> map = new HashMap();
-                JSONObject map = new JSONObject();
-                map.put("userId", "001");
-                map.put("gender", "female");
-                map.put("age", "10");
-//                AnalyticHelper.getInstance().setAccoutInfo(map);
-                ArrayList<String> arr = new ArrayList<String>();
-                arr.add(map.toString());
-                Log.e(TAG, "onClick: "+arr.toString() );
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AnalyticHelper","setAccoutInfo",arr.toString(),-1);
+////                Map<String, String> map = new HashMap();
+//                JSONObject map = new JSONObject();
+//                map.put("userId", "001");
+//                map.put("gender", "female");
+//                map.put("age", "10");
+////                AnalyticHelper.getInstance().setAccoutInfo(map);
+//                ArrayList<String> arr = new ArrayList<String>();
+//                arr.add(map.toString());
+//                Log.e(TAG, "onClick: "+arr.toString() );
+//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AnalyticHelper","setAccoutInfo",arr.toString(),-1);
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                JSONObject jso = new JSONObject();
+                jso.put("test","hello");
+                json.put(jso);
+                reqData.put("json", json);
+                System.out.print("request json : "+reqData.toString());
+                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","showAlertDialog",reqData.toString(),0);
+
+
             }
         });
 
@@ -284,6 +295,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                         Log.e(TAG, "BannerAd Clicked");
                     }
                 });
+
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showBannerAd","{}",-1);
             }
         });
 
@@ -292,7 +305,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("hideBannerAd", new OnClickListener() {
             @Override
             public void onClick() {
-                AdvertiseHelper.getInstance().hideBannerAd();
+//                AdvertiseHelper.getInstance().hideBannerAd();
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","hideBannerAd","{}",-1);
             }
         });
 
@@ -301,8 +315,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("isInterstitialAdReady", new OnClickListener() {
             @Override
             public void onClick() {
-                boolean result = AdvertiseHelper.getInstance().isInterstitialAdReady();
-                Log.e(TAG, "isInterstitialAdReady: "+result);
+//                boolean result = AdvertiseHelper.getInstance().isInterstitialAdReady();
+//                Log.e(TAG, "isInterstitialAdReady: "+result);
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isInterstitialAdReady","{}",-1);
             }
         });
 
@@ -326,8 +341,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("isVideoAdReady", new OnClickListener() {
             @Override
             public void onClick() {
-                boolean result = AdvertiseHelper.getInstance().isVideoAdReady();
-                Log.e(TAG, "isVideoAdReady: "+result);
+//                boolean result = AdvertiseHelper.getInstance().isVideoAdReady();
+//                Log.e(TAG, "isVideoAdReady: "+result);
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isVideoAdReady","{}",-1);
             }
         });
 
@@ -336,22 +352,26 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("showVideoAd", new OnClickListener() {
             @Override
             public void onClick() {
-                boolean result = AdvertiseHelper.getInstance().showVideoAd(new AdvertiseDelegate.VideoAdListener() {
-                    @Override
-                    public void onResult(boolean viewed, boolean clicked) {
-                        String message = "";
-                        message = message + "VideoAd Viewed: "+viewed;
-                        message = message + "VideoAd Clicked: "+clicked;
-                        showAlert(message);
-                    }
-                });
-                showToast("showVideoAd: "+result);
+//                boolean result = AdvertiseHelper.getInstance().showVideoAd(new AdvertiseDelegate.VideoAdListener() {
+//                    @Override
+//                    public void onResult(boolean viewed, boolean clicked) {
+//                        String message = "";
+//                        message = message + "VideoAd Viewed: "+viewed;
+//                        message = message + "VideoAd Clicked: "+clicked;
+//                        showAlert(message);
+//                    }
+//                });
+//                showToast("showVideoAd: "+result);
+
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showVideoAd","{}",-1);
             }
         });
         IabHelper.getInstance().setRestoreHandler(new IabDelegate.RestoreDelegate() {
             @Override
             public void onResult(boolean result, String iapId, String message) {
                 showAlert(result+"\n"+iapId+"\n"+message);
+
+
             }
         });
         hashMap = new HashMap<>();

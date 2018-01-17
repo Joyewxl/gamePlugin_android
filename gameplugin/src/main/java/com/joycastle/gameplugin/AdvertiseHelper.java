@@ -108,15 +108,16 @@ public class AdvertiseHelper implements AdvertiseDelegate {
         } catch (Exception e) {
             Log.e(TAG, "Admob is disable");
         }
-        try {
-            Class clazz = Class.forName("com.joycastle.advertise.adcolony.ACAdvertiseHelper");
-            Method method = clazz.getMethod("getInstance");
-            AdvertiseDelegate delegate = (AdvertiseDelegate) method.invoke(null);
-            delegates.add(delegate);
-            delegate.init(application);
-        } catch (Exception e) {
-            Log.e(TAG, "Adcolony is disable");
-        }
+
+//        try {
+//            Class clazz = Class.forName("com.joycastle.advertise.adcolony.ACAdvertiseHelper");
+//            Method method = clazz.getMethod("getInstance");
+//            AdvertiseDelegate delegate = (AdvertiseDelegate) method.invoke(null);
+//            delegates.add(delegate);
+//            delegate.init(application);
+//        } catch (Exception e) {
+//            Log.e(TAG, "Adcolony is disable");
+//        }
     }
 
     @Override

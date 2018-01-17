@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,6 +29,7 @@ public class SystemUtil {
     private static KProgressHUD hud;
 
     private static SystemUtil instance = new SystemUtil();
+
     public static SystemUtil getInstance() { return instance; }
 
     public static void setApplication(Application application) {

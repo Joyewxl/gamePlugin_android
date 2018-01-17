@@ -18,6 +18,8 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import java.lang.reflect.Method;
+
 /**
  * Created by gaoyang on 9/29/16.
  */
@@ -26,6 +28,11 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     private static final String TAG = "FLAnalyticHelper";
 
     private static AMAdvertiseHelper instance = new AMAdvertiseHelper();
+    public static AMAdvertiseHelper getInstance() {
+        return instance;
+    }
+
+    private AMAdvertiseHelper() {}
 
     private String testDeviceId = null;
     private AdView bannerAd = null;
@@ -34,11 +41,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     private boolean interstitialAdClicked = false;
     private InterstitialAdListener interstitialAdListener = null;
 
-    public static AMAdvertiseHelper getInstance() {
-        return instance;
-    }
 
-    private AMAdvertiseHelper() {}
 
     @Override
     public int showBannerAd(boolean protrait, boolean bottom, BannerAdListener listener) {
@@ -89,6 +92,17 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void init(Application application) {
+
+        try {
+            Class clazz = Class.forName("com.joycastle.advertise.admob.adapter.vungle");
+            Method getInstanceMethod = clazz.getMethod("getInstance");
+            Object instance = getInstanceMethod.invoke(null);
+            Method method = clazz.getMethod("onBuild");
+            Object resObject = method.invoke(instance, "DEFAULT98364","REWARDE91320");
+        } catch (Exception e) {
+            Log.e(TAG, "vungle is disable");
+        }
+
         Log.i(TAG, "Admob installed");
     }
 
