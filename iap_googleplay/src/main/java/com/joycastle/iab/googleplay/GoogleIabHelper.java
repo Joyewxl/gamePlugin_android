@@ -9,12 +9,16 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.joycastle.gamepluginbase.IabDelegate;
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.iab.googleplay.util.IabBroadcastReceiver;
 import com.joycastle.iab.googleplay.util.IabHelper;
 import com.joycastle.iab.googleplay.util.IabResult;
 import com.joycastle.iab.googleplay.util.Inventory;
 import com.joycastle.iab.googleplay.util.Purchase;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -108,7 +112,8 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
     }
 
     @Override
-    public void purchase(String iapId, String payLoad, final PurchaseDelegate delegate) {
+    public void purchase(String iapId, String payLoad, final InvokeJavaMethodDelegate delegate) {
+        System.out.print("purchase");
         try {
             mHelper.launchPurchaseFlow(SystemUtil.activity, iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
@@ -123,7 +128,14 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
                                 boolean iapResult = result.isSuccess();
                                 String iapId = purchase.getSku();
                                 String payload = purchase.getDeveloperPayload();
-                                delegate.onResult(iapResult, payload);
+                                JSONObject respData =  new JSONObject();
+                                try {
+                                    respData.put("result",iapResult);
+                                    respData.put("payload",payload);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                delegate.onFinish(respData);
                             }
                         });
                     } catch (IabHelper.IabAsyncInProgressException e) {
@@ -187,5 +199,10 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
         } catch (IabHelper.IabAsyncInProgressException e) {
             Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
         }
+    }
+
+    @Override
+    public void onFinish(JSONObject resObject) {
+
     }
 }

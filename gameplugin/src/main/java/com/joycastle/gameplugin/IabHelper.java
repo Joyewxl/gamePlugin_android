@@ -7,6 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.joycastle.gamepluginbase.IabDelegate;
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
+
+import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -98,9 +101,16 @@ public class IabHelper implements IabDelegate {
     }
 
     @Override
-    public void purchase(String iapId, String payLoad, PurchaseDelegate delegate) {
+    public void purchase(String iapId, String payLoad, InvokeJavaMethodDelegate delegate) {
         for (IabDelegate iabDelegate : delegates) {
             iabDelegate.purchase(iapId, payLoad, delegate);
+        }
+    }
+
+    @Override
+    public void onFinish(JSONObject resObject) {
+        for (IabDelegate delegate : delegates) {
+            delegate.onFinish(resObject);
         }
     }
 }

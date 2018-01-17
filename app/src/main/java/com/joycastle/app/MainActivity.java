@@ -19,6 +19,7 @@ import com.joycastle.gameplugin.IabHelper;
 import com.joycastle.gameplugin.NativeUtil;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.IabDelegate;
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
 import org.json.JSONException;
@@ -74,7 +75,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 map.put("userId", "001");
                 map.put("gender", "female");
                 map.put("age", "10");
-                AnalyticHelper.getInstance().setAccoutInfo(map);
+//                AnalyticHelper.getInstance().setAccoutInfo(map);
+                ArrayList<String> arr = new ArrayList<String>();
+                arr.add(map.toString());
+                Log.e(TAG, "onClick: "+arr.toString() );
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AnalyticHelper","setAccoutInfo",arr.toString(),-1);
             }
         });
 
@@ -354,10 +359,17 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("purchase", new OnClickListener() {
             @Override
             public void onClick() {
-                IabHelper.getInstance().purchase("managed_product", "user_001", new IabDelegate.PurchaseDelegate() {
+//                IabHelper.getInstance().purchase("managed_product", "user_001", new IabDelegate.PurchaseDelegate() {
+//                    @Override
+//                    public void onResult(boolean result, String message) {
+//                        showAlert(result+"\n"+message);
+//                    }
+//                });
+
+                IabHelper.getInstance().purchase("managed_product", "user_001", new InvokeJavaMethodDelegate() {
                     @Override
-                    public void onResult(boolean result, String message) {
-                        showAlert(result+"\n"+message);
+                    public void onFinish(JSONObject resObject) {
+                        showAlert("");
                     }
                 });
             }
