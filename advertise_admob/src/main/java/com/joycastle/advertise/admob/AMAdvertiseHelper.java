@@ -88,7 +88,8 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 //        Log.i(TAG, "didn't support");
         if(!isLoadAD)
         {
-            requestNewInterstitial();
+            interstitialAdListener = listener;
+            this.requestNewInterstitial();
         }
         interstitialAd.show();
         return isLoadAD;
