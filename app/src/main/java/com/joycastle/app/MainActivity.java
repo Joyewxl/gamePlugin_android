@@ -341,9 +341,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("isVideoAdReady", new OnClickListener() {
             @Override
             public void onClick() {
-//                boolean result = AdvertiseHelper.getInstance().isVideoAdReady();
-//                Log.e(TAG, "isVideoAdReady: "+result);
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isVideoAdReady","{}",-1);
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                try {
+                    reqData.put("json", json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isVideoAdReady",reqData.toString(),-1);
             }
         });
 
@@ -362,8 +367,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                    }
 //                });
 //                showToast("showVideoAd: "+result);
-
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showVideoAd","{}",-1);
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                try {
+                    reqData.put("json", json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showVideoAd",reqData.toString(),0);
             }
         });
         IabHelper.getInstance().setRestoreHandler(new IabDelegate.RestoreDelegate() {

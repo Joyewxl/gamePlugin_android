@@ -165,7 +165,8 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
             public void onAdClosed() {
                 super.onAdClosed();
                 requestNewInterstitial();
-                interstitialAdListener.onResult(interstitialAdClicked);
+                if(interstitialAdListener!=null)
+                    interstitialAdListener.onResult(interstitialAdClicked);
             }
 
             @Override
