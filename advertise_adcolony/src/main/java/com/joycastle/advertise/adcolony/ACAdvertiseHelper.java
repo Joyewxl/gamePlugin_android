@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.adcolony.sdk.*;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
 /**
@@ -65,7 +66,7 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public boolean showVideoAd(VideoAdListener listener) {
+    public boolean showVideoAd(InvokeJavaMethodDelegate listener) {
         Log.i(TAG, "Adcolony showVideoAd");
         if(!isLoadAD)
         {

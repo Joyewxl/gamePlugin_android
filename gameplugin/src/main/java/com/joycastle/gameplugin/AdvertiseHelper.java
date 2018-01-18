@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public boolean showVideoAd(VideoAdListener listener) {
+    public boolean showVideoAd(InvokeJavaMethodDelegate listener) {
         boolean result = false;
         for (AdvertiseDelegate delegate : delegates) {
             result = delegate.showVideoAd(listener);

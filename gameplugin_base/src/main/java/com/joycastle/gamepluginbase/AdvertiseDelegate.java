@@ -54,7 +54,7 @@ public interface AdvertiseDelegate extends LifeCycleDelegate {
      * @param listener
      * @return
      */
-    boolean showVideoAd(VideoAdListener listener);
+    boolean showVideoAd(InvokeJavaMethodDelegate listener);
 
     /**
      * 名称
