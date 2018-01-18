@@ -75,13 +75,13 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public boolean isVideoAdReady() {
-        Log.i(TAG, "didn't support");
-        return false;
+//        Log.i(TAG, "didn't support");
+        return isLoadAD;
     }
 
     @Override
     public boolean showVideoAd(VideoAdListener listener) {
-        Log.i(TAG, "didn't support");
+//        Log.i(TAG, "didn't support");
         if(!isLoadAD)
         {
             requestNewInterstitial();
