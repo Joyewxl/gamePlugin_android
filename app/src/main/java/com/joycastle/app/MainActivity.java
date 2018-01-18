@@ -326,13 +326,22 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("showInterstitialAd", new OnClickListener() {
             @Override
             public void onClick() {
-                boolean result = AdvertiseHelper.getInstance().showInterstitialAd(new AdvertiseDelegate.InterstitialAdListener() {
-                    @Override
-                    public void onResult(boolean result) {
-                        Log.e(TAG, "InterstitialAd Clicked: "+result);
-                    }
-                });
-                Log.e(TAG, "showInterstitialAd: "+result);
+//                boolean result = AdvertiseHelper.getInstance().showInterstitialAd(new AdvertiseDelegate.InterstitialAdListener() {
+//                    @Override
+//                    public void onResult(boolean result) {
+//                        Log.e(TAG, "InterstitialAd Clicked: "+result);
+//                    }
+//                });
+//                Log.e(TAG, "showInterstitialAd: "+result);
+
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                try {
+                    reqData.put("json", json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showInterstitialAd",reqData.toString(),0);
             }
         });
 

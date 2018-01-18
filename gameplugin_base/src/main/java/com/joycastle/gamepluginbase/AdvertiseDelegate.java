@@ -41,7 +41,7 @@ public interface AdvertiseDelegate extends LifeCycleDelegate {
      * @param listener
      * @return
      */
-    boolean showInterstitialAd(InterstitialAdListener listener);
+    boolean showInterstitialAd(InvokeJavaMethodDelegate listener);
 
     /**
      * 视频广告准备就绪

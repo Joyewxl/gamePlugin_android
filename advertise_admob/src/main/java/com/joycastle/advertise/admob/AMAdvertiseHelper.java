@@ -19,6 +19,9 @@ import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.reflect.Method;
 
 /**
@@ -40,7 +43,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     private InterstitialAd interstitialAd;
     private BannerAdListener bannerAdListener = null;
     private boolean interstitialAdClicked = false;
-    private InterstitialAdListener interstitialAdListener = null;
+    private InvokeJavaMethodDelegate interstitialAdListener = null;
 
 
 
@@ -65,7 +68,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public boolean showInterstitialAd(InterstitialAdListener listener) {
+    public boolean showInterstitialAd(InvokeJavaMethodDelegate listener) {
         if (this.isInterstitialAdReady()) {
             interstitialAd.show();
             interstitialAdListener = listener;
@@ -165,10 +168,14 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
             public void onAdClosed() {
                 super.onAdClosed();
                 requestNewInterstitial();
-                if(interstitialAdListener!=null)
-                    interstitialAdListener.onResult(interstitialAdClicked);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("click", interstitialAdClicked);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                interstitialAdListener.onFinish(jsonObject);
             }
-
             @Override
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);

@@ -52,9 +52,8 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public boolean showInterstitialAd(InterstitialAdListener listener) {
-        Log.i(TAG, "didn't support");
-
+    public boolean showInterstitialAd(InvokeJavaMethodDelegate listener) {
+//        Log.i(TAG, "didn't support");
         ad.show();
         return true;
     }

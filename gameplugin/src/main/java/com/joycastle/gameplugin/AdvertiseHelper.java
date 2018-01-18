@@ -58,7 +58,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public boolean showInterstitialAd(InterstitialAdListener listener) {
+    public boolean showInterstitialAd(InvokeJavaMethodDelegate listener) {
         boolean result = false;
         for (AdvertiseDelegate delegate : delegates) {
             result = delegate.showInterstitialAd(listener);
