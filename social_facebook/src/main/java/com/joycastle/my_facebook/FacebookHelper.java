@@ -56,7 +56,7 @@ public class FacebookHelper implements LifeCycleDelegate {
 
     private static final String TAG = "facebook";
     private Activity activity;
-    private OnLoginListener loginListener;
+    private InvokeJavaMethodDelegate loginListener;
     private CallbackManager callbackManager;
     private String userName;
     private static FacebookHelper instance = new FacebookHelper();
@@ -66,8 +66,8 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
     private FacebookHelper() {}
 
-    public void setLoginListener(OnLoginListener loginListener) {
-        this.loginListener = loginListener;
+    public void setLoginListener(InvokeJavaMethodDelegate delegate) {
+        this.loginListener = delegate;
     }
 
     public JSONObject isLogin(JSONObject jsonObject) throws JSONException {
@@ -249,7 +249,16 @@ public class FacebookHelper implements LifeCycleDelegate {
                 String accessToken = AccessToken.getCurrentAccessToken().getToken();
                 Log.e(TAG, "userId = "+userId+", accessToken = "+accessToken);
                 if (null != FacebookHelper.this.loginListener)
-                    FacebookHelper.this.loginListener.onLogin(userId, accessToken);
+                {
+                    JSONObject resqData = new JSONObject();
+                    try {
+                        resqData.put("userId",userId);
+                        resqData.put("accessToken",accessToken);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    FacebookHelper.this.loginListener.onFinish(resqData);
+                }
             }
 
             @Override
