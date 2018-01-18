@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  */
 
 public class AMAdvertiseHelper implements AdvertiseDelegate {
-    private static final String TAG = "FLAnalyticHelper";
+    private static final String TAG = "AMAdvertiseHelper";
 
     private static AMAdvertiseHelper instance = new AMAdvertiseHelper();
     public static AMAdvertiseHelper getInstance() {
@@ -33,7 +33,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     }
 
     private AMAdvertiseHelper() {}
-
+    private Boolean isLoadAD = false;
     private String testDeviceId = null;
     private AdView bannerAd = null;
     private InterstitialAd interstitialAd;
@@ -82,7 +82,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     @Override
     public boolean showVideoAd(VideoAdListener listener) {
         Log.i(TAG, "didn't support");
-        return false;
+        if(!isLoadAD)
+        {
+            requestNewInterstitial();
+        }
+        interstitialAd.show();
+        return isLoadAD;
     }
 
     @Override
@@ -166,6 +171,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);
                 requestNewInterstitial();
+                isLoadAD = true;
             }
 
             @Override
