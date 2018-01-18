@@ -116,7 +116,8 @@ public class FacebookHelper implements LifeCycleDelegate {
             return jobj;
         }
         Log.e(TAG, "getAccessToken: "+AccessToken.getCurrentAccessToken().getToken() );
-        jobj.put("token",AccessToken.getCurrentAccessToken().getToken());
+//        jobj.put("token",AccessToken.getCurrentAccessToken().getToken());
+        jobj.put("token","AccessToken.getCurrentAccessToken().getToken()");
         return jobj;
     }
 
