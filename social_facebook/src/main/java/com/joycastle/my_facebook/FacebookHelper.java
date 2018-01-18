@@ -35,6 +35,7 @@ import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -116,8 +117,7 @@ public class FacebookHelper implements LifeCycleDelegate {
             return jobj;
         }
         Log.e(TAG, "getAccessToken: "+AccessToken.getCurrentAccessToken().getToken() );
-//        jobj.put("token",AccessToken.getCurrentAccessToken().getToken());
-        jobj.put("token","EAAFlKjLxCvoBADCXFAR3vTZAHyRZCMK7AVwGkIZBtDZBnsyyZC4BQCn5c5bUgwM2bpEVTK1X0Jy1KTDnT3D0lkm1SPyZAiheZBhzHVZCGCZCO7S7NLI937bl9piisWcVdxyl3kZAeI2s4YZA0HdlySY8u5ZAVxggqdFqu27T3tlm0aPADgZDZD");
+        jobj.put("token",new JSONArray().put(AccessToken.getCurrentAccessToken().getToken()));
         return jobj;
     }
 
