@@ -30,7 +30,6 @@ dependencies {
     })
     compile 'com.adcolony:sdk:3.1.2'
 
-    compile 'com.android.support:appcompat-v7:22.2.1'
     testCompile 'junit:junit:4.12'
     compile project(path: ':gameplugin_base')
     compile 'com.google.android.gms:play-services:9.6.1'

@@ -9,6 +9,7 @@
         android:supportsRtl="true">
         <meta-data android:name="banner_ad_unit_id" android:value="@string/banner_ad_unit_id"/>
         <meta-data android:name="interstitial_ad_unit_id" android:value="@string/interstitial_ad_unit_id"/>
+        <meta-data android:name="video_ad_unit_id" android:value="@string/video_ad_unit_id"/>
         <meta-data android:name="admob_test_device_id" android:value="@string/admob_test_device_id"/>
         <!--This meta-data tag is required to use Google Play Services.-->
         <meta-data android:name="com.google.android.gms.version" android:value="@integer/google_play_services_version"/>

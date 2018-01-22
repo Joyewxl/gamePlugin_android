@@ -21,6 +21,7 @@ import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
+import com.joycastle.my_facebook.FacebookHelper;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -210,12 +211,51 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
+        hashMap.put("inviteFBFriend", new OnClickListener() {
+
+            @Override
+            public void onClick() {
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                JSONObject jso = new JSONObject();
+                try {
+                    json.put(jso);
+                    json.put("blackjack");
+                    json.put("blackjack");
+                    reqData.put("json", json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.print("request json : "+reqData.toString());
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","confirmRequest",reqData.toString(),1);
+
+//                FacebookHelper.getInstance().confirmRequest(reqData, "black", "black", new InvokeJavaMethodDelegate() {
+//                    @Override
+//                    public void onFinish(JSONObject resObject) {
+//
+//                    }
+//                });
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
         hashMap.put("facebooklogin", new OnClickListener() {
 
             @Override
             public void onClick() {
 //                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","[]",1);
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                JSONObject jso = new JSONObject();
+                try {
+                    json.put(jso);
+                    reqData.put("json", json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.print("request json : "+reqData.toString());
+                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","login",reqData.toString(),-1);
             }
         });
 

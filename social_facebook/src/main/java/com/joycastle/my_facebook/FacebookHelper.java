@@ -21,6 +21,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.share.ShareApi;
 import com.facebook.share.Sharer;
+import com.facebook.share.model.GameRequestContent;
 import com.facebook.share.model.ShareContent;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.ShareOpenGraphAction;
@@ -30,6 +31,7 @@ import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.model.ShareVideo;
 import com.facebook.share.model.ShareVideoContent;
+import com.facebook.share.widget.GameRequestDialog;
 import com.facebook.share.widget.ShareDialog;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
@@ -60,6 +62,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     private CallbackManager callbackManager;
     private String userName;
     private static FacebookHelper instance = new FacebookHelper();
+    private GameRequestDialog requestDialog;
 
     public static FacebookHelper getInstance() {
         return instance;
@@ -143,6 +146,40 @@ public class FacebookHelper implements LifeCycleDelegate {
         userP.put("name",userName);
 
         return userP.toString();
+    }
+
+    public void confirmRequest(JSONObject fidOrTokens,String title,String msg,InvokeJavaMethodDelegate delegate){
+        requestDialog = new GameRequestDialog(SystemUtil.activity);
+        final InvokeJavaMethodDelegate tdelegate = delegate;
+        requestDialog.registerCallback(callbackManager,
+                new FacebookCallback<GameRequestDialog.Result>() {
+                    public void onSuccess(GameRequestDialog.Result result) {
+                        List<String> res = result.getRequestRecipients();
+                        JSONArray jsonArr = new JSONArray();
+                        for (String id:res) {
+                            jsonArr.put(id);
+                        }
+                        JSONObject respData = new JSONObject();
+                        try {
+                            respData.put("json",jsonArr);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        tdelegate.onFinish(respData);
+                    }
+                    public void onCancel() {
+
+                    }
+                    public void onError(FacebookException error) {
+
+                    }
+                }
+        );
+
+        GameRequestContent content = new GameRequestContent.Builder()
+                .setMessage(msg)
+                .build();
+        requestDialog.show(content);
     }
 
     /**

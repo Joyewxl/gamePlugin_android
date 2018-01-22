@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">GamePlugin</string>
     <string name="Flurry_AppKey">1111111111111111111111</string>
-    <string name="banner_ad_unit_id">ca-app-pub-9274282740568260/4259450900</string>
-    <string name="interstitial_ad_unit_id">ca-app-pub-9274282740568260/3965072900</string>
-    <string name="admob_test_device_id">43EDC6D96834B689D5D0AAF8CFF44CCB</string>
+    <string name="banner_ad_unit_id">ca-app-pub-9274282740568260/5352356909</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-9274282740568260/6829090107</string>
+    <string name="video_ad_unit_id">ca-app-pub-9274282740568260/9643760818</string>
+    <string name="admob_test_device_id">C52A22452189C273CB9C321D8B840BEC</string>
+    <string name="vungle_spot_id">DEFAULT98364</string>
+    <string name="vungle_video_id">REWARDE91320</string>
 </resources>
