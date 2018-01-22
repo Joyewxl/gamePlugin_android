@@ -103,7 +103,9 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
         {
             this.requestNewVideo();
         }
-        mRewardedVideoAd.show();
+        if(mRewardedVideoAd.isLoaded()) {
+            mRewardedVideoAd.show();
+        }
         return isLoadAD;
     }
 
@@ -149,7 +151,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
         AdRequest adRequest = new AdRequest.Builder()
                 .addTestDevice(testDeviceId)
                 .build();
-        String videoId =  SystemUtil.getMetaData(SystemUtil.activity, "video_ad_unit_id");
+        String videoId = SystemUtil.getMetaData(SystemUtil.activity, "video_ad_unit_id");
         mRewardedVideoAd.loadAd(videoId,adRequest);
     }
 
