@@ -98,15 +98,14 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public boolean showVideoAd(InvokeJavaMethodDelegate listener) {
-//        Log.i(TAG, "didn't support");
-        if(!isLoadAD)
-        {
+//       Log.i(TAG, "didn't support");
+        boolean isLoaded = mRewardedVideoAd.isLoaded();
+        if(isLoaded) {
+            mRewardedVideoAd.show();
+        }else{
             this.requestNewVideo();
         }
-        if(mRewardedVideoAd.isLoaded()) {
-            mRewardedVideoAd.show();
-        }
-        return isLoadAD;
+        return isLoaded;
     }
 
     @Override
