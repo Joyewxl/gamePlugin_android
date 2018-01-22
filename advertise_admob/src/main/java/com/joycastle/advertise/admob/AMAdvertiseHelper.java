@@ -49,8 +49,8 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     private String testDeviceId = null;
 
     private AdView bannerAd = null;
-    private InterstitialAd interstitialAd;
-    private RewardedVideoAd mRewardedVideoAd;
+    private InterstitialAd interstitialAd = null;
+    private RewardedVideoAd mRewardedVideoAd = null;
     private BannerAdListener bannerAdListener = null;
     private boolean interstitialAdClicked = false;
     private InvokeJavaMethodDelegate interstitialAdListener = null;
@@ -99,6 +99,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     @Override
     public boolean showVideoAd(InvokeJavaMethodDelegate listener) {
 //       Log.i(TAG, "didn't support");
+        if (mRewardedVideoAd == null) return false;
         boolean isLoaded = mRewardedVideoAd.isLoaded();
         if(isLoaded) {
             mRewardedVideoAd.show();
