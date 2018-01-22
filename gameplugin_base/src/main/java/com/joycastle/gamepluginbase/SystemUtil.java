@@ -74,12 +74,24 @@ public class SystemUtil {
         }
     }
 
-    public static String getBundleId() {
-        return "";
+    public JSONObject getBundleId() {
+        JSONObject respData = new JSONObject();
+        try {
+            respData.put("bundleId","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return respData;
     }
 
-    public static String getAppName() {
-        return "";
+    public JSONObject getAppName() {
+        JSONObject respData = new JSONObject();
+        try {
+            respData.put("appName","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return respData;
     }
 
     public static int getAppVersion() {
@@ -93,24 +105,54 @@ public class SystemUtil {
         return versionCode;
     }
 
-    public static String getCountryCode() {
-        return "";
+    public JSONObject getCountryCode() {
+        JSONObject respData = new JSONObject();
+        try {
+            respData.put("countryCode","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return respData;
     }
 
-    public static String getLanguageCode() {
-        return "";
+    public JSONObject getLanguageCode() {
+        JSONObject respData = new JSONObject();
+        try {
+            respData.put("languageCode","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return respData;
     }
 
-    public static String getDeviceName() {
-        return "";
+    public JSONObject getDeviceName() {
+        JSONObject respData = new JSONObject();
+        try {
+            respData.put("deviceName","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return respData;
     }
 
-    public static String getSystemVersion() {
-        return "";
+    public JSONObject getSystemVersion() {
+        JSONObject respData = new JSONObject();
+        try {
+            respData.put("systemVersion","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return respData;
     }
 
-    public static String getNetworkState() {
-        return "";
+    public JSONObject getNetworkState() {
+        JSONObject respData = new JSONObject();
+        try {
+            respData.put("networkState","");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return respData;
     }
 
     public static void showAlertDialog(JSONObject json, InvokeJavaMethodDelegate delegate) {
