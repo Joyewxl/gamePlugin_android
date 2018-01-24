@@ -271,12 +271,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void onResume(Activity activity) {
-        mRewardedVideoAd.resume(activity);
+//        mRewardedVideoAd.resume(activity);
     }
 
     @Override
     public void onPause(Activity activity) {
-        mRewardedVideoAd.pause(activity);
+//        mRewardedVideoAd.pause(activity);
     }
 
     @Override
@@ -286,7 +286,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void onDestroy(Activity activity) {
-        mRewardedVideoAd.destroy(activity);
+//        mRewardedVideoAd.destroy(activity);
     }
 
     @Override
