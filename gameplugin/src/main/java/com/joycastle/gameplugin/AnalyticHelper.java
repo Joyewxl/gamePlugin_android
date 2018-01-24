@@ -68,28 +68,28 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void charge(String iapId, Double cash, Double coin, Integer channal){
+    public void charge(String iapId, String cash, String coin, Integer channal){
         for (AnalyticDelegate delegate : delegates) {
             delegate.charge(iapId, cash, coin, channal);
         }
     }
 
     @Override
-    public void reward(Double coin, Integer reason){
+    public void reward(String coin, Integer reason){
         for (AnalyticDelegate delegate : delegates) {
             delegate.reward(coin, reason);
         }
     }
 
     @Override
-    public void purchase(String good, Integer amount, Double coin){
+    public void purchase(String good, Integer amount, String coin){
         for (AnalyticDelegate delegate : delegates) {
             delegate.purchase(good, amount, coin);
         }
     }
 
     @Override
-    public void use(String good, Integer amount, Double coin){
+    public void use(String good, Integer amount, String coin){
         for (AnalyticDelegate delegate : delegates) {
             delegate.use(good, amount, coin);
         }

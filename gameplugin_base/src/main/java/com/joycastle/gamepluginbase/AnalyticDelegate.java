@@ -48,14 +48,14 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param coin
      * @param channal
      */
-    public void charge(String iapId, Double cash, Double coin, Integer channal);
+    public void charge(String iapId, String cash, String coin, Integer channal);
 
     /**
      * 奖励
      * @param coin
      * @param reason
      */
-    public void reward(Double coin, Integer reason);
+    public void reward(String coin, Integer reason);
 
     /**
      * 购买
@@ -63,7 +63,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void purchase(String good, Integer amount, Double coin);
+    public void purchase(String good, Integer amount, String coin);
 
     /**
      * 使用
@@ -71,7 +71,7 @@ public interface AnalyticDelegate extends LifeCycleDelegate {
      * @param amount
      * @param coin
      */
-    public void use(String good, Integer amount, Double coin);
+    public void use(String good, Integer amount, String coin);
 
     /**
      * 开始任务

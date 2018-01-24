@@ -106,13 +106,13 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void charge(String iapId, Double cash, Double coin, Integer channal){
+    public void charge(String iapId, String cash, String coin, Integer channal){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
         try {
             eventData.put("name", iapId);
-            eventData.put("cash", String.valueOf(cash.doubleValue()));
-            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            eventData.put("cash", cash);
+            eventData.put("coin", coin);
             eventData.put("channal", String.valueOf(channal.intValue()));
             this.onEvent("charge", eventData);
         } catch (Exception e) {
@@ -122,11 +122,11 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void reward(Double coin, Integer reason){
+    public void reward(String coin, Integer reason){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
         try {
-            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            eventData.put("coin", coin);
             eventData.put("reason", String.valueOf(reason.intValue()));
             this.onEvent("reward", eventData);
         } catch (Exception e) {
@@ -136,13 +136,13 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void purchase(String good, Integer amount, Double coin){
+    public void purchase(String good, Integer amount, String coin){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
         try {
             eventData.put("name", good);
             eventData.put("amount", String.valueOf(amount.intValue()));
-            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            eventData.put("coin", coin);
             this.onEvent("purchase", eventData);
         } catch (Exception e) {
             e.printStackTrace();
@@ -150,13 +150,13 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     }
 
     @Override
-    public void use(String good, Integer amount, Double coin){
+    public void use(String good, Integer amount, String coin){
 //        Map<String, Object> eventData = new HashMap<>();
         JSONObject eventData = new JSONObject();
         try {
             eventData.put("name", good);
             eventData.put("amount", String.valueOf(amount.intValue()));
-            eventData.put("coin", String.valueOf(coin.doubleValue()));
+            eventData.put("coin", coin);
             this.onEvent("use", eventData);
         } catch (Exception e) {
             e.printStackTrace();
