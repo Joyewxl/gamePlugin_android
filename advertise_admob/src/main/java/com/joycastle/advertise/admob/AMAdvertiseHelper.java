@@ -78,7 +78,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public boolean isInterstitialAdReady() {
-        return interstitialAd.isLoaded();
+        return isLoadAD;
     }
 
     @Override
@@ -259,6 +259,11 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
             public void onAdOpened() {
                 super.onAdOpened();
                 interstitialAdClicked = false;
+            }
+            @Override
+            public void onAdLoaded() {
+                super.onAdOpened();
+                isLoadAD = true;
             }
         });
         requestNewInterstitial();
