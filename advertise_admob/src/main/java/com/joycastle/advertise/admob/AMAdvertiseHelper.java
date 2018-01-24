@@ -46,6 +46,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     private AMAdvertiseHelper() {}
     private Boolean isLoadAD = false;
+    private Boolean isLoadVideoAD = false;
     private String testDeviceId = null;
 
     private AdView bannerAd = null;
@@ -100,13 +101,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     public boolean showVideoAd(InvokeJavaMethodDelegate listener) {
 //       Log.i(TAG, "didn't support");
         if (mRewardedVideoAd == null) return false;
-        boolean isLoaded = mRewardedVideoAd.isLoaded();
-        if(isLoaded) {
+        if(isLoadVideoAD) {
             mRewardedVideoAd.show();
         }else{
             this.requestNewVideo();
         }
-        return isLoaded;
+        return isLoadVideoAD;
     }
 
     @Override
@@ -191,7 +191,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
         mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
-                isLoadAD = true;
+                isLoadVideoAD = true;
             }
 
             @Override
