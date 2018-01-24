@@ -34,30 +34,32 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void setAccoutInfo(JSONObject map){
-        String userId = null;
-        String gender = null;
-        String age = null;
-        try {
-            userId = map.getString("userId");
-            gender = map.getString("gender");
-            age = map.getString("age");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (userId != null) {
-            FlurryAgent.setUserId(userId);
-        }
-        if (gender != null) {
-            if (gender.equals("male")) {
-                FlurryAgent.setGender(Constants.MALE);
-            } else if (gender.equals("female")) {
-                FlurryAgent.setGender(Constants.FEMALE);
-            }
-        }
-        if (age != null) {
-            FlurryAgent.setAge(Integer.parseInt(age));
-        }
+//        String userId = null;
+//        String gender = null;
+//        String age = null;
+//        String accountName = null;
+//        try {
+//            userId = map.getString("userId");
+////            gender = map.getString("gender");
+////            age = map.getString("age");
+//            accountName = map.getString("accountName");
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        if (userId != null) {
+//            FlurryAgent.setUserId(userId);
+//        }
+//        if (gender != null) {
+//            if (gender.equals("male")) {
+//                FlurryAgent.setGender(Constants.MALE);
+//            } else if (gender.equals("female")) {
+//                FlurryAgent.setGender(Constants.FEMALE);
+//            }
+//        }
+//        if (age != null) {
+//            FlurryAgent.setAge(Integer.parseInt(age));
+//        }
     }
 
     @Override
