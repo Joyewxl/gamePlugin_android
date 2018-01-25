@@ -125,11 +125,8 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
 
     public String getUserProfile(InvokeJavaMethodDelegate delegate) throws JSONException {
-       
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-
         final InvokeJavaMethodDelegate tdelegate = delegate;
-
         GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
             @Override
             public void onCompleted(JSONObject object, GraphResponse response) {
@@ -140,11 +137,9 @@ public class FacebookHelper implements LifeCycleDelegate {
                 }
             }
         }).executeAsync();
-
         JSONObject userP = new JSONObject();
 //        userP.put("id",getUserId(null));
 //        userP.put("name",userName);
-
         return userP.toString();
     }
 
