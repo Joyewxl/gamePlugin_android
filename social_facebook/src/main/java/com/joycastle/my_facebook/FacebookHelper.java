@@ -142,8 +142,8 @@ public class FacebookHelper implements LifeCycleDelegate {
         }).executeAsync();
 
         JSONObject userP = new JSONObject();
-        userP.put("id",getUserId(null));
-        userP.put("name",userName);
+//        userP.put("id",getUserId(null));
+//        userP.put("name",userName);
 
         return userP.toString();
     }
