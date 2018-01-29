@@ -55,6 +55,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     private BannerAdListener bannerAdListener = null;
     private boolean interstitialAdClicked = false;
     private InvokeJavaMethodDelegate interstitialAdListener = null;
+    private InvokeJavaMethodDelegate rewardAdListener = null;
 
     public void setVungle(Class clazz , Bundle extras){
         vungleClass = clazz;
@@ -102,6 +103,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 //       Log.i(TAG, "didn't support");
         if (mRewardedVideoAd == null) return false;
         if(isLoadVideoAD) {
+            rewardAdListener = listener;
             SystemUtil.activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -206,11 +208,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
             @Override
             public void onRewardedVideoAdOpened() {
                 isLoadVideoAD = false;
+                Log.e(TAG, "onRewardedVideoAdOpened: ");
             }
 
             @Override
             public void onRewardedVideoStarted() {
-
+                Log.e(TAG, "onRewardedVideoStarted: ");
             }
 
             @Override
@@ -220,12 +223,27 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
             @Override
             public void onRewarded(RewardItem rewardItem) {
-
+                Log.e(TAG, "onRewarded: ");
+                JSONObject respData = new JSONObject();
+                try {
+                    respData.put("reward",true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                rewardAdListener.onFinish(respData);
             }
 
             @Override
             public void onRewardedVideoAdLeftApplication() {
+                Log.e(TAG, "onRewardedVideoAdLeftApplication: ");
 
+                JSONObject respData = new JSONObject();
+                try {
+                    respData.put("click",true);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                rewardAdListener.onFinish(respData);
             }
 
             @Override
