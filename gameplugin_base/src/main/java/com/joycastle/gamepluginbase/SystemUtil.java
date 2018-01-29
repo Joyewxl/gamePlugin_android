@@ -2,25 +2,25 @@ package com.joycastle.gamepluginbase;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-
 import com.kaopiz.kprogresshud.KProgressHUD;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
+
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by geekgy on 16/4/23.
@@ -215,28 +215,29 @@ public class SystemUtil {
 
     }
 
-    public static void postNotication(ArrayList<Map<String, Object>> notifications) {
-        Log.e(TAG, "postNotication: "+notifications.toString());
-//        Context mContext = application.getApplicationContext();
-//        // 获取通知服务对象NotificationManager
-//        NotificationManager notiManager = (NotificationManager)activity.getSystemService(mContext.NOTIFICATION_SERVICE);
-//        Notification.Builder builder = new Notification.Builder(mContext);
-////        Intent intent = new Intent(context, MainActivity.class);  //需要跳转指定的页面
-////        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-////        builder.setContentIntent(pendingIntent);
-////        builder.setSmallIcon(R.mipmap.ic_launcher);// 设置图标
-//        builder.setContentTitle("标题");// 设置通知的标题
-//        builder.setContentText("内容");// 设置通知的内容
-//        builder.setWhen(System.currentTimeMillis());// 设置通知来到的时间
-//        builder.setAutoCancel(true); //自己维护通知的消失
-//        builder.setTicker("new message");// 第一次提示消失的时候显示在通知栏上的
-//        builder.setOngoing(true);
-//        builder.setNumber(20);
-//
-//        Notification notification = builder.build();
-//        notification.flags = Notification.FLAG_NO_CLEAR;  //只有全部清除时，Notification才会清除
-//        notiManager.notify(0,notification);
+    //ArrayList<Map<String, Object>> notifications
+    public static void postNotication(JSONObject notifications) {
+        Log.e(TAG, "postNotication: " + notifications.toString());
 
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(activity.getApplicationContext())
+                        .setAutoCancel(true)
+                        .setOngoing(true)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setNumber(0)
+                        .setContentTitle("blackjack")
+                        .setContentText("blackjack")
+                        .setWhen(System.currentTimeMillis());
+
+        Intent resultIntent = new Intent(activity.getApplicationContext(),activity.getClass());
+
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(activity.getApplicationContext(),0, resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+
+        mBuilder.setContentIntent(resultPendingIntent);
+        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(activity.getApplicationContext());
+        mNotificationManager.notify(0, mBuilder.build());
     }
 
     public static void share() {

@@ -102,12 +102,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 //       Log.i(TAG, "didn't support");
         if (mRewardedVideoAd == null) return false;
         if(isLoadVideoAD) {
-            SystemUtil.activity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+//            SystemUtil.activity.runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
                     mRewardedVideoAd.show();
-                }
-            });
+//                }
+//            });
         }else{
             this.requestNewVideo();
         }
@@ -150,8 +150,8 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     }
 
     private void requestNewVideo(){
-        SystemUtil.activity.runOnUiThread(new Runnable() {
-            @Override public void run() {
+//        SystemUtil.activity.runOnUiThread(new Runnable() {
+//            @Override public void run() {
                 AdRequest.Builder builder = new AdRequest.Builder();
                 builder.addTestDevice(testDeviceId);
                 if (vungleClass != null && vungleExtras != null) {
@@ -160,8 +160,8 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
                 AdRequest adRequest = builder.build();
                 String videoId = SystemUtil.getMetaData(SystemUtil.activity, "video_ad_unit_id");
                 mRewardedVideoAd.loadAd(videoId,adRequest);
-            }
-        });
+//            }
+//        });
     }
 
     @Override
