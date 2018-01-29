@@ -205,7 +205,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
             @Override
             public void onRewardedVideoAdOpened() {
-
+                isLoadVideoAD = false;
             }
 
             @Override
@@ -215,7 +215,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
             @Override
             public void onRewardedVideoAdClosed() {
-
+                isLoadVideoAD = false;
             }
 
             @Override
