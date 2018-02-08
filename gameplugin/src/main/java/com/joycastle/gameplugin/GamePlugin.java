@@ -25,7 +25,7 @@ public class GamePlugin implements LifeCycleDelegate {
         SystemUtil.setApplication(application);
         AnalyticHelper.getInstance().init(application);
         AdvertiseHelper.getInstance().init(application);
-//        IabHelper.getInstance().init(application);
+        IabHelper.getInstance().init(application);
         FacebookHelper.getInstance().init(application);
     }
 
