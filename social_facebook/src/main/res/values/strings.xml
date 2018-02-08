@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">BlackJack</string>
-    <string name="facebook_app_id">392706894400250</string>
-    <string name="fb_login_protocol_scheme">fb392706894400250</string>
+    <string name="facebook_app_id"></string>
+    <string name="fb_login_protocol_scheme"></string>
 </resources>
