@@ -92,9 +92,9 @@ public class SystemUtil {
         return appName;
     }
 
-    public int getAppVer(){
+    public String getAppVer(){
         int appVer = getAppVersion();
-        return appVer;
+        return String.valueOf(appVer);
     }
 
     public static int getAppVersion() {
