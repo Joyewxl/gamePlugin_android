@@ -8,11 +8,14 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import com.kaopiz.kprogresshud.KProgressHUD;
 import org.json.JSONException;
@@ -21,6 +24,7 @@ import org.json.JSONObject;
 
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by geekgy on 16/4/23.
@@ -78,24 +82,19 @@ public class SystemUtil {
         }
     }
 
-    public JSONObject getBundleId() {
-        JSONObject respData = new JSONObject();
-        try {
-            respData.put("bundleId","");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return respData;
+    public String getBundleId() {
+        return "v1.0.0";
     }
 
-    public JSONObject getAppName() {
-        JSONObject respData = new JSONObject();
-        try {
-            respData.put("appName","");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return respData;
+    public String getAppName() {
+        PackageManager pm = application.getPackageManager();
+        String appName = application.getApplicationInfo().loadLabel(pm).toString();
+        return appName;
+    }
+
+    public int getAppVer(){
+        int appVer = getAppVersion();
+        return appVer;
     }
 
     public static int getAppVersion() {
@@ -109,57 +108,80 @@ public class SystemUtil {
         return versionCode;
     }
 
-    public JSONObject getCountryCode() {
-        JSONObject respData = new JSONObject();
-        try {
-            respData.put("countryCode","");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return respData;
+    public String getCountryCode() {
+        String countryCode = application.getResources().getConfiguration().locale.getCountry();
+        return countryCode;
     }
 
-    public JSONObject getLanguageCode() {
-        JSONObject respData = new JSONObject();
-        try {
-            respData.put("languageCode","");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return respData;
+    public String getLanguageCode() {
+        String languageCode = application.getResources().getConfiguration().locale.getLanguage();
+        return languageCode;
     }
 
-    public JSONObject getDeviceName() {
-        JSONObject respData = new JSONObject();
-        try {
-            respData.put("deviceName","");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return respData;
+    public String getDeviceName() {
+        String phoneName = android.os.Build.MODEL ;
+        return phoneName;
     }
 
-    public JSONObject getSystemVersion() {
-        JSONObject respData = new JSONObject();
-        try {
-            respData.put("systemVersion","");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return respData;
+    public String getSystemVersion() {
+        String phoneVersion = android.os.Build.VERSION.RELEASE ;
+        return phoneVersion;
     }
 
-    public JSONObject getNetworkState() {
-        JSONObject respData = new JSONObject();
-        try {
-            respData.put("networkState","");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return respData;
+    public String getNetworkState() {
+        String netState = String.valueOf(getAPNType(this.application.getApplicationContext()));
+        return netState;
     }
 
-    public static void showAlertDialog(JSONObject json, InvokeJavaMethodDelegate delegate) {
+    /**
+     * 获取当前的网络状态 ：没有网络-0：WIFI网络1：4G网络-4：3G网络-3：2G网络-2
+     * 自定义
+     *
+     * @param context
+     * @return
+     */
+    public static int getAPNType(Context context) {
+        //结果返回值
+        int netType = 0;
+        //获取手机所有连接管理对象
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        //获取NetworkInfo对象
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        //NetworkInfo对象为空 则代表没有网络
+        if (networkInfo == null) {
+            return netType;
+        }
+        //否则 NetworkInfo对象不为空 则获取该networkInfo的类型
+        int nType = networkInfo.getType();
+        if (nType == ConnectivityManager.TYPE_WIFI) {
+            //WIFI
+            netType = 1;
+        } else if (nType == ConnectivityManager.TYPE_MOBILE) {
+            int nSubType = networkInfo.getSubtype();
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+            //3G   联通的3G为UMTS或HSDPA 电信的3G为EVDO
+            if (nSubType == TelephonyManager.NETWORK_TYPE_LTE
+                    && !telephonyManager.isNetworkRoaming()) {
+                netType = 4;
+            } else if (nSubType == TelephonyManager.NETWORK_TYPE_UMTS
+                    || nSubType == TelephonyManager.NETWORK_TYPE_HSDPA
+                    || nSubType == TelephonyManager.NETWORK_TYPE_EVDO_0
+                    && !telephonyManager.isNetworkRoaming()) {
+                netType = 3;
+                //2G 移动和联通的2G为GPRS或EGDE，电信的2G为CDMA
+            } else if (nSubType == TelephonyManager.NETWORK_TYPE_GPRS
+                    || nSubType == TelephonyManager.NETWORK_TYPE_EDGE
+                    || nSubType == TelephonyManager.NETWORK_TYPE_CDMA
+                    && !telephonyManager.isNetworkRoaming()) {
+                netType = 2;
+            } else {
+                netType = 2;
+            }
+        }
+        return netType;
+    }
+
+    public void showAlertDialog(JSONObject json, InvokeJavaMethodDelegate delegate) {
         Log.e(TAG, "showAlertDialog: "+json);
         try {
             delegate.onFinish(new JSONObject("{}"));
@@ -168,15 +190,15 @@ public class SystemUtil {
         }
     }
 
-    public static void showProgressDialog(String message, int percent) {
+    public  void showProgressDialog(String message, int percent) {
 
     }
 
-    public static void hideProgressDialog() {
+    public  void hideProgressDialog() {
 
     }
 
-    public static void showLoading(String message) {
+    public  void showLoading(String message) {
         if (hud != null) {
             return;
         }
@@ -187,7 +209,7 @@ public class SystemUtil {
                 .show();
     }
 
-    public static void hideLoading() {
+    public  void hideLoading() {
         if (hud == null) {
             return;
         }
@@ -209,6 +231,14 @@ public class SystemUtil {
 
     public static void sendEmail(String subject, ArrayList<String> toRecipients, String emailBody) {
 
+        String[] reciver = new String[] { "wangxiaolong@joycastle.mobi" };
+        Intent myIntent = new Intent(android.content.Intent.ACTION_SEND);
+        myIntent.setType("plain/text");
+//        myIntent.setType("message/rfc822");
+        myIntent.putExtra(android.content.Intent.EXTRA_EMAIL, reciver);
+        myIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
+        myIntent.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
+        activity.startActivity(Intent.createChooser(myIntent, "mail test"));
     }
 
     public static void setNotificationState(boolean enabled) {
@@ -241,11 +271,9 @@ public class SystemUtil {
     }
 
     public static void share() {
-
     }
 
     public static void copyToPasteboard(String str) {
-
     }
 }
 
