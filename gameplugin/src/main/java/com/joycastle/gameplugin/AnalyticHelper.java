@@ -8,12 +8,10 @@ import android.util.Log;
 
 import com.joycastle.gamepluginbase.AnalyticDelegate;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Created by gaoyang on 9/29/16.
