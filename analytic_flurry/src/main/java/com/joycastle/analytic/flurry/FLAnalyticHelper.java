@@ -33,7 +33,7 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     private FLAnalyticHelper() {}
 
     @Override
-    public void setAccoutInfo(JSONObject map){
+    public void setAccoutInfo(HashMap map){
 //        String userId = null;
 //        String gender = null;
 //        String age = null;
@@ -69,101 +69,55 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void onEvent(String eventId, String eventLabel){
-//        Map<String, Object> eventData = new HashMap<>();
-//        eventData.put("default", eventLabel);
-        JSONObject eventData = new JSONObject();
-        try {
-            eventData.put("default",eventLabel);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        HashMap<String, Object> eventData = new HashMap<>();
+        eventData.put("default", eventLabel);
         this.onEvent(eventId, eventData);
     }
 
     @Override
-    public void onEvent(String eventId, JSONObject eventData) {
-        Map<String, String> hashMap = new HashMap<>();
-        Iterator keyIterator = eventData.keys();
-        while(keyIterator.hasNext()){
-            String key = (String) keyIterator.next();
-            Object value = null;
-            try {
-                value = eventData.get(key);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            hashMap.put(key, value.toString());
-        }
-        FlurryAgent.onEvent(eventId, hashMap);
+    public void onEvent(String eventId, HashMap eventData) {
+        FlurryAgent.onEvent(eventId, eventData);
     }
 
     @Override
-    public void setLevel(Integer level){
-        try {
-            this.onEvent("level", String.valueOf(level.intValue())
-            );
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void setLevel(int level){
+        this.onEvent("level", level+"");
     }
 
     @Override
-    public void charge(String iapId, String cash, String coin, Integer channal){
-//        Map<String, Object> eventData = new HashMap<>();
-        JSONObject eventData = new JSONObject();
-        try {
-            eventData.put("name", iapId);
-            eventData.put("cash", cash);
-            eventData.put("coin", coin);
-            eventData.put("channal", String.valueOf(channal.intValue()));
-            this.onEvent("charge", eventData);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    public void charge(String iapId, double cash, double coin, int channal){
+        HashMap<String, String> eventData = new HashMap<>();
+        eventData.put("name", iapId);
+        eventData.put("cash", String.valueOf(cash));
+        eventData.put("coin", String.valueOf(coin));
+        eventData.put("channal", String.valueOf(channal));
+        this.onEvent("charge", eventData);
     }
 
     @Override
-    public void reward(String coin, Integer reason){
-//        Map<String, Object> eventData = new HashMap<>();
-        JSONObject eventData = new JSONObject();
-        try {
-            eventData.put("coin", coin);
-            eventData.put("reason", String.valueOf(reason.intValue()));
-            this.onEvent("reward", eventData);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    public void reward(double coin, int reason){
+        HashMap<String, String> eventData = new HashMap<>();
+        eventData.put("coin", String.valueOf(coin));
+        eventData.put("reason", String.valueOf(reason));
+        this.onEvent("reward", eventData);
     }
 
     @Override
-    public void purchase(String good, Integer amount, String coin){
-//        Map<String, Object> eventData = new HashMap<>();
-        JSONObject eventData = new JSONObject();
-        try {
-            eventData.put("name", good);
-            eventData.put("amount", String.valueOf(amount.intValue()));
-            eventData.put("coin", coin);
-            this.onEvent("purchase", eventData);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void purchase(String good, int amount, double coin){
+        HashMap<String, String> eventData = new HashMap<>();
+        eventData.put("name", good);
+        eventData.put("amount", String.valueOf(amount));
+        eventData.put("coin", String.valueOf(coin));
+        this.onEvent("purchase", eventData);
     }
 
     @Override
-    public void use(String good, Integer amount, String coin){
-//        Map<String, Object> eventData = new HashMap<>();
-        JSONObject eventData = new JSONObject();
-        try {
-            eventData.put("name", good);
-            eventData.put("amount", String.valueOf(amount.intValue()));
-            eventData.put("coin", coin);
-            this.onEvent("use", eventData);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    public void use(String good, int amount, double coin){
+        HashMap<String, String> eventData = new HashMap<>();
+        eventData.put("name", good);
+        eventData.put("amount", String.valueOf(amount));
+        eventData.put("coin", String.valueOf(coin));
+        this.onEvent("use", eventData);
     }
 
     @Override
@@ -184,7 +138,7 @@ public class FLAnalyticHelper implements AnalyticDelegate {
     @Override
     public void init(Application application) {
         Log.i(TAG, "Flurry installed, Version: "+FlurryAgent.getReleaseVersion());
-        String appKey = SystemUtil.getMetaData(application, "Flurry_AppKey");
+        String appKey = SystemUtil.getInstance().getMetaData("Flurry_AppKey");
         Log.i(TAG, "appKey = "+appKey);
         new FlurryAgent.Builder()
                 .withLogEnabled(true)

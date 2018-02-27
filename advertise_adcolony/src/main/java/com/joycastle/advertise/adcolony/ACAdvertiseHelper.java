@@ -21,7 +21,6 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     private static ACAdvertiseHelper instance = new ACAdvertiseHelper();
 
     private String zone_id = null;
-    private VideoAdListener videoAdListener = null;
 
     private Boolean isLoadAD = false;
     private AdColonyInterstitial ad;
@@ -35,7 +34,7 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     private ACAdvertiseHelper() {}
 
     @Override
-    public int showBannerAd(boolean protrait, boolean bottom, BannerAdListener listener) {
+    public int showBannerAd(boolean protrait, boolean bottom) {
         Log.i(TAG, "didn't support");
         return 0;
     }
@@ -88,10 +87,9 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
 
-        String origin_store = SystemUtil.getMetaData(activity, "origin_store");
-        String app_id = SystemUtil.getMetaData(activity, "app_id");
-        zone_id = SystemUtil.getMetaData(activity, "zone_id");
-        String client_options = "version:"+ SystemUtil.getAppVersion()+",store:"+origin_store;
+        String origin_store = SystemUtil.getInstance().getMetaData("origin_store");
+        String app_id = SystemUtil.getInstance().getMetaData("app_id");
+        zone_id = SystemUtil.getInstance().getMetaData("zone_id");
 
         AdColonyUserMetadata metadata = new AdColonyUserMetadata()
                 .setUserAge( 26 )

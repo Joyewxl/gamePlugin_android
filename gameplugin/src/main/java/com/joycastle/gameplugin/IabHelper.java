@@ -106,11 +106,4 @@ public class IabHelper implements IabDelegate {
             iabDelegate.purchase(iapId, payLoad, delegate);
         }
     }
-
-    @Override
-    public void onFinish(JSONObject resObject) {
-        for (IabDelegate delegate : delegates) {
-            delegate.onFinish(resObject);
-        }
-    }
 }

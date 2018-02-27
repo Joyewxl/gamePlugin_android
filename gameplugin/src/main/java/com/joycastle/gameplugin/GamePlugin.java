@@ -14,15 +14,17 @@ import com.joycastle.my_facebook.FacebookHelper;
  * Created by geekgy on 16/5/11.
  */
 public class GamePlugin implements LifeCycleDelegate {
-    public static final String TAG = "GamePlugin";
+    private static final String TAG = "GamePlugin";
 
     private static GamePlugin instance = new GamePlugin();
+
     public static GamePlugin getInstance() { return instance; }
+
     private GamePlugin() {}
 
     @Override
     public void init(Application application) {
-        SystemUtil.setApplication(application);
+        SystemUtil.getInstance().setApplication(application);
         AnalyticHelper.getInstance().init(application);
         AdvertiseHelper.getInstance().init(application);
         IabHelper.getInstance().init(application);
@@ -35,7 +37,7 @@ public class GamePlugin implements LifeCycleDelegate {
         assert(name!=null);
 
         Log.i("GamePlugin","GamePlugin onCreate");
-        SystemUtil.setActivity(activity);
+        SystemUtil.getInstance().setActivity(activity);
         AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
         AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
         IabHelper.getInstance().onCreate(activity, savedInstanceState);

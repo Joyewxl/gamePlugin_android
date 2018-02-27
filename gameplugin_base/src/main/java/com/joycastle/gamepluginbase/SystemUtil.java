@@ -2,12 +2,14 @@ package com.joycastle.gamepluginbase;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -28,7 +30,6 @@ import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -36,6 +37,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -43,46 +45,53 @@ import java.util.UUID;
  */
 public class SystemUtil {
     private static final String TAG = "SystemUtil";
-
-    public static Application application;
-    public static Activity activity;
-    private static KProgressHUD hud;
-    protected static final String PREFS_FILE = "device_id.xml";
-    protected static final String PREFS_DEVICE_ID = "device_id";
-    protected static String uuid;
     private static SystemUtil instance = new SystemUtil();
 
-    public static SystemUtil getInstance() {
-        return instance;
+    private Application application;
+    private Activity activity;
+    private KProgressHUD hud;
+    private static final String PREFS_FILE = "device_id";
+    private static final String PREFS_DEVICE_ID = "device_id";
+    private static String uuid;
+
+    public static SystemUtil getInstance() { return instance; }
+
+    public void setApplication(Application application) {
+        this.application = application;
     }
 
-    public static void setApplication(Application application) {
-        SystemUtil.application = application;
+    public Application getApplication() {
+        return this.application;
     }
 
-    public static void setActivity(Activity activity) {
-        SystemUtil.activity = activity;
+    public void setActivity(Activity activity) {
+        this.activity = activity;
+    }
+
+    public Activity getActivity() {
+        return this.activity;
     }
 
     /**
-     * 获取启动时间
+     * 获取运行模式
      * @return
      */
-    public static long getCpuTime(JSONObject json) {
-        return SystemClock.elapsedRealtime();
+    public int getDebugMode() {
+        String isDebug = BuildConfig.DEBUG ? "0" : "1";
+        //TODO: 1 DEBUG, 2 RELEASE, 3 SUBMISSION
+        return 3;
     }
 
     /**
      * 获取manifest中meta-data的值
-     * @param context
      * @param key
      * @return
      */
-    public static String getMetaData(Context context, String key) {
+    public String getMetaData(String key) {
         String value = "";
         try {
-            PackageManager packageManager = context.getPackageManager();
-            String packageName = context.getPackageName();
+            PackageManager packageManager = application.getPackageManager();
+            String packageName = application.getPackageName();
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
             Bundle metaData = packageInfo.applicationInfo.metaData;
             Object obj = metaData.get(key);
@@ -93,39 +102,79 @@ public class SystemUtil {
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        } finally {
-            return value;
         }
-    }
-
-    public String getDebugMode() {
-        String isDebug = BuildConfig.DEBUG ? "0" : "1";
-        return isDebug;
+        return value;
     }
 
     /**
-     * 判断手机是否ROOT
+     * 获取包名
+     * @return
      */
-    public String isRoot() {
-
-        boolean root = false;
-
-        try {
-            if ((!new File("/system/bin/su").exists())
-                    && (!new File("/system/xbin/su").exists())) {
-                root = false;
-            } else {
-                root = true;
-            }
-
-        } catch (Exception e) {
-        }
-
-        String respData = root ? "0" : "1";
-        return respData;
+    public String getPackageName() {
+        PackageManager packageManager = application.getPackageManager();
+        return application.getPackageName();
     }
 
-    public String getUDID() {
+    /**
+     * 获取App名称
+     * @return
+     */
+    public String getAppName() {
+        PackageManager pm = application.getPackageManager();
+        return application.getApplicationInfo().loadLabel(pm).toString();
+    }
+
+    /**
+     * 获取VersionName
+     * @return
+     */
+    public String getVersionName() {
+        String versionName = "default";
+        try {
+            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            versionName = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
+    /**
+     * 获取VersionCode
+     * @return
+     */
+    public int getVersionCode() {
+        int versionCode = -1;
+        try {
+            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
+    public String getDeviceName() {
+        return Build.MODEL;
+    }
+
+    public String getDeviceModel() {
+        return Build.MODEL;
+    }
+
+    public String getDeviceType() {
+        return Build.ID;
+    }
+
+    public String getSystemName() {
+        return "Android OS";
+    }
+
+    public String getSystemVersion() {
+        return Build.VERSION.RELEASE;
+    }
+
+    public String getUUID() {
         if (uuid == null) {
             synchronized (SystemUtil.class) {
                 if (uuid == null) {
@@ -147,7 +196,6 @@ public class SystemUtil {
                             if (!"9774d56d682e549c".equals(androidId)) {
                                 uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8")).toString();
                             } else {
-
                                 final String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
                                 uuid = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")).toString() : UUID.randomUUID().toString();
                             }
@@ -164,267 +212,77 @@ public class SystemUtil {
         return uuid;
     }
 
-    public String getBundleId() {
-        int appVer = getAppVersion();
-        return String.valueOf(appVer);
-    }
-
-    public String getAppName() {
-        PackageManager pm = application.getPackageManager();
-        String appName = application.getApplicationInfo().loadLabel(pm).toString();
-        return appName;
-    }
-
-    public String getAppVer(){
-        int appVer = getAppVersion();
-        return String.valueOf(appVer);
-    }
-
-    public static int getAppVersion() {
-        int versionCode = 0;
-        try {
-            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
-            versionCode = packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionCode;
-    }
-
     public String getCountryCode() {
-        String countryCode = application.getResources().getConfiguration().locale.getCountry();
-        return countryCode;
+        return application.getResources().getConfiguration().locale.getCountry();
     }
 
     public String getLanguageCode() {
-        String languageCode = application.getResources().getConfiguration().locale.getLanguage();
-        return languageCode;
-    }
-
-    public String getDeviceName() {
-        String phoneName = android.os.Build.MANUFACTURER;
-        return phoneName;
-    }
-
-    public String getSystemVersion() {
-        String phoneVersion = android.os.Build.VERSION.RELEASE ;
-        return phoneVersion;
-    }
-    public String getSystemName() {
-        return android.os.Build.DISPLAY;
-    }
-    public String getNetworkState() {
-        String netState = String.valueOf(getAPNType(this.application.getApplicationContext()));
-        return netState;
-    }
-    public String getAppBuild() {
-        return "1";
-    }
-    public String getDeviceModel() {
-        String phoneModel = android.os.Build.MODEL;
-        return phoneModel;
-    }
-    public String getDeviceType() {
-        String phoneType = android.os.Build.BRAND;
-        return phoneType;
-    }
-
-    public void setBadgeNum(int count) {
-        if (count <= 0) {
-            count = 0;
-        } else {
-            count = Math.max(0, Math.min(count, 99));
-        }
-        Context context = this.application.getApplicationContext();
-        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
-            sendToXiaoMi(context,count);
-        } else if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
-            sendToHuaWei(context,count);
-        } else if (Build.MANUFACTURER.equalsIgnoreCase("sony")) {
-            sendToSony(context,count);
-        } else if (Build.MANUFACTURER.toLowerCase().contains("samsung")) {
-            sendToSamsumg(context,count);
-        } else {
-            Log.d(TAG, "setBadgeNum  Not Support ");
-        }
+        return application.getResources().getConfiguration().locale.getLanguage();
     }
 
     /**
-     * 向华为手机发送未读消息广播
-     */
-
-    private static void sendToHuaWei(Context context,int count) {
-        String launcherClassName = getLauncherClassName(context);
-        Bundle localBundle = new Bundle();//需要存储的数据
-        localBundle.putString("package", context.getPackageName());//包名
-        localBundle.putString("class", launcherClassName);
-        localBundle.putInt("badgenumber", count);//未读信息条数
-        context.getContentResolver().call(
-                Uri.parse("content://com.huawei.android.launcher.settings/badge/"),
-                "change badge", null, localBundle);
-    }
-    /**
-     * 向小米手机发送未读消息数广播
-     * @param count
-     */
-    private static void sendToXiaoMi(Context context,int count) {
-        try{
-            Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
-            Object miuiNotification = miuiNotificationClass.newInstance();
-            Field field = miuiNotification.getClass().getDeclaredField("messageCount");
-            field.setAccessible(true);
-            field.set(miuiNotification,String.valueOf(count==0?"":count));
-        }catch (Exception e){
-            e.printStackTrace();
-            // miui6之前
-            Intent localIntent = new Intent("android.intent.action.APPLICATION_MESSAGE_UPDATE");
-            localIntent.putExtra("android.intent.extra.update_application_component_name",context.getPackageName()+"/."+"MainActivity");
-            localIntent.putExtra("android.intent.extra.update_application_message_text",String.valueOf(count==0?"":count));
-            context.sendBroadcast(localIntent);
-        }
-    }
-
-
-    /**
-     * 向索尼手机发送未读消息数广播<br/>
-     * 据说：需添加权限：<uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" /> [未验证]
-     * @param count
-     */
-    private static void sendToSony(Context context, int count){
-        String launcherClassName = getLauncherClassName(context);
-        if (launcherClassName == null) {
-            return;
-        }
-
-        boolean isShow = true;
-        if (count == 0) {
-            isShow = false;
-        }
-        Intent localIntent = new Intent();
-        localIntent.setAction("com.sonyericsson.home.action.UPDATE_BADGE");
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.SHOW_MESSAGE",isShow);//是否显示
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.ACTIVITY_NAME",launcherClassName );//启动页
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.MESSAGE", String.valueOf(count));//数字
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.PACKAGE_NAME", context.getPackageName());//包名
-        context.sendBroadcast(localIntent);
-    }
-
-
-    /**
-     * 向三星手机发送未读消息数广播
-     * @param count
-     */
-    private static void sendToSamsumg(Context context, int count){
-        String launcherClassName = getLauncherClassName(context);
-        if (launcherClassName == null) {
-            return;
-        }
-        Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
-        intent.putExtra("badge_count", count);
-        intent.putExtra("badge_count_package_name", context.getPackageName());
-        intent.putExtra("badge_count_class_name", launcherClassName);
-        context.sendBroadcast(intent);
-    }
-    /**
-     * Retrieve launcher activity name of the application from the context
-     *
-     * @param context The context of the application package.
-     * @return launcher activity name of this application. From the
-     *         "android:name" attribute.
-     */
-    private static String getLauncherClassName(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        // To limit the components this Intent will resolve to, by setting an
-        // explicit package name.
-        intent.setPackage(context.getPackageName());
-        intent.addCategory(Intent.CATEGORY_LAUNCHER);
-
-        // All Application must have 1 Activity at least.
-        // Launcher activity must be found!
-        ResolveInfo info = packageManager
-                .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-
-        // get a ResolveInfo containing ACTION_MAIN, CATEGORY_LAUNCHER
-        // if there is no Activity which has filtered by CATEGORY_DEFAULT
-        if (info == null) {
-            info = packageManager.resolveActivity(intent, 0);
-        }
-
-        return info.activityInfo.name;
-    }
-
-    /**
-     * 获取当前的网络状态 ：没有网络-0：WIFI网络1：4G网络-4：3G网络-3：2G网络-2
-     * 自定义
-     *
-     * @param context
+     * 获取启动时间
      * @return
      */
-    public static int getAPNType(Context context) {
-        //结果返回值
-        int netType = 0;
-        //获取手机所有连接管理对象
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        //获取NetworkInfo对象
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        //NetworkInfo对象为空 则代表没有网络
-        if (networkInfo == null) {
-            return netType;
-        }
-        //否则 NetworkInfo对象不为空 则获取该networkInfo的类型
-        int nType = networkInfo.getType();
-        if (nType == ConnectivityManager.TYPE_WIFI) {
-            //WIFI
-            netType = 1;
-        } else if (nType == ConnectivityManager.TYPE_MOBILE) {
-            int nSubType = networkInfo.getSubtype();
-            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-            //3G   联通的3G为UMTS或HSDPA 电信的3G为EVDO
-            if (nSubType == TelephonyManager.NETWORK_TYPE_LTE
-                    && !telephonyManager.isNetworkRoaming()) {
-                netType = 4;
-            } else if (nSubType == TelephonyManager.NETWORK_TYPE_UMTS
-                    || nSubType == TelephonyManager.NETWORK_TYPE_HSDPA
-                    || nSubType == TelephonyManager.NETWORK_TYPE_EVDO_0
-                    && !telephonyManager.isNetworkRoaming()) {
-                netType = 3;
-                //2G 移动和联通的2G为GPRS或EGDE，电信的2G为CDMA
-            } else if (nSubType == TelephonyManager.NETWORK_TYPE_GPRS
-                    || nSubType == TelephonyManager.NETWORK_TYPE_EDGE
-                    || nSubType == TelephonyManager.NETWORK_TYPE_CDMA
-                    && !telephonyManager.isNetworkRoaming()) {
-                netType = 2;
-            } else {
-                netType = 2;
-            }
-        }
-        return netType;
+    public long getCpuTime() {
+        return SystemClock.elapsedRealtime();
     }
 
-    public void showAlertDialog(JSONObject json, InvokeJavaMethodDelegate delegate) {
-        Log.e(TAG, "showAlertDialog: "+json);
-        try {
-            delegate.onFinish(new JSONObject("{}"));
-        } catch (JSONException e) {
-            e.printStackTrace();
+    public String getNetworkState() {
+        String ret = "NotReachable";
+        ConnectivityManager manager = (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (manager != null) {
+            NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+            if (networkInfo != null) {
+                int type = networkInfo.getType();
+                if (type == ConnectivityManager.TYPE_WIFI) {
+                    ret = "ReachableViaWiFi";
+                } else if (type == ConnectivityManager.TYPE_MOBILE) {
+                    ret = "ReachableViaWWAN";
+                }
+            }
         }
+        return ret;
+    }
+
+    public void showAlertDialog(String title, String message, String btnTitle1, String btnTitle2, final InvokeJavaMethodDelegate delegate) {
+        assert(false);
+        new AlertDialog.Builder(activity)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton(btnTitle1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ArrayList<Object> arrayList = new ArrayList<>();
+                        arrayList.add(true);
+                        delegate.onFinish(arrayList);
+                    }
+                })
+                .setNegativeButton(btnTitle2, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        ArrayList<Object> arrayList = new ArrayList<>();
+                        arrayList.add(false);
+                        delegate.onFinish(arrayList);
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 
     public void showProgressDialog(String message, int percent) {
-
+        assert(false);
     }
 
     public void hideProgressDialog() {
-
+        assert(false);
     }
 
     public void showLoading(String message) {
         if (hud != null) {
             return;
         }
-        hud = KProgressHUD.create(SystemUtil.activity)
+        hud = KProgressHUD.create(this.activity)
                 .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
                 .setLabel(message)
                 .setCancellable(false)
@@ -440,7 +298,7 @@ public class SystemUtil {
     }
 
     public void showMessage(String message) {
-
+        assert(false);
     }
 
     public void vibrate() {
@@ -449,15 +307,14 @@ public class SystemUtil {
     }
 
     public void saveImage(String imgPath, String album) {
-
+        assert(false);
     }
 
     public void sendEmail(String subject, ArrayList<String> toRecipients, String emailBody) {
-
+        assert(false);
         String[] reciver = new String[] { "testgameplugin@gmail.com" };
         Intent myIntent = new Intent(android.content.Intent.ACTION_SEND);
         myIntent.setType("plain/text");
-//        myIntent.setType("message/rfc822");
         myIntent.putExtra(android.content.Intent.EXTRA_EMAIL, reciver);
         myIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         myIntent.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
@@ -472,7 +329,6 @@ public class SystemUtil {
 
     public void postNotication(JSONObject notifications) {
         Log.e(TAG, "postNotication: " + notifications.toString());
-
 //
 //        Context context = activity.getApplicationContext();
 //
@@ -538,14 +394,174 @@ public class SystemUtil {
         am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
     }
 
-    public void share() {
-    }
-
     public void copyToClipboard(String text){
         Context context = this.application.getApplicationContext();
         ClipboardManager clip = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
         //clip.getText(); // 粘贴
         clip.setText(text); // 复制
+    }
+
+    public void setBadgeNum(int num) {
+        if (num <= 0) {
+            num = 0;
+        } else {
+            num = Math.max(0, Math.min(num, 99));
+        }
+        Context context = this.application.getApplicationContext();
+        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
+            sendToXiaoMi(context,num);
+        } else if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
+            sendToHuaWei(context,num);
+        } else if (Build.MANUFACTURER.equalsIgnoreCase("sony")) {
+            sendToSony(context,num);
+        } else if (Build.MANUFACTURER.toLowerCase().contains("samsung")) {
+            sendToSamsumg(context,num);
+        } else {
+            Log.d(TAG, "setBadgeNum  Not Support ");
+        }
+    }
+
+    /**
+     * 向华为手机发送未读消息广播
+     */
+    private static void sendToHuaWei(Context context,int count) {
+        String launcherClassName = getLauncherClassName(context);
+        Bundle localBundle = new Bundle();//需要存储的数据
+        localBundle.putString("package", context.getPackageName());//包名
+        localBundle.putString("class", launcherClassName);
+        localBundle.putInt("badgenumber", count);//未读信息条数
+        context.getContentResolver().call(
+                Uri.parse("content://com.huawei.android.launcher.settings/badge/"),
+                "change badge", null, localBundle);
+    }
+    /**
+     * 向小米手机发送未读消息数广播
+     * @param count
+     */
+    private static void sendToXiaoMi(Context context,int count) {
+        try{
+            Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
+            Object miuiNotification = miuiNotificationClass.newInstance();
+            Field field = miuiNotification.getClass().getDeclaredField("messageCount");
+            field.setAccessible(true);
+            field.set(miuiNotification,String.valueOf(count==0?"":count));
+        }catch (Exception e){
+            e.printStackTrace();
+            // miui6之前
+            Intent localIntent = new Intent("android.intent.action.APPLICATION_MESSAGE_UPDATE");
+            localIntent.putExtra("android.intent.extra.update_application_component_name",context.getPackageName()+"/."+"MainActivity");
+            localIntent.putExtra("android.intent.extra.update_application_message_text",String.valueOf(count==0?"":count));
+            context.sendBroadcast(localIntent);
+        }
+    }
+
+    /**
+     * 向索尼手机发送未读消息数广播<br/>
+     * 据说：需添加权限：<uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" /> [未验证]
+     * @param count
+     */
+    private static void sendToSony(Context context, int count){
+        String launcherClassName = getLauncherClassName(context);
+        if (launcherClassName == null) {
+            return;
+        }
+
+        boolean isShow = true;
+        if (count == 0) {
+            isShow = false;
+        }
+        Intent localIntent = new Intent();
+        localIntent.setAction("com.sonyericsson.home.action.UPDATE_BADGE");
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.SHOW_MESSAGE",isShow);//是否显示
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.ACTIVITY_NAME",launcherClassName );//启动页
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.MESSAGE", String.valueOf(count));//数字
+        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.PACKAGE_NAME", context.getPackageName());//包名
+        context.sendBroadcast(localIntent);
+    }
+
+    /**
+     * 向三星手机发送未读消息数广播
+     * @param count
+     */
+    private static void sendToSamsumg(Context context, int count){
+        String launcherClassName = getLauncherClassName(context);
+        if (launcherClassName == null) {
+            return;
+        }
+        Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
+        intent.putExtra("badge_count", count);
+        intent.putExtra("badge_count_package_name", context.getPackageName());
+        intent.putExtra("badge_count_class_name", launcherClassName);
+        context.sendBroadcast(intent);
+    }
+
+    /**
+     * Retrieve launcher activity name of the application from the context
+     *
+     * @param context The context of the application package.
+     * @return launcher activity name of this application. From the
+     *         "android:name" attribute.
+     */
+    private static String getLauncherClassName(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        // To limit the components this Intent will resolve to, by setting an
+        // explicit package name.
+        intent.setPackage(context.getPackageName());
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+
+        // All Application must have 1 Activity at least.
+        // Launcher activity must be found!
+        ResolveInfo info = packageManager
+                .resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+
+        // get a ResolveInfo containing ACTION_MAIN, CATEGORY_LAUNCHER
+        // if there is no Activity which has filtered by CATEGORY_DEFAULT
+        if (info == null) {
+            info = packageManager.resolveActivity(intent, 0);
+        }
+
+        return info.activityInfo.name;
+    }
+
+    public void share() {
+        assert(false);
+    }
+
+    public void keychainSet(String key, String value) {
+        //TODO:
+    }
+
+    public String keychainGet(String key) {
+        //TODO:
+        return null;
+    }
+
+    /**
+     * 判断手机是否ROOT
+     */
+    public boolean isRoot() {
+        boolean root = false;
+        try {
+            if ((!new File("/system/bin/su").exists())
+                    && (!new File("/system/xbin/su").exists())) {
+                root = false;
+            } else {
+                root = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return root;
+    }
+
+    public void copyToPasteboard(String str) {
+        assert(false);
+    }
+
+    public void requestUrl(String requestType, String url, HashMap<String, Object> map, InvokeJavaMethodDelegate delegate) {
+        assert(false);
     }
 }
 
@@ -564,10 +580,10 @@ class NotificationReceiver extends BroadcastReceiver
 
     public void shownotification(Context context,String title, String msg)
     {
-        SystemUtil sysUtil = SystemUtil.getInstance();
+        Activity activity = SystemUtil.getInstance().getActivity();
 
         NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(sysUtil.activity.getApplicationContext())
+                new NotificationCompat.Builder(activity.getApplicationContext())
                         .setAutoCancel(true)
                         .setOngoing(true)
                         .setSmallIcon(R.mipmap.ic_launcher)
@@ -577,7 +593,7 @@ class NotificationReceiver extends BroadcastReceiver
                         .setContentText(msg)
                         .setWhen(System.currentTimeMillis());
 
-        Intent resultIntent = new Intent(context,sysUtil.activity.getClass());
+        Intent resultIntent = new Intent(context,activity.getClass());
 
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context,0, resultIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);

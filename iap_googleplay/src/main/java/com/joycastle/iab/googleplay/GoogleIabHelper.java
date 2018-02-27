@@ -20,6 +20,7 @@ import com.joycastle.iab.googleplay.util.Purchase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,7 +49,7 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
 
     @Override
     public void onCreate(final Activity activity, Bundle savedInstanceState) {
-        String base64PublicKey = SystemUtil.getMetaData(activity, "google_iab_publickey");
+        String base64PublicKey = SystemUtil.getInstance().getMetaData("google_iab_publickey");
         mHelper = new IabHelper(activity, base64PublicKey);
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             @Override
@@ -112,10 +113,10 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
     }
 
     @Override
-    public void purchase(String iapId, String payLoad, final InvokeJavaMethodDelegate delegate) {
+    public void purchase(String iapId, final String payLoad, final InvokeJavaMethodDelegate delegate) {
         System.out.print("purchase");
         try {
-            mHelper.launchPurchaseFlow(SystemUtil.activity, iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
+            mHelper.launchPurchaseFlow(SystemUtil.getInstance().getActivity(), iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
                 public void onIabPurchaseFinished(IabResult result, Purchase info) {
                     if (result.isFailure()) {
@@ -128,14 +129,10 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
                                 boolean iapResult = result.isSuccess();
                                 String iapId = purchase.getSku();
                                 String payload = purchase.getDeveloperPayload();
-                                JSONObject respData =  new JSONObject();
-                                try {
-                                    respData.put("result",iapResult);
-                                    respData.put("payload",payload);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                delegate.onFinish(respData);
+                                ArrayList<Object> arrayList =  new ArrayList<>();
+                                arrayList.add(iapResult);
+                                arrayList.add(payload);
+                                delegate.onFinish(arrayList);
                             }
                         });
                     } catch (IabHelper.IabAsyncInProgressException e) {
@@ -180,7 +177,7 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
         if (mRestoreDelegate == null) {
             return;
         }
-        Toast.makeText(SystemUtil.application, "Restore Purchase...", Toast.LENGTH_LONG).show();
+        Toast.makeText(SystemUtil.getInstance().getApplication(), "Restore Purchase...", Toast.LENGTH_LONG).show();
         List<Purchase> purchases = inv.getAllPurchases();
         try {
             mHelper.consumeAsync(purchases, new IabHelper.OnConsumeMultiFinishedListener() {
@@ -199,10 +196,5 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
         } catch (IabHelper.IabAsyncInProgressException e) {
             Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
         }
-    }
-
-    @Override
-    public void onFinish(JSONObject resObject) {
-
     }
 }

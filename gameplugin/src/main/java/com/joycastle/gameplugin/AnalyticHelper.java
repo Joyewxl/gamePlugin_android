@@ -8,10 +8,9 @@ import android.util.Log;
 
 import com.joycastle.gamepluginbase.AnalyticDelegate;
 
-import org.json.JSONObject;
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by gaoyang on 9/29/16.
@@ -31,7 +30,7 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void setAccoutInfo(JSONObject map){
+    public void setAccoutInfo(HashMap map){
         for (AnalyticDelegate delegate : delegates) {
             delegate.setAccoutInfo(map);
         }
@@ -52,42 +51,42 @@ public class AnalyticHelper implements AnalyticDelegate{
     }
 
     @Override
-    public void onEvent(String eventId, JSONObject eventData){
+    public void onEvent(String eventId, HashMap eventData){
         for (AnalyticDelegate delegate : delegates) {
             delegate.onEvent(eventId, eventData);
         }
     }
 
     @Override
-    public void setLevel(Integer level){
+    public void setLevel(int level){
         for (AnalyticDelegate delegate : delegates) {
             delegate.setLevel(level);
         }
     }
 
     @Override
-    public void charge(String iapId, String cash, String coin, Integer channal){
+    public void charge(String iapId, double cash, double coin, int channal){
         for (AnalyticDelegate delegate : delegates) {
             delegate.charge(iapId, cash, coin, channal);
         }
     }
 
     @Override
-    public void reward(String coin, Integer reason){
+    public void reward(double coin, int reason){
         for (AnalyticDelegate delegate : delegates) {
             delegate.reward(coin, reason);
         }
     }
 
     @Override
-    public void purchase(String good, Integer amount, String coin){
+    public void purchase(String good, int amount, double coin){
         for (AnalyticDelegate delegate : delegates) {
             delegate.purchase(good, amount, coin);
         }
     }
 
     @Override
-    public void use(String good, Integer amount, String coin){
+    public void use(String good, int amount, double coin){
         for (AnalyticDelegate delegate : delegates) {
             delegate.use(good, amount, coin);
         }

@@ -5,25 +5,12 @@ package com.joycastle.gamepluginbase;
  */
 
 public interface AdvertiseDelegate extends LifeCycleDelegate {
-    interface BannerAdListener {
-        public void onClick();
-    }
-
-    interface InterstitialAdListener {
-        public void onResult(boolean result);
-    }
-
-    interface VideoAdListener {
-        public void onResult(boolean viewed, boolean clicked);
-    }
-
     /**
      * 显示Banner广告
      * @param protrait
      * @param bottom
-     * @param listener
      */
-    int showBannerAd(boolean protrait, boolean bottom, BannerAdListener listener);
+    int showBannerAd(boolean protrait, boolean bottom);
 
     /**
      * 隐藏Banner广告

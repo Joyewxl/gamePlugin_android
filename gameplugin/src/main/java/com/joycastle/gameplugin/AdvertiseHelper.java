@@ -17,9 +17,9 @@ import java.util.ArrayList;
  */
 
 public class AdvertiseHelper implements AdvertiseDelegate {
-    public static final String TAG = "AdvertiseHelper";
+    private static final String TAG = "AdvertiseHelper";
 
-    public static AdvertiseHelper instance = new AdvertiseHelper();
+    private static AdvertiseHelper instance = new AdvertiseHelper();
 
     private ArrayList<AdvertiseDelegate> delegates;
 
@@ -30,11 +30,11 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public int showBannerAd(boolean protrait, boolean bottom, BannerAdListener listener) {
+    public int showBannerAd(boolean protrait, boolean bottom) {
         if (delegates.size() <= 0) {
             return 0;
         }
-        return delegates.get(0).showBannerAd(protrait, bottom, listener);
+        return delegates.get(0).showBannerAd(protrait, bottom);
     }
 
     @Override

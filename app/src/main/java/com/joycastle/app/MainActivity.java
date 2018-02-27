@@ -51,8 +51,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         setContentView(R.layout.activity_main);
 
-        Log.e(TAG, "------------>"+ SystemUtil.getAppVersion());
-
         GamePlugin.getInstance().onCreate(this, savedInstanceState);
 
         arrayList = new ArrayList<>();
@@ -118,8 +116,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("onEventWithData", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-//                Map<String, Object> map = new HashMap();
-                JSONObject map = new JSONObject();
+                HashMap<String, String> map = new HashMap<>();
                 map.put("userId", "001");
                 map.put("gender", "female");
                 map.put("age", "10");
@@ -141,7 +138,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("charge", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().charge("coin1", String.valueOf(1.0) , String.valueOf(1.0), 1000);
+                AnalyticHelper.getInstance().charge("coin1", 1.0 , 1, 1000);
             }
         });
 
@@ -150,7 +147,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("reward", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().reward(String.valueOf(1.0), 1000);
+                AnalyticHelper.getInstance().reward(1, 1000);
             }
         });
 
@@ -159,7 +156,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("purchase", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().purchase("helmet", 1, String.valueOf(1.0));
+                AnalyticHelper.getInstance().purchase("helmet", 1, 1);
             }
         });
 
@@ -168,7 +165,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("use", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().use("helmet", 1, String.valueOf(1.0));
+                AnalyticHelper.getInstance().use("helmet", 1, 1);
             }
         });
 
@@ -314,7 +311,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         });
 
 
-
+        ///////////////////////////////广告///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
         hashMap.put("--------AdvertiseHelper", new OnClickListener() {
@@ -329,14 +326,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("showBannerAd", new OnClickListener() {
             @Override
             public void onClick() {
-                AdvertiseHelper.getInstance().showBannerAd(true, true, new AdvertiseDelegate.BannerAdListener() {
-                    @Override
-                    public void onClick() {
-                        Log.e(TAG, "BannerAd Clicked");
-                    }
-                });
-
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showBannerAd","{}",-1);
+                int height = AdvertiseHelper.getInstance().showBannerAd(true, true);
+                Log.e(TAG, height+"");
+//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showBannerAd","{}",-1);
             }
         });
 
@@ -345,8 +337,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("hideBannerAd", new OnClickListener() {
             @Override
             public void onClick() {
-//                AdvertiseHelper.getInstance().hideBannerAd();
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","hideBannerAd","{}",-1);
+                AdvertiseHelper.getInstance().hideBannerAd();
+//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","hideBannerAd","{}",-1);
             }
         });
 
@@ -355,9 +347,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("isInterstitialAdReady", new OnClickListener() {
             @Override
             public void onClick() {
-//                boolean result = AdvertiseHelper.getInstance().isInterstitialAdReady();
-//                Log.e(TAG, "isInterstitialAdReady: "+result);
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isInterstitialAdReady","{}",-1);
+                boolean result = AdvertiseHelper.getInstance().isInterstitialAdReady();
+                Log.e(TAG, "isInterstitialAdReady: "+result);
+//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isInterstitialAdReady","{}",-1);
             }
         });
 
@@ -366,22 +358,22 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("showInterstitialAd", new OnClickListener() {
             @Override
             public void onClick() {
-//                boolean result = AdvertiseHelper.getInstance().showInterstitialAd(new AdvertiseDelegate.InterstitialAdListener() {
-//                    @Override
-//                    public void onResult(boolean result) {
-//                        Log.e(TAG, "InterstitialAd Clicked: "+result);
-//                    }
-//                });
-//                Log.e(TAG, "showInterstitialAd: "+result);
+                boolean result = AdvertiseHelper.getInstance().showInterstitialAd(new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, "showInterstitialAd Result: "+resArrayList);
+                    }
+                });
+                Log.e(TAG, "showInterstitialAd: "+result);
 
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                try {
-                    reqData.put("json", json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showInterstitialAd",reqData.toString(),0);
+//                JSONObject reqData = new JSONObject();
+//                JSONArray json = new JSONArray();
+//                try {
+//                    reqData.put("json", json);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showInterstitialAd",reqData.toString(),0);
             }
         });
 
@@ -390,14 +382,17 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("isVideoAdReady", new OnClickListener() {
             @Override
             public void onClick() {
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                try {
-                    reqData.put("json", json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isVideoAdReady",reqData.toString(),-1);
+                boolean result = AdvertiseHelper.getInstance().isVideoAdReady();
+                Log.e(TAG, "isVideoAdReady: "+result);
+
+//                JSONObject reqData = new JSONObject();
+//                JSONArray json =new JSONArray();
+//                try {
+//                    reqData.put("json", json);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isVideoAdReady",reqData.toString(),-1);
             }
         });
 
@@ -406,26 +401,35 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("showVideoAd", new OnClickListener() {
             @Override
             public void onClick() {
-//                boolean result = AdvertiseHelper.getInstance().showVideoAd(new AdvertiseDelegate.VideoAdListener() {
-//                    @Override
-//                    public void onResult(boolean viewed, boolean clicked) {
-//                        String message = "";
-//                        message = message + "VideoAd Viewed: "+viewed;
-//                        message = message + "VideoAd Clicked: "+clicked;
-//                        showAlert(message);
-//                    }
-//                });
-//                showToast("showVideoAd: "+result);
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                try {
-                    reqData.put("json", json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showVideoAd",reqData.toString(),0);
+                boolean result = AdvertiseHelper.getInstance().showVideoAd(new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, "showVideoAd Result: "+resArrayList);
+                    }
+                });
+                Log.e(TAG, "showVideoAd: "+result);
+
+//                JSONObject reqData = new JSONObject();
+//                JSONArray json =new JSONArray();
+//                try {
+//                    reqData.put("json", json);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showVideoAd",reqData.toString(),0);
             }
         });
+
+        ///////////////////////////////支付///////////////////////////////
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("--------GamePlugin", new OnClickListener() {
+            @Override
+            public void onClick() {
+                System.out.println("AnalyticHelper");
+            }
+        });
+
         IabHelper.getInstance().setRestoreHandler(new IabDelegate.RestoreDelegate() {
             @Override
             public void onResult(boolean result, String iapId, String message) {
@@ -448,8 +452,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
                 IabHelper.getInstance().purchase("managed_product", "user_001", new InvokeJavaMethodDelegate() {
                     @Override
-                    public void onFinish(JSONObject resObject) {
-                        showAlert("");
+                    public void onFinish(ArrayList<Object> resArrayList) {
+
                     }
                 });
             }
@@ -463,11 +467,11 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        SystemUtil.showLoading("Loading...");
+                        SystemUtil.getInstance().showLoading("Loading...");
                         new Handler().postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                SystemUtil.hideLoading();
+                                SystemUtil.getInstance().hideLoading();
                             }
                         }, 5);
                     }
@@ -482,6 +486,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         ListView listView = (ListView) findViewById(R.id.listview);
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, data));
         listView.setOnItemClickListener(this);
+
+
     }
 
     @Override

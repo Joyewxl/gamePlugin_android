@@ -3,109 +3,173 @@ package com.joycastle.gameplugin;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 
 /**
  * Created by gaoyang on 10/19/16.
  */
 
 public class NativeUtil {
-
-
-
     private static final String TAG = "NativeUtil";
 
     /**
      *  C++调用Java函数
      * @param className 类名
      * @param methodName 函数名
-     * @param reqData json数据
+     * @param reqJson json数据
      * @param requestId requestId
      * @return json数据
      */
-    public static String invokeJavaMethod(String className, String methodName, String reqData, final int requestId) {
-        if (requestId < 0) {
-            return invokeJavaMethod(className, methodName, reqData);
-        } else {
-            return invokeJavaMethodAsync(className, methodName, reqData, new InvokeJavaMethodDelegate() {
-                @Override
-                public void onFinish(JSONObject resObject) {
-                    invokeCppMethod(requestId, resObject.toString());
-                }
-            });
-        }
-    }
-
-    /**
-     * C++调用Java函数
-     * @param className 类名
-     * @param methodName 函数名
-     * @param reqData json数据
-     * @return json数据
-     */
-    private static String invokeJavaMethod(String className, String methodName, String reqData) {
-        String resData = "{}";
+    public static String invokeJavaMethod(String className, String methodName, String reqJson, final int requestId) {
+        String resJson = "";
         try {
-            JSONObject rData = new JSONObject(reqData);
-            String jsonStr = rData.getString("json");
-            JSONArray reqArray = new JSONArray(jsonStr != null ? jsonStr : "[]");
+            ArrayList<Object> reqArrayList = parseJson(reqJson);
+
+            int argsNum = reqArrayList.size() + (requestId < 0 ? 0 : 1);
+            Class[] classArr = new Class[argsNum];
+            Object[] objectArr = new Object[argsNum];
+            for (int i=0; i<reqArrayList.size(); i++) {
+                Object obj = reqArrayList.get(i);
+                classArr[i] = obj.getClass();
+                objectArr[i] = obj;
+            }
+            if (requestId >= 0) {
+                classArr[argsNum] = InvokeJavaMethodDelegate.class;
+                objectArr[argsNum] = new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        try {
+                            invokeCppMethod(requestId, generateJson(resArrayList));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+            }
+
             Class clazz = Class.forName(className);
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
-            Class[] argsClass = new Class[reqArray.length()];
-            Object[] reqObj = new Object[reqArray.length()];
-            for(int i=0; i<reqArray.length(); i++) {
-                argsClass[i] = reqArray.get(i).getClass();  //获得每一个参数的实际类型
-                reqObj[i] = reqArray.get(i);
+            Method targetMethod = clazz.getMethod(methodName, classArr);
+            Object ret = targetMethod.invoke(instance, objectArr);
+            ArrayList<Object> resArrayList = new ArrayList<>();
+            if (ret != null) {
+                resArrayList.add(ret);
             }
-            Method method = clazz.getMethod(methodName, argsClass);
-            Object resObject = method.invoke(instance, reqObj);
-            if (resObject != null) {
-                resData = resObject.toString();
-            }
+            resJson = generateJson(resArrayList);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return resData;
+        return resJson;
     }
 
     /**
-     * C++调用Java函数
-     * @param className 类名
-     * @param methodName 函数名
-     * @param reqData json数据
-     * @param listener 回调函数
-     * @return json数据
+     * 根据参数列表生成json
+     * @param arrayList 参数列表
+     * @return json
+     * @throws JSONException 异常
      */
-    private static String invokeJavaMethodAsync(String className, String methodName, String reqData, InvokeJavaMethodDelegate listener) {
-        String resData = "{}";
-        try {
-            JSONObject rData = new JSONObject(reqData);
-            String jsonStr = rData.getString("json");
-            JSONArray reqArray = new JSONArray(jsonStr != null ? jsonStr : "[]");
-            Class clazz = Class.forName(className);
-            Method getInstanceMethod = clazz.getMethod("getInstance");
-            Object instance = getInstanceMethod.invoke(null);
-            int reqLength = reqArray.length();
-            Class[] argsClass = new Class[reqLength+1];
-            Object[] reqObj = new Object[reqLength+1];
-            for(int i=0; i<reqLength; i++) {
-                argsClass[i] = reqArray.get(i).getClass();  //获得每一个参数的实际类型
-                reqObj[i] = reqArray.get(i);
+    private static String generateJson(ArrayList<Object> arrayList) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        JSONArray jsonArray = arrayList2JsonArray(arrayList);
+        jsonObject.put("value", jsonArray);
+        return jsonObject.toString();
+    }
+
+    /**
+     * 解析json
+     * @param jsonStr json
+     * @return 参数列表
+     * @throws JSONException 异常
+     */
+    private static ArrayList<Object> parseJson(String jsonStr) throws JSONException {
+        JSONObject reqObj = new JSONObject(jsonStr);
+        JSONArray valArr = reqObj.getJSONArray("value");
+        JSONArray typeArr = reqObj.getJSONArray("type");
+        return jsonArray2ArrayList(valArr, typeArr);
+    }
+
+    private static ArrayList<Object> jsonArray2ArrayList(JSONArray valArr, JSONArray typeArr) throws JSONException {
+        ArrayList<Object> arrayList = new ArrayList<>();
+        for (int i = 0; i < typeArr.length(); i++) {
+            if (typeArr.optString(i).equals("int")) {
+                arrayList.add(valArr.getInt(i));
+            } else if (typeArr.optString(i).equals("float")) {
+                arrayList.add(valArr.getDouble(i));
+            } else if (typeArr.optString(i).equals("double")) {
+                arrayList.add(valArr.getDouble(i));
+            } else if (typeArr.optString(i).equals("bool")) {
+                arrayList.add(valArr.getBoolean(i));
+            } else if (typeArr.optString(i).equals("string")) {
+                arrayList.add(valArr.getString(i));
+            } else if (typeArr.optJSONArray(i) != null) {
+                arrayList.add(jsonArray2ArrayList(valArr.getJSONArray(i), typeArr.getJSONArray(i)));
+            } else if (typeArr.optJSONObject(i) != null) {
+                arrayList.add(jsonObject2HashMap(valArr.getJSONObject(i), typeArr.getJSONObject(i)));
             }
-            argsClass[reqLength] = InvokeJavaMethodDelegate.class;
-            reqObj[reqLength] = listener;
-            Method method = clazz.getMethod(methodName, argsClass);
-            Object resObject = method.invoke(instance, reqObj);
-            if (resObject != null) {
-                resData = resObject.toString();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return resData;
+        return arrayList;
+    }
+
+    private static HashMap<String, Object> jsonObject2HashMap(JSONObject valObj, JSONObject typeObj) throws JSONException {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        Iterator<String> keys = valObj.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (typeObj.optString(key).equals("int")) {
+                hashMap.put(key, valObj.getInt(key));
+            }  else if (typeObj.optString(key).equals("float")) {
+                hashMap.put(key, valObj.getDouble(key));
+            } else if (typeObj.optString(key).equals("double")) {
+                hashMap.put(key, valObj.getDouble(key));
+            } else if (typeObj.optString(key).equals("bool")) {
+                hashMap.put(key, valObj.getBoolean(key));
+            } else if (typeObj.optString(key).equals("string")) {
+                hashMap.put(key, valObj.getString(key));
+            } else if (typeObj.optJSONArray(key) != null) {
+                hashMap.put(key, jsonArray2ArrayList(valObj.getJSONArray(key), typeObj.getJSONArray(key)));
+            } else if (typeObj.optJSONObject(key) != null) {
+                hashMap.put(key, jsonObject2HashMap(valObj.getJSONObject(key), typeObj.getJSONObject(key)));
+            }
+        }
+        return hashMap;
+    }
+
+    private static JSONArray arrayList2JsonArray(ArrayList arrayList) throws JSONException {
+        JSONArray jsonArray = new JSONArray();
+        for (Object val : arrayList) {
+            if (val instanceof ArrayList) {
+                jsonArray.put(arrayList2JsonArray((ArrayList) val));
+            } else if (val instanceof HashMap) {
+                jsonArray.put(hashMap2JsonObject((HashMap) val));
+            } else {
+                jsonArray.put(val);
+            }
+        }
+        return jsonArray;
+    }
+
+    private static JSONObject hashMap2JsonObject(HashMap hashMap) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        Iterator it = hashMap.keySet().iterator();
+        while (it.hasNext()) {
+            String key = (String)it.next();
+            Object val = hashMap.get(key);
+            if (val instanceof ArrayList) {
+                jsonObject.put(key, arrayList2JsonArray((ArrayList) val));
+            } else if (val instanceof HashMap) {
+                jsonObject.put(key, hashMap2JsonObject((HashMap) val));
+            } else {
+                jsonObject.put(key, val);
+            }
+        }
+        return jsonObject;
     }
 
     /**

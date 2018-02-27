@@ -3,6 +3,7 @@ package com.joycastle.gamepluginbase;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,84 +12,84 @@ import java.util.Map;
 public interface AnalyticDelegate extends LifeCycleDelegate {
     /**
      * 设置账户信息
-     * @param map（string，string）
+     * @param map map
      */
-    public void setAccoutInfo(JSONObject map);
+    public void setAccoutInfo(HashMap<String, Object> map);
 
     /**
      * 自定义事件
-     * @param eventId
+     * @param eventId eventId
      */
     public void onEvent(String eventId);
 
     /**
      * 自定义事件
-     * @param eventId
-     * @param eventLabel
+     * @param eventId eventId
+     * @param eventLabel eventLabel
      */
     public void onEvent(String eventId, String eventLabel);
 
     /**
      * 自定义事件
-     * @param eventId
-     * @param eventData  Map<String, Object>
+     * @param eventId eventId
+     * @param eventData eventData
      */
-    public void onEvent(String eventId,JSONObject eventData);
+    public void onEvent(String eventId, HashMap<String, String> eventData);
 
     /**
      * 设置等级
-     * @param level
+     * @param level level
      */
-    public void setLevel(Integer level);
+    public void setLevel(int level);
 
     /**
      * 充值
-     * @param iapId
-     * @param cash
-     * @param coin
-     * @param channal
+     * @param iapId iapId
+     * @param cash cash
+     * @param coin coin
+     * @param channal channal
      */
-    public void charge(String iapId, String cash, String coin, Integer channal);
+    public void charge(String iapId, double cash, double coin, int channal);
 
     /**
      * 奖励
-     * @param coin
-     * @param reason
+     * @param coin coin
+     * @param reason reason
      */
-    public void reward(String coin, Integer reason);
+    public void reward(double coin, int reason);
 
     /**
      * 购买
-     * @param good
-     * @param amount
-     * @param coin
+     * @param good good
+     * @param amount amount
+     * @param coin coin
      */
-    public void purchase(String good, Integer amount, String coin);
+    public void purchase(String good, int amount, double coin);
 
     /**
      * 使用
-     * @param good
-     * @param amount
-     * @param coin
+     * @param good good
+     * @param amount amount
+     * @param coin coin
      */
-    public void use(String good, Integer amount, String coin);
+    public void use(String good, int amount, double coin);
 
     /**
      * 开始任务
-     * @param missionId
+     * @param missionId missionId
      */
     public void onMissionBegin(String missionId);
 
     /**
      * 任务达成
-     * @param missionId
+     * @param missionId missionId
      */
     public void onMissionCompleted(String missionId);
 
     /**
      * 任务失败
-     * @param missionId
-     * @param reason
+     * @param missionId missionId
+     * @param reason reason
      */
     public void onMissionFailed(String missionId, String reason);
 

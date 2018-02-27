@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -99,7 +100,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         if (this._isLogin())
             return;
         List<String> permissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday", "user_status");
-        LoginManager.getInstance().logInWithReadPermissions(SystemUtil.activity, permissions);
+        LoginManager.getInstance().logInWithReadPermissions(SystemUtil.getInstance().getActivity(), permissions);
     }
 
     public JSONObject getUserId(JSONObject jsonObject) throws JSONException {
@@ -132,14 +133,10 @@ public class FacebookHelper implements LifeCycleDelegate {
             public void onCompleted(JSONObject object, GraphResponse response) {
                 if (object != null) {
                     Log.e(TAG, "userProfile: "+object);
-                    JSONObject respData = new JSONObject();
-                    try {
-                        respData.put("name",object.optString("name"));
-                        respData.put("facebookId",object.optString("id"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    tdelegate.onFinish(respData);
+                    ArrayList<Object> arrayList = new ArrayList<>();
+                    arrayList.add(object.optString("name"));
+                    arrayList.add(object.optString("id"));
+                    tdelegate.onFinish(arrayList);
                 }
             }
         }).executeAsync();
@@ -150,7 +147,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
 
     public void confirmRequest(JSONObject fidOrTokens,String title,String msg,InvokeJavaMethodDelegate delegate){
-        requestDialog = new GameRequestDialog(SystemUtil.activity);
+        requestDialog = new GameRequestDialog(SystemUtil.getInstance().getActivity());
         final InvokeJavaMethodDelegate tdelegate = delegate;
         requestDialog.registerCallback(callbackManager,
                 new FacebookCallback<GameRequestDialog.Result>() {
@@ -166,7 +163,7 @@ public class FacebookHelper implements LifeCycleDelegate {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        tdelegate.onFinish(respData);
+//                        tdelegate.onFinish(respData);
                     }
                     public void onCancel() {
 
@@ -295,7 +292,7 @@ public class FacebookHelper implements LifeCycleDelegate {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    FacebookHelper.this.loginListener.onFinish(resqData);
+//                    FacebookHelper.this.loginListener.onFinish(resqData);
                 }
             }
 

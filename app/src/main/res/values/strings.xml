@@ -4,7 +4,7 @@
     <string name="banner_ad_unit_id">ca-app-pub-9274282740568260/5352356909</string>
     <string name="interstitial_ad_unit_id">ca-app-pub-9274282740568260/1808342671</string>
     <string name="video_ad_unit_id">ca-app-pub-9274282740568260/7235751563</string>
-    <string name="admob_test_device_id">C52A22452189C273CB9C321D8B840BEC</string>
+    <string name="admob_test_device_id">E6C996F873CC9C53838483A9444F9732</string>
     <string name="vungle_spot_id">DEFAULT98364</string>
     <string name="vungle_video_id">REWARDE91320</string>
 </resources>

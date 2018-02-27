@@ -4,7 +4,7 @@ package com.joycastle.gamepluginbase;
  * Created by gaoyang on 10/9/16.
  */
 
-public interface IabDelegate extends LifeCycleDelegate,InvokeJavaMethodDelegate {
+public interface IabDelegate extends LifeCycleDelegate {
     interface RestoreDelegate {
         void onResult(boolean result, String iapId, String message);
     }
