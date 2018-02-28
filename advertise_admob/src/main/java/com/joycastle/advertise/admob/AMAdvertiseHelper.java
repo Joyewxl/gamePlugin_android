@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -212,7 +213,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
             @Override
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);
-                requestNewInterstitial();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestNewInterstitial();
+                    }
+                }, 5000);
             }
 
             @Override
@@ -259,7 +265,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
             @Override
             public void onRewardedVideoAdFailedToLoad(int i) {
-                requestNewVideo();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestNewVideo();
+                    }
+                }, 5000);
             }
         });
         requestNewVideo();
