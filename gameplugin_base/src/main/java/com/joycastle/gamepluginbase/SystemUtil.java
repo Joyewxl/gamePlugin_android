@@ -315,6 +315,7 @@ public class SystemUtil {
         String[] reciver = new String[] { "testgameplugin@gmail.com" };
         Intent myIntent = new Intent(android.content.Intent.ACTION_SEND);
         myIntent.setType("plain/text");
+//        myIntent.setType("message/rfc822");
         myIntent.putExtra(android.content.Intent.EXTRA_EMAIL, reciver);
         myIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         myIntent.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
@@ -329,47 +330,16 @@ public class SystemUtil {
 
     public void postNotication(JSONObject notifications) {
         Log.e(TAG, "postNotication: " + notifications.toString());
-//
-//        Context context = activity.getApplicationContext();
-//
-//        AlarmManager alarmMgr = (AlarmManager) context
-//                .getSystemService(Context.ALARM_SERVICE);
-//        //包装需要执行Service的Intent
-//        Intent intent = new Intent(context, activity.getClass());
-//        intent.setAction("notifcation");
-//        PendingIntent pendingIntent = PendingIntent.getService(context, 0,
-//                intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        //
-//        int triggerAtTime = 10;
-//        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M)
-//        {
-//            alarmMgr.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pendingIntent);
-//        }else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
-//            alarmMgr.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pendingIntent);
-//        }else{
-//            alarmMgr.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,triggerAtTime,pendingIntent);
-//        }
-//
-//
-//        NotificationCompat.Builder mBuilder =
-//                new NotificationCompat.Builder(activity.getApplicationContext())
-//                        .setAutoCancel(true)
-//                        .setOngoing(true)
-//                        .setSmallIcon(R.mipmap.ic_launcher)
-//                        .setDefaults(NotificationCompat.DEFAULT_ALL)
-//                        .setNumber(0)
-//                        .setContentTitle("blackjack")
-//                        .setContentText("blackjack")
-//                        .setWhen(System.currentTimeMillis());
-//
-//        Intent resultIntent = new Intent(context,activity.getClass());
-//
-//        PendingIntent resultPendingIntent = PendingIntent.getActivity(context,0, resultIntent,
-//                PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        mBuilder.setContentIntent(resultPendingIntent);
-//        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
-//        mNotificationManager.notify(0, mBuilder.build());
+
+        String content = null;
+        int notiTime = 0;
+        try {
+            content = notifications.getString("message");
+            notiTime = notifications.getInt("delay");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        this.addLocalNotication("blackjack", content, notiTime);
     }
 
     /*
