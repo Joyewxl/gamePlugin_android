@@ -1,5 +1,6 @@
 package com.joycastle.advertise.admob;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
@@ -35,7 +36,8 @@ import java.util.ArrayList;
  * Created by gaoyang on 9/29/16.
  */
 
-public class AMAdvertiseHelper implements AdvertiseDelegate {
+@SuppressLint("MissingPermission")
+public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdListener {
     private static final String TAG = "AMAdvertiseHelper";
 
     private static AMAdvertiseHelper instance = new AMAdvertiseHelper();
@@ -43,6 +45,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     private Class<MediationAdapter> vungleClass = null;
     private Bundle vungleExtras = null;
 
+    private String appId = null;
     private String bannerId = null;
     private String interstitialId = null;
     private String videoId = null;
@@ -125,10 +128,10 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
             Class clazz = Class.forName("com.joycastle.advertise.admob.adapter.vungle.VGAdvertiseHelper");
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
-            Method method = clazz.getMethod("init", Application.class);
-            method.invoke(instance, application);
+            Method method = clazz.getMethod("init");
+            method.invoke(instance);
         } catch (Exception e) {
-            Log.e(TAG, "vungle is disable");
+            Log.e(TAG, "vungle adapter is disable");
             e.printStackTrace();
         }
 
@@ -151,10 +154,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
     private void requestNewInterstitial() {
         if (interstitialAd.isLoaded())
             return;
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice(testDeviceId)
-                .build();
-        interstitialAd.loadAd(adRequest);
+        AdRequest.Builder builder = new AdRequest.Builder();
+        builder.addTestDevice(testDeviceId);
+        if (vungleClass != null && vungleExtras != null) {
+            builder.addNetworkExtrasBundle(vungleClass, vungleExtras);
+        }
+        interstitialAd.loadAd(builder.build());
     }
 
     /**
@@ -166,18 +171,20 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
         AdRequest.Builder builder = new AdRequest.Builder();
         builder.addTestDevice(testDeviceId);
         if (vungleClass != null && vungleExtras != null) {
-            builder.addNetworkExtrasBundle(vungleClass,vungleExtras);
+            builder.addNetworkExtrasBundle(vungleClass, vungleExtras);
         }
-        AdRequest adRequest = builder.build();
-        mRewardedVideoAd.loadAd(videoId, adRequest);
+        mRewardedVideoAd.loadAd(videoId, builder.build());
     }
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
-        bannerId = SystemUtil.getInstance().getMetaData("banner_ad_unit_id");
-        interstitialId = SystemUtil.getInstance().getMetaData("interstitial_ad_unit_id");
-        videoId = SystemUtil.getInstance().getMetaData("video_ad_unit_id");
+        appId = SystemUtil.getInstance().getMetaData("admob_app_id");
+        bannerId = SystemUtil.getInstance().getMetaData("admob_banner_id");
+        interstitialId = SystemUtil.getInstance().getMetaData("admob_interstitial_id");
+        videoId = SystemUtil.getInstance().getMetaData("admob_video_id");
         testDeviceId = SystemUtil.getInstance().getMetaData("admob_test_device_id");
+
+        MobileAds.initialize(activity, appId);
 
         // init banner ad
         bannerAd = new AdView(activity);
@@ -231,51 +238,8 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
         //init reward video ad
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(activity);
-        mRewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
-            @Override
-            public void onRewardedVideoAdLoaded() {
-            }
-
-            @Override
-            public void onRewardedVideoAdOpened() {
-            }
-
-            @Override
-            public void onRewardedVideoStarted() {
-            }
-
-            @Override
-            public void onRewardedVideoAdClosed() {
-                requestNewVideo();
-                ArrayList arrayList = new ArrayList();
-                arrayList.add(rewardAdViewed);
-                arrayList.add(rewardAdClicked);
-                rewardAdListener.onFinish(arrayList);
-            }
-
-            @Override
-            public void onRewarded(RewardItem rewardItem) {
-                rewardAdViewed = true;
-            }
-
-            @Override
-            public void onRewardedVideoAdLeftApplication() {
-                rewardAdClicked = true;
-            }
-
-            @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        requestNewVideo();
-                    }
-                }, 5000);
-            }
-        });
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
         requestNewVideo();
-
-
     }
 
     @Override
@@ -285,12 +249,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void onResume(Activity activity) {
-
+        mRewardedVideoAd.resume(activity);
     }
 
     @Override
     public void onPause(Activity activity) {
-
+        mRewardedVideoAd.pause(activity);
     }
 
     @Override
@@ -300,11 +264,55 @@ public class AMAdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void onDestroy(Activity activity) {
-
+        mRewardedVideoAd.destroy(activity);
     }
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
 
+    }
+
+    @Override
+    public void onRewardedVideoAdLoaded() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+        requestNewVideo();
+        ArrayList arrayList = new ArrayList();
+        arrayList.add(rewardAdViewed);
+        arrayList.add(rewardAdClicked);
+        rewardAdListener.onFinish(arrayList);
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        rewardAdViewed = true;
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+        rewardAdClicked = true;
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                requestNewVideo();
+            }
+        }, 5000);
     }
 }

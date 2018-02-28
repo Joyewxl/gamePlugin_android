@@ -1,43 +1,62 @@
-# GamePlugin
+# 1 GamePlugin
 
 build.gradle
 
     compile project(path: ':gameplugin')
 
-# Analytics
 
-## Flurry
+# 2 Analytics
 
-build.gradle
-    
+## 2.1 Flurry
+
+build.gradle    
     compile project(path: ':my_analytic_flurry')
 
 strings.xml
 
     <string name="Flurry_AppKey">1111111111111111111111</string>
 
-# Advertise
 
-## Admob
-    
-build.gradle
+# 3 Advertise
 
-    classpath 'com.google.gms:google-services:3.0.0'
+## 3.1 Admob
 
-build.gradle
+project level build.gradle
 
-    apply plugin: 'com.google.gms.google-services'
+```groovy
+allprojects {
+    repositories {
+        maven {
+            url "https://maven.google.com"
+        }
+    }
+}
+```
+strings.xml
+
+```xml
+    <string name="admob_app_id">ca-app-pub-9274282740568260~7977987594</string>
+    <string name="admob_banner_id">banner_ad_unit_id</string>
+    <string name="admob_interstitial_id">ca-app-pub-9274282740568260/1808342671</string>
+    <string name="admob_video_id">ca-app-pub-9274282740568260/7235751563</string>
+    <string name="admob_test_device_id">4258574fe1cc47ea897030ce840c886b</string>
+```
+
+### 3.1.1 Vungle-Adapter
 
 strings.xml
 
-    <string name="banner_ad_unit_id">ca-app-pub-9274282740568260/4259450900</string>
-    <string name="interstitial_ad_unit_id">ca-app-pub-9274282740568260/3965072900</string>
-    <string name="admob_test_device_id">43EDC6D96834B689D5D0AAF8CFF44CCB</string>
+```xml
+    <string name="vungle_video_id">vungle_video_id</string>
+    <string name="vungle_spot_id">vungle_spot_id</string>
+```
 
-# Facebook
+
+
+# 4 Facebook
 
 build.gradle
-    
+​    
     compile project(path: ':my_facebook')
 
 AndroidManifest.xml
@@ -48,6 +67,6 @@ AndroidManifest.xml
         android:exported="true"/>
 
 strings.xml
-    
+​    
     <string name="facebook_app_id">184666628540822</string>
     <string name="fb_login_protocol_scheme">fb184666628540822</string>

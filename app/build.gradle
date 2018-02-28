@@ -44,14 +44,12 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:multidex:1.0.2'
     compile project(path: ':gameplugin_base');
     compile project(path: ':gameplugin')
     compile project(path: ':analytic_flurry')
     compile project(path: ':advertise_admob')
     compile project(path: ':advertise_admob_adapter_vungle')
-    compile project(path: ':advertise_adcolony')
     compile project(path: ':iap_googleplay')
-    compile 'com.android.support:multidex:1.0.1'
     compile project(path: ':social_facebook')
 }
-apply plugin: 'com.google.gms.google-services'
