@@ -9,12 +9,12 @@ build.gradle
 
 ## 2.1 Flurry
 
-build.gradle    
-    compile project(path: ':my_analytic_flurry')
 
 strings.xml
 
-    <string name="Flurry_AppKey">1111111111111111111111</string>
+```groovy
+<string name="flurry_key">flurry_key</string>
+```
 
 
 # 3 Advertise

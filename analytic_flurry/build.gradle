@@ -22,5 +22,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile project(path: ':gameplugin_base')
-    compile 'com.flurry.android:analytics:6.4.2'
+    compile 'com.flurry.android:analytics:8.2.0@aar'
 }

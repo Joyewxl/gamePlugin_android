@@ -1,20 +1,15 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joycastle.analytic.flurry">
 
-    <!-- Required permissions - Internet access -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <!-- Recommended permission - External memory pre-caching -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <!-- Optional permission - Location based ad targeting -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
         android:supportsRtl="true">
 
-        <meta-data android:name="Flurry_AppKey" android:value="@string/Flurry_AppKey"/>
+        <meta-data android:name="flurry_key" android:value="@string/flurry_key"/>
 
     </application>
 

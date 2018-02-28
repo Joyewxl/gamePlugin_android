@@ -80,14 +80,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
-        hashMap.put("--------AnalyticHelper", new OnClickListener() {
-            @Override
-            public void onClick() {
-                System.out.println("AnalyticHelper");
-            }
-        });
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
         hashMap.put("Notifcation", new OnClickListener() {
             @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -110,21 +102,34 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
+        ///////////////////////////////统计///////////////////////////////
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("--------AnalyticHelper", new OnClickListener() {
+            @Override
+            public void onClick() {
+                System.out.println("AnalyticHelper");
+            }
+        });
+
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
         hashMap.put("setAccoutInfo", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                JSONObject jso = new JSONObject();
-                jso.put("test","hello");
-                json.put(jso);
-                reqData.put("json", json);
-                System.out.print("request json : "+reqData.toString());
-                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","showAlertDialog",reqData.toString(),0);
-
-
+                HashMap map = new HashMap();
+                map.put("userId", "00001");
+                map.put("gender", "male");
+                map.put("age", 20);
+                AnalyticHelper.getInstance().setAccoutInfo(map);
+//                JSONObject reqData = new JSONObject();
+//                JSONArray json =new JSONArray();
+//                JSONObject jso = new JSONObject();
+//                jso.put("test","hello");
+//                json.put(jso);
+//                reqData.put("json", json);
+//                System.out.print("request json : "+reqData.toString());
+//                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","showAlertDialog",reqData.toString(),0);
             }
         });
 
@@ -133,7 +138,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("onEvent", new OnClickListener() {
             @Override
             public void onClick() {
-                AnalyticHelper.getInstance().onEvent("eventId");
+                AnalyticHelper.getInstance().onEvent("dead");
             }
         });
 
@@ -142,7 +147,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("onEventWithLabel", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().onEvent("eventId", "eventLabel");
+                AnalyticHelper.getInstance().onEvent("dead", "10");
             }
         });
 
@@ -152,86 +157,13 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public void onClick() throws JSONException {
                 HashMap<String, String> map = new HashMap<>();
-                map.put("userId", "001");
-                map.put("gender", "female");
-                map.put("age", "10");
-                AnalyticHelper.getInstance().onEvent("eventId", map);
+                map.put("level", "10");
+                map.put("score", "100");
+                AnalyticHelper.getInstance().onEvent("dead", map);
             }
         });
 
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("setLevel", new OnClickListener() {
-            @Override
-            public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().setLevel(10);
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("charge", new OnClickListener() {
-            @Override
-            public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().charge("coin1", 1.0 , 1, 1000);
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("reward", new OnClickListener() {
-            @Override
-            public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().reward(1, 1000);
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("purchase", new OnClickListener() {
-            @Override
-            public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().purchase("helmet", 1, 1);
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("use", new OnClickListener() {
-            @Override
-            public void onClick() throws JSONException {
-                AnalyticHelper.getInstance().use("helmet", 1, 1);
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("onMissionBegin", new OnClickListener() {
-            @Override
-            public void onClick() {
-                AnalyticHelper.getInstance().onMissionBegin("collect");
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("onMissionCompleted", new OnClickListener() {
-            @Override
-            public void onClick() {
-                AnalyticHelper.getInstance().onMissionCompleted("collect");
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("onMissionFailed", new OnClickListener() {
-            @Override
-            public void onClick() {
-                AnalyticHelper.getInstance().onMissionFailed("collect", "timeout");
-            }
-        });
-
-
+        ///////////////////////////////Facebook///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
         hashMap.put("--------FaceBook", new OnClickListener() {

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">GamePlugin</string>
 
-    <string name="Flurry_AppKey">1111111111111111111111</string>
+    <string name="flurry_key">1111111111111111111111</string>
 
     <string name="admob_app_id">ca-app-pub-9274282740568260~7977987594</string>
     <string name="admob_banner_id">banner_ad_unit_id</string>
