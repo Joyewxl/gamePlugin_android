@@ -1,10 +1,15 @@
 package com.joycastle.app;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
+
 import android.content.Intent;
+
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -58,10 +63,50 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
+        hashMap.put("sendEmail", new OnClickListener() {
+            @Override
+            public void onClick() {
+//               SystemUtil.sendEmail("hahahahahahahaha",null,"hohohohohohohohohohohoho");
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                try {
+                    reqData.put("json", json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","getAppVer",reqData.toString(),-1);
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
         hashMap.put("--------AnalyticHelper", new OnClickListener() {
             @Override
             public void onClick() {
                 System.out.println("AnalyticHelper");
+            }
+        });
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("Notifcation", new OnClickListener() {
+            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick() {
+                JSONObject reqData = new JSONObject();
+                JSONArray json =new JSONArray();
+                JSONObject jso = new JSONObject();
+                try {
+                    jso.put("time",10);
+                    jso.put("title","blackjack");
+                    jso.put("msg","haohaoahoahaoa");
+                    json.put(jso);
+                    reqData.put("json", json);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                System.out.print("request json : "+reqData.toString());
+                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","postNotication",reqData.toString(),-1);
+
             }
         });
 
@@ -70,16 +115,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("setAccoutInfo", new OnClickListener() {
             @Override
             public void onClick() throws JSONException {
-////                Map<String, String> map = new HashMap();
-//                JSONObject map = new JSONObject();
-//                map.put("userId", "001");
-//                map.put("gender", "female");
-//                map.put("age", "10");
-////                AnalyticHelper.getInstance().setAccoutInfo(map);
-//                ArrayList<String> arr = new ArrayList<String>();
-//                arr.add(map.toString());
-//                Log.e(TAG, "onClick: "+arr.toString() );
-//                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AnalyticHelper","setAccoutInfo",arr.toString(),-1);
                 JSONObject reqData = new JSONObject();
                 JSONArray json =new JSONArray();
                 JSONObject jso = new JSONObject();
