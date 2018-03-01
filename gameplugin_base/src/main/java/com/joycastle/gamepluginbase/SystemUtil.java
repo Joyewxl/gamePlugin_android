@@ -135,6 +135,14 @@ public class SystemUtil {
         }
         return versionName;
     }
+    /**
+     * 获取AppBuild
+     * @return
+     */
+    public int getAppBuild() {
+        //TODO
+        return 10;
+    }
 
     /**
      * 获取VersionCode
