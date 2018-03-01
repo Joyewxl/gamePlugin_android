@@ -38,7 +38,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
     private ArrayList<HashMap<String, OnClickListener>> arrayList = null;
 
     interface OnClickListener {
-        void onClick() throws JSONException;
+        void onClick();
     }
 
     @Override
@@ -52,31 +52,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList = new ArrayList<>();
         HashMap<String, OnClickListener> hashMap;
 
+        ///////////////////////////////Analytic///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
-        hashMap.put("--------AnalyticHelper", new OnClickListener() {
-            @Override
-            public void onClick() {
-                System.out.println("AnalyticHelper");
-            }
-        });
-
-
-        ///////////////////////////////统计///////////////////////////////
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("--------AnalyticHelper", new OnClickListener() {
-            @Override
-            public void onClick() {
-                System.out.println("AnalyticHelper");
-            }
-        });
+        hashMap.put("--------AnalyticHelper", null);
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
         hashMap.put("setAccoutInfo", new OnClickListener() {
             @Override
-            public void onClick() throws JSONException {
+            public void onClick() {
                 HashMap map = new HashMap();
                 map.put("userId", "00001");
                 map.put("gender", "male");
@@ -106,7 +91,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("onEventWithLabel", new OnClickListener() {
             @Override
-            public void onClick() throws JSONException {
+            public void onClick() {
                 AnalyticHelper.getInstance().onEvent("dead", "10");
             }
         });
@@ -115,7 +100,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("onEventWithData", new OnClickListener() {
             @Override
-            public void onClick() throws JSONException {
+            public void onClick() {
                 HashMap<String, String> map = new HashMap<>();
                 map.put("level", "10");
                 map.put("score", "100");
@@ -126,12 +111,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         ///////////////////////////////Facebook///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
-        hashMap.put("--------FaceBook", new OnClickListener() {
-            @Override
-            public void onClick() {
-                System.out.println("AnalyticHelper");
-            }
-        });
+        hashMap.put("--------FaceBook", null);
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
@@ -234,7 +214,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("getFacebookProfile", new OnClickListener() {
 
             @Override
-            public void onClick() throws JSONException {
+            public void onClick() {
 //               String str = FacebookHelper.getInstance().getUserProfile(null,null);
                 FacebookHelper.getInstance().getUserProfile(new InvokeJavaMethodDelegate() {
                     @Override
@@ -253,7 +233,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap.put("getAccessToken", new OnClickListener() {
 
             @Override
-            public void onClick() throws JSONException {
+            public void onClick(){
                 JSONObject respJson = null;
                 try {
                     respJson = FacebookHelper.getInstance().getAccessToken(null);
@@ -266,15 +246,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         });
 
 
-        ///////////////////////////////广告///////////////////////////////
+        ///////////////////////////////Advertise///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
-        hashMap.put("--------AdvertiseHelper", new OnClickListener() {
-            @Override
-            public void onClick() {
-                System.out.println("AnalyticHelper");
-            }
-        });
+        hashMap.put("--------AdvertiseHelper", null);
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
@@ -375,15 +350,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
-        ///////////////////////////////支付///////////////////////////////
+        ///////////////////////////////IAB///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
-        hashMap.put("--------GamePlugin", new OnClickListener() {
-            @Override
-            public void onClick() {
-                System.out.println("AnalyticHelper");
-            }
-        });
+        hashMap.put("--------IAB", null);
 
         IabHelper.getInstance().setRestoreHandler(new IabDelegate.RestoreDelegate() {
             @Override
@@ -393,6 +363,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             }
         });
+
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
         hashMap.put("purchase", new OnClickListener() {
@@ -414,31 +385,152 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
+        ///////////////////////////////GamePlugin///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
-        hashMap.put("showLoading", new OnClickListener() {
+        hashMap.put("--------GamePlugin", null);
+
+        ///////////////////////////////SystemUtil///////////////////////////////
+        addToArrayList("--------SystemUtil", null);
+        addToArrayList("getDebugMode", new OnClickListener() {
             @Override
             public void onClick() {
+                int debugMode = SystemUtil.getInstance().getDebugMode();
+                showAlert(String.valueOf(debugMode));
+            }
+        });
+        addToArrayList("getMetaData", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String value = SystemUtil.getInstance().getMetaData("flurry_key");
+                showAlert(value);
+            }
+        });
+        addToArrayList("getPackageName", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String packageName = SystemUtil.getInstance().getPackageName();
+                showAlert(packageName);
+            }
+        });
+        addToArrayList("getAppName", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String appName = SystemUtil.getInstance().getAppName();
+                showAlert(appName);
+            }
+        });
+        addToArrayList("getVersionName", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String versionName = SystemUtil.getInstance().getVersionName();
+                showAlert(versionName);
+            }
+        });
+        addToArrayList("getVersionCode", new OnClickListener() {
+            @Override
+            public void onClick() {
+                int versionCode = SystemUtil.getInstance().getVersionCode();
+                showAlert(String.valueOf(versionCode));
+            }
+        });
+        addToArrayList("getDeviceName", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String deviceName = SystemUtil.getInstance().getDeviceName();
+                showAlert(deviceName);
+            }
+        });
+        addToArrayList("getDeviceModel", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String deviceModel = SystemUtil.getInstance().getDeviceModel();
+                showAlert(deviceModel);
+            }
+        });
+        addToArrayList("getDeviceType", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String deviceType = SystemUtil.getInstance().getDeviceType();
+                showAlert(deviceType);
+            }
+        });
+        addToArrayList("getSystemName", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String systemName = SystemUtil.getInstance().getSystemName();
+                showAlert(systemName);
+            }
+        });
+        addToArrayList("getSystemVersion", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String systemVersion = SystemUtil.getInstance().getSystemVersion();
+                showAlert(systemVersion);
+            }
+        });
+        addToArrayList("getUUID", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String uuid = SystemUtil.getInstance().getUUID();
+                showAlert(uuid);
+            }
+        });
+        addToArrayList("getCountryCode", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String countryCode = SystemUtil.getInstance().getCountryCode();
+                showAlert(countryCode);
+            }
+        });
+        addToArrayList("getLanguageCode", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String languageCode = SystemUtil.getInstance().getLanguageCode();
+                showAlert(languageCode);
+            }
+        });
+        addToArrayList("getCpuTime", new OnClickListener() {
+            @Override
+            public void onClick() {
+                long cpuTime = SystemUtil.getInstance().getCpuTime();
+                showAlert(String.valueOf(cpuTime));
+            }
+        });
+        addToArrayList("showLoading & hideLoading", new OnClickListener() {
+            @Override
+            public void onClick() {
+                SystemUtil.getInstance().showLoading("Loading...");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        SystemUtil.getInstance().showLoading("Loading...");
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                SystemUtil.getInstance().hideLoading();
-                            }
-                        }, 5);
+                        SystemUtil.getInstance().hideLoading();
                     }
-                }, 0);
+                }, 5000);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("postNotication", new OnClickListener() {
+        addToArrayList("vibrate", new OnClickListener() {
             @Override
             public void onClick() {
+                SystemUtil.getInstance().vibrate();
+            }
+        });
+        addToArrayList("setNotificationState: true", new OnClickListener() {
+            @Override
+            public void onClick() {
+                SystemUtil.getInstance().setNotificationState(true);
+            }
+        });
+        addToArrayList("setNotificationState: false", new OnClickListener() {
+            @Override
+            public void onClick() {
+                SystemUtil.getInstance().setNotificationState(false);
+            }
+        });
+        addToArrayList("postNotication", new OnClickListener() {
+            @Override
+            public void onClick() {
+                //TODO: 参数类型不对
                 JSONObject json = new JSONObject();
                 try {
                     json.put("message","hello world ！！！");
@@ -446,20 +538,41 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-               SystemUtil.getInstance().postNotication(json);
+                SystemUtil.getInstance().postNotication(json);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("vibrate", new OnClickListener() {
+        addToArrayList("copyToClipboard", new OnClickListener() {
             @Override
             public void onClick() {
-                SystemUtil.getInstance().vibrate();
+                SystemUtil.getInstance().copyToPasteboard("hello world");
             }
         });
-
+        addToArrayList("setBadgeNum", new OnClickListener() {
+            @Override
+            public void onClick() {
+                SystemUtil.getInstance().setBadgeNum(3);
+            }
+        });
+        addToArrayList("keychainSet", new OnClickListener() {
+            @Override
+            public void onClick() {
+                SystemUtil.getInstance().keychainSet("hahaha", "hehehe");
+            }
+        });
+        addToArrayList("keychainGet", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String value = SystemUtil.getInstance().keychainGet("hahaha");
+                showAlert(value);
+            }
+        });
+        addToArrayList("isRoot", new OnClickListener() {
+            @Override
+            public void onClick() {
+                boolean isRoot = SystemUtil.getInstance().isRoot();
+                showAlert(String.valueOf(isRoot));
+            }
+        });
 
         List<String> data = new ArrayList<>();
         for (HashMap<String, OnClickListener> item : arrayList) {
@@ -468,19 +581,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         ListView listView = (ListView) findViewById(R.id.listview);
         listView.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_expandable_list_item_1, data));
         listView.setOnItemClickListener(this);
-
-
     }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         HashMap<String, OnClickListener> hashMap = arrayList.get(i);
         OnClickListener listener = hashMap.entrySet().iterator().next().getValue();
-        try {
+        if (listener != null)
             listener.onClick();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -519,15 +627,18 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         GamePlugin.getInstance().onActivityResult(this, requestCode, resultCode, data);
     }
 
+    public void addToArrayList(String name, OnClickListener listener) {
+        HashMap<String, OnClickListener> hashMap = new HashMap<>();
+        hashMap.put(name, listener);
+        arrayList.add(hashMap);
+    }
+
     public void showAlert(String message) {
+        message = message==null ? "null" : message;
         new AlertDialog.Builder(this)
                 .setMessage(message)
                 .create()
-                .show();;
+                .show();
+        Log.e(TAG, message);
     }
-
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
 }

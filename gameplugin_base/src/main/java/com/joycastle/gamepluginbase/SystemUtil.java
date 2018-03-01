@@ -37,7 +37,6 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -187,23 +186,7 @@ public class SystemUtil {
                         // Use the ids previously computed and stored in the prefs file
                         uuid = id;
                     } else {
-
-                        final String androidId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-
-                        // Use the Android ID unless it's broken, in which case fallback on deviceId,
-                        // unless it's not available, then fallback on a random number which we store
-                        // to a prefs file
-                        try {
-                            if (!"9774d56d682e549c".equals(androidId)) {
-                                uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8")).toString();
-                            } else {
-                                final String deviceId = ((TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE)).getDeviceId();
-                                uuid = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")).toString() : UUID.randomUUID().toString();
-                            }
-                        } catch (UnsupportedEncodingException e) {
-                            throw new RuntimeException(e);
-                        }
-
+                        uuid = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                         // Write the value out to the prefs file
                         prefs.edit().putString(PREFS_DEVICE_ID, uuid).commit();
                     }
@@ -339,35 +322,16 @@ public class SystemUtil {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        this.addLocalNotication("blackjack", content, notiTime);
-    }
-
-    /*
-      * name:通知名字，作为通知id使用
-      * content：通知内容
-      * time：倒时时（秒）
-      * */
-    public void addLocalNotication(String name, String content, int time)
-    {
-
         Intent intent = new Intent(this.activity, NotificationReceiver.class);
-        intent.setData(Uri.parse(name));
+        intent.setData(Uri.parse("blackjack"));
         intent.putExtra("msg", "blackjack");
         intent.putExtra("content", content);
         PendingIntent pi = PendingIntent.getBroadcast(this.activity, 0, intent, 0);
         AlarmManager am = (AlarmManager) this.activity.getSystemService(Context.ALARM_SERVICE);
 
-        int anHour =  time * 1000 ;  // 6秒
+        int anHour =  notiTime * 1000 ;  // 6秒
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
         am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
-
-    }
-
-    public void copyToClipboard(String text){
-        Context context = this.application.getApplicationContext();
-        ClipboardManager clip = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-        //clip.getText(); // 粘贴
-        clip.setText(text); // 复制
     }
 
     public void setBadgeNum(int num) {
@@ -526,13 +490,15 @@ public class SystemUtil {
     }
 
     public void copyToPasteboard(String str) {
-        assert(false);
+        Context context = this.application.getApplicationContext();
+        ClipboardManager clip = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
+        //clip.getText(); // 粘贴
+        clip.setText(str); // 复制
     }
 
     public void requestUrl(String requestType, String url, HashMap<String, Object> map, InvokeJavaMethodDelegate delegate) {
         assert(false);
     }
-
 
     public static class NotificationReceiver extends BroadcastReceiver
     {
