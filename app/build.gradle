@@ -17,7 +17,7 @@ android {
     buildToolsVersion '26.0.2'
 
     defaultConfig {
-        applicationId "com.joycastle.app"
+        applicationId "com.cardgamefree.blackjack"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 122
@@ -53,3 +53,4 @@ dependencies {
     compile project(path: ':iap_googleplay')
     compile project(path: ':social_facebook')
 }
+

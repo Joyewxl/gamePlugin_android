@@ -1,10 +1,6 @@
 package com.joycastle.gamepluginbase;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by geekgy on 16/4/22.

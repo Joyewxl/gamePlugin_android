@@ -331,7 +331,6 @@ public class SystemUtil {
 
     public void postNotication(JSONObject notifications) {
         Log.e(TAG, "postNotication: " + notifications.toString());
-
         String content = null;
         int notiTime = 0;
         try {
@@ -350,19 +349,18 @@ public class SystemUtil {
       * */
     public void addLocalNotication(String name, String content, int time)
     {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(System.currentTimeMillis());
-        cal.add(Calendar.SECOND, (int) time);
 
-        Intent intent = new Intent(activity, NotificationReceiver.class);
-        intent.setClass(activity, NotificationReceiver.class);
+        Intent intent = new Intent(this.activity, NotificationReceiver.class);
         intent.setData(Uri.parse(name));
         intent.putExtra("msg", "blackjack");
         intent.putExtra("content", content);
+        PendingIntent pi = PendingIntent.getBroadcast(this.activity, 0, intent, 0);
+        AlarmManager am = (AlarmManager) this.activity.getSystemService(Context.ALARM_SERVICE);
 
-        PendingIntent pi = PendingIntent.getBroadcast(activity, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        AlarmManager am = (AlarmManager) activity.getSystemService(Context.ALARM_SERVICE);
-        am.set(AlarmManager.RTC_WAKEUP, cal.getTimeInMillis(), pi);
+        int anHour =  time * 1000 ;  // 6秒
+        long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
+        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
+
     }
 
     public void copyToClipboard(String text){
@@ -382,7 +380,7 @@ public class SystemUtil {
         if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
             sendToXiaoMi(context,num);
         } else if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
-            sendToHuaWei(context,num);
+//            sendToHuaWei(context,num);
         } else if (Build.MANUFACTURER.equalsIgnoreCase("sony")) {
             sendToSony(context,num);
         } else if (Build.MANUFACTURER.toLowerCase().contains("samsung")) {
@@ -403,7 +401,7 @@ public class SystemUtil {
         localBundle.putInt("badgenumber", count);//未读信息条数
         context.getContentResolver().call(
                 Uri.parse("content://com.huawei.android.launcher.settings/badge/"),
-                "change badge", null, localBundle);
+                "change_badge", null, localBundle);
     }
     /**
      * 向小米手机发送未读消息数广播
@@ -534,46 +532,46 @@ public class SystemUtil {
     public void requestUrl(String requestType, String url, HashMap<String, Object> map, InvokeJavaMethodDelegate delegate) {
         assert(false);
     }
-}
 
-class NotificationReceiver extends BroadcastReceiver
-{
-    public NotificationReceiver(){}
 
-    @Override
-    public void onReceive(Context context, Intent itent) {
-        String msg = itent.getStringExtra("msg");
-        String content = itent.getStringExtra("content");
-        //推送一条通知
-        shownotification(context,msg,content);
-        return;
-    }
-
-    public void shownotification(Context context,String title, String msg)
+    public static class NotificationReceiver extends BroadcastReceiver
     {
-        Activity activity = SystemUtil.getInstance().getActivity();
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String msg = intent.getStringExtra("msg");
+            String content = intent.getStringExtra("content");
+            //推送一条通知
+            shownotification(context,msg,content);
+            return;
+        }
 
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(activity.getApplicationContext())
-                        .setAutoCancel(true)
-                        .setOngoing(true)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
-                        .setNumber(0)
-                        .setContentTitle(title)
-                        .setContentText(msg)
-                        .setWhen(System.currentTimeMillis());
+        public void shownotification(Context context,String title, String msg)
+        {
+            Activity activity = SystemUtil.getInstance().getActivity();
 
-        Intent resultIntent = new Intent(context,activity.getClass());
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(activity.getApplicationContext())
+                            .setAutoCancel(true)
+                            .setOngoing(true)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setDefaults(NotificationCompat.DEFAULT_ALL)
+                            .setNumber(0)
+                            .setContentTitle(title)
+                            .setContentText(msg)
+                            .setWhen(System.currentTimeMillis());
 
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(context,0, resultIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent resultIntent = new Intent(context,activity.getClass());
 
-        mBuilder.setContentIntent(resultPendingIntent);
-        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
-        mNotificationManager.notify(0, mBuilder.build());
+            PendingIntent resultPendingIntent = PendingIntent.getActivity(context,0, resultIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
+            mNotificationManager.notify(0, mBuilder.build());
+        }
     }
 }
+
 
 
 

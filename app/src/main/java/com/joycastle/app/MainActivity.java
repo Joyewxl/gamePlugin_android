@@ -1,15 +1,10 @@
 package com.joycastle.app;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
-
 import android.content.Intent;
-
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,21 +16,17 @@ import com.joycastle.gameplugin.AdvertiseHelper;
 import com.joycastle.gameplugin.AnalyticHelper;
 import com.joycastle.gameplugin.GamePlugin;
 import com.joycastle.gameplugin.IabHelper;
-import com.joycastle.gameplugin.NativeUtil;
-import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.my_facebook.FacebookHelper;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
     static {
@@ -63,44 +54,13 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
-        hashMap.put("sendEmail", new OnClickListener() {
+        hashMap.put("--------AnalyticHelper", new OnClickListener() {
             @Override
             public void onClick() {
-//               SystemUtil.sendEmail("hahahahahahahaha",null,"hohohohohohohohohohohoho");
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                try {
-                    reqData.put("json", json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","getAppVer",reqData.toString(),-1);
+                System.out.println("AnalyticHelper");
             }
         });
 
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("Notifcation", new OnClickListener() {
-            @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-            @Override
-            public void onClick() {
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                JSONObject jso = new JSONObject();
-                try {
-                    jso.put("time",10);
-                    jso.put("title","blackjack");
-                    jso.put("msg","haohaoahoahaoa");
-                    json.put(jso);
-                    reqData.put("json", json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.print("request json : "+reqData.toString());
-                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","postNotication",reqData.toString(),-1);
-
-            }
-        });
 
         ///////////////////////////////统计///////////////////////////////
         hashMap = new HashMap<>();
@@ -179,26 +139,27 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                JSONObject jso = new JSONObject();
-                try {
-                    json.put(jso);
-                    json.put("blackjack");
-                    json.put("blackjack");
-                    reqData.put("json", json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.print("request json : "+reqData.toString());
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","confirmRequest",reqData.toString(),1);
+//                JSONObject reqData = new JSONObject();
+//                JSONArray json =new JSONArray();
+//                JSONObject jso = new JSONObject();
+//                try {
+//                    json.put(jso);
+//                    json.put("blackjack");
+//                    json.put("blackjack");
+//                    reqData.put("json", json);
+//                } catch (JSONException e) {`
+//                    e.printStackTrace();
+//                }
+//                System.out.print("request json : "+reqData.toString());
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","confirmRequest",reqData.toString(),1);
 
-//                FacebookHelper.getInstance().confirmRequest(reqData, "black", "black", new InvokeJavaMethodDelegate() {
-//                    @Override
-//                    public void onFinish(JSONObject resObject) {
-//
-//                    }
-//                });
+                FacebookHelper.getInstance().confirmRequest(null, "black", "black", new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+
+                    }
+
+                });
             }
         });
 
@@ -208,18 +169,18 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-//                FacebookHelper.getInstance().login(instance, Arrays.asList("public_profile", "user_friends","email","user_birthday","user_status"));
-                JSONObject reqData = new JSONObject();
-                JSONArray json =new JSONArray();
-                JSONObject jso = new JSONObject();
-                try {
-                    json.put(jso);
-                    reqData.put("json", json);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                System.out.print("request json : "+reqData.toString());
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","login",reqData.toString(),-1);
+                FacebookHelper.getInstance().login(null);
+//                JSONObject reqData = new JSONObject();
+//                JSONArray json =new JSONArray();
+//                JSONObject jso = new JSONObject();
+//                try {
+//                    json.put(jso);
+//                    reqData.put("json", json);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                System.out.print("request json : "+reqData.toString());
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","login",reqData.toString(),-1);
             }
         });
 
@@ -229,7 +190,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","logout","{}",-1);
+                FacebookHelper.getInstance().logout();
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","logout","{}",-1);
             }
         });
 
@@ -239,7 +201,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","isLogin","{}",-1);
+                JSONObject respJson = null;
+                try {
+                    respJson = FacebookHelper.getInstance().isLogin(null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.i(TAG, "isLogin: "+respJson.toString());
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","isLogin","{}",-1);
             }
         });
 
@@ -249,7 +218,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserId","{}",-1);
+                JSONObject respJson = null;
+                try {
+                    respJson = FacebookHelper.getInstance().getUserId(null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.i(TAG, "getUserId: "+respJson.toString());
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserId","{}",-1);
             }
         });
 
@@ -260,8 +236,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public void onClick() throws JSONException {
 //               String str = FacebookHelper.getInstance().getUserProfile(null,null);
+                FacebookHelper.getInstance().getUserProfile(new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
 
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
+                    }
+                });
+
+
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
             }
         });
 
@@ -271,9 +254,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() throws JSONException {
-//                String str = FacebookHelper.getInstance().getUserProfile(null,null);
-
-                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getAccessToken","{}",-1);
+                JSONObject respJson = null;
+                try {
+                    respJson = FacebookHelper.getInstance().getAccessToken(null);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.i(TAG, "getAccessToken: "+respJson.toString());
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getAccessToken","{}",-1);
             }
         });
 
@@ -417,7 +405,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                    }
 //                });
 
-                IabHelper.getInstance().purchase("managed_product", "user_001", new InvokeJavaMethodDelegate() {
+                IabHelper.getInstance().purchase("blackjack.chip1", "user_001", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
 
@@ -445,6 +433,33 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 }, 0);
             }
         });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("postNotication", new OnClickListener() {
+            @Override
+            public void onClick() {
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("message","hello world ！！！");
+                    json.put("delay",10);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+               SystemUtil.getInstance().postNotication(json);
+            }
+        });
+
+        hashMap = new HashMap<>();
+        arrayList.add(hashMap);
+        hashMap.put("vibrate", new OnClickListener() {
+            @Override
+            public void onClick() {
+                SystemUtil.getInstance().vibrate();
+            }
+        });
+
 
         List<String> data = new ArrayList<>();
         for (HashMap<String, OnClickListener> item : arrayList) {

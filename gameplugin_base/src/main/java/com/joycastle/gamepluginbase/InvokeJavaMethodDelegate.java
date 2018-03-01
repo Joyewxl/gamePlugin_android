@@ -1,7 +1,5 @@
 package com.joycastle.gamepluginbase;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 
 /**
