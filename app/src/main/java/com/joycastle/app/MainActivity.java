@@ -10,19 +10,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.joycastle.gameplugin.AdvertiseHelper;
 import com.joycastle.gameplugin.AnalyticHelper;
 import com.joycastle.gameplugin.GamePlugin;
-import com.joycastle.gameplugin.IabHelper;
-import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
+import com.joycastle.iab.googleplay.util.IabHelper;
 import com.joycastle.my_facebook.FacebookHelper;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -194,7 +189,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public void onClick() {
 
-                String uid = FacebookHelper.getInstance().getUserId();
+                String uid = FacebookHelper.getInstance().getUserID();
                 Log.i(TAG, "getUserId: "+uid);
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserId","{}",-1);
             }
@@ -207,7 +202,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             @Override
             public void onClick() {
 //               String str = FacebookHelper.getInstance().getUserProfile(null,null);
-                FacebookHelper.getInstance().getUserProfile(new InvokeJavaMethodDelegate() {
+                FacebookHelper.getInstance().getUserProfile("",0, new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
 
@@ -340,11 +335,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList.add(hashMap);
         hashMap.put("--------IAB", null);
 
-        IabHelper.getInstance().setRestoreHandler(new IabDelegate.RestoreDelegate() {
+        GamePlugin.getInstance().setNotifyHandler(new InvokeJavaMethodDelegate() {
             @Override
-            public void onResult(boolean result, String iapId, String message) {
-                showAlert(result+"\n"+iapId+"\n"+message);
-
+            public void onFinish(ArrayList<Object> resArrayList) {
 
             }
         });
@@ -361,7 +354,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                    }
 //                });
 
-                IabHelper.getInstance().purchase("blackjack.chip1", "user_001", new InvokeJavaMethodDelegate() {
+                GamePlugin.getInstance().doIap("blackjack.chip1", "user_001", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
 
@@ -515,15 +508,10 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         addToArrayList("postNotication", new OnClickListener() {
             @Override
             public void onClick() {
-                //TODO: 参数类型不对
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("message","hello world ！！！");
-                    json.put("delay",10);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                SystemUtil.getInstance().postNotication(json);
+                HashMap<String,Object> reqData = new HashMap<>();
+                reqData.put("message","hello world ！！！");
+                reqData.put("delay",10);
+                SystemUtil.getInstance().postNotication(reqData);
             }
         });
         addToArrayList("copyToClipboard", new OnClickListener() {

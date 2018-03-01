@@ -1,4 +1,4 @@
-# 1 GamePlugin
+1 GamePlugin
 
 build.gradle
 
@@ -62,23 +62,8 @@ build.gradle
 compile project(path: ':my_facebook')
 ```
 
-AndroidManifest.xml
+strings.xml​
 
-```xml
-<activity startActivity 
-<intent-filter>
-                <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="@string/fb_login_protocol_scheme" />
-            </intent-filter>
-/>
-<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
-            android:label="@string/app_name" />
-```
-
-strings.xml
 ```xml
 <string name="facebook_app_id">184666628540822</string>
 <string name="fb_login_protocol_scheme">fb184666628540822</string>
@@ -88,14 +73,6 @@ strings.xml
 
 # 5 iap_googleplay
 
-AndroidManifest.xml
-
-```xml
-<uses-permission android:name="com.android.vending.BILLING" />
-
-<meta-data android:name="google_iab_publickey" android:value="@string/google_iab_publickey"/>
-```
-
 Strings.xml
 
 ```xml
@@ -103,16 +80,4 @@ Strings.xml
 ```
 
 # 6 Gameplugin_Base
-
-AndroidManifest.xml
-
-```xml
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-<uses-permission android:name="android.permission.READ_PHONE_STATE" />
-<uses-permission android:name="android.permission.VIBRATE" />
-<uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE"/>
-
-<receiver android:name="com.joycastle.gamepluginbase.SystemUtil$NotificationReceiver"/>
-```
 

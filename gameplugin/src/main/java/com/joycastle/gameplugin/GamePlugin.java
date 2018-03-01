@@ -6,9 +6,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
+import com.joycastle.iab.googleplay.GoogleIabHelper;
+import com.joycastle.iab.googleplay.util.IabHelper;
+import com.joycastle.iab.googleplay.util.IabResult;
+import com.joycastle.iab.googleplay.util.Purchase;
 import com.joycastle.my_facebook.FacebookHelper;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by geekgy on 16/5/11.
@@ -27,8 +35,8 @@ public class GamePlugin implements LifeCycleDelegate {
         SystemUtil.getInstance().setApplication(application);
         AnalyticHelper.getInstance().init(application);
         AdvertiseHelper.getInstance().init(application);
-        IabHelper.getInstance().init(application);
         FacebookHelper.getInstance().init(application);
+        GoogleIabHelper.getInstance().init(application);
     }
 
     @Override
@@ -40,52 +48,82 @@ public class GamePlugin implements LifeCycleDelegate {
         SystemUtil.getInstance().setActivity(activity);
         AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
         AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
-        IabHelper.getInstance().onCreate(activity, savedInstanceState);
+        FacebookHelper.getInstance().onCreate(activity, savedInstanceState);
+        GoogleIabHelper.getInstance().onCreate(activity, savedInstanceState);
     }
 
     @Override
     public void onStart(Activity activity) {
         AnalyticHelper.getInstance().onStart(activity);
         AdvertiseHelper.getInstance().onStart(activity);
-        IabHelper.getInstance().onStart(activity);
+        FacebookHelper.getInstance().onStart(activity);
+        GoogleIabHelper.getInstance().onStart(activity);
     }
 
     @Override
     public void onResume(Activity activity) {
         AnalyticHelper.getInstance().onResume(activity);
         AdvertiseHelper.getInstance().onResume(activity);
-        IabHelper.getInstance().onResume(activity);
+        FacebookHelper.getInstance().onResume(activity);
+        GoogleIabHelper.getInstance().onResume(activity);
     }
 
     @Override
     public void onPause(Activity activity) {
         AnalyticHelper.getInstance().onPause(activity);
         AdvertiseHelper.getInstance().onPause(activity);
-        IabHelper.getInstance().onPause(activity);
+        FacebookHelper.getInstance().onPause(activity);
+        GoogleIabHelper.getInstance().onPause(activity);
     }
 
     @Override
     public void onStop(Activity activity) {
         AnalyticHelper.getInstance().onStop(activity);
         AdvertiseHelper.getInstance().onStop(activity);
-        IabHelper.getInstance().onStop(activity);
+        FacebookHelper.getInstance().onStop(activity);
+        GoogleIabHelper.getInstance().onStop(activity);
     }
 
     @Override
     public void onDestroy(Activity activity) {
         AnalyticHelper.getInstance().onDestroy(activity);
         AdvertiseHelper.getInstance().onDestroy(activity);
-        IabHelper.getInstance().onDestroy(activity);
+        FacebookHelper.getInstance().onDestroy(activity);
+        GoogleIabHelper.getInstance().onDestroy(activity);
     }
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-
-        Log.i("GamePlugin","GamePlugin onActivityResult");
         AnalyticHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         AdvertiseHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
-        IabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
-
         FacebookHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
+        GoogleIabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
     }
+
+
+
+    public void setNotifyHandler(InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
+    public void setIapVerifyUrlAndSign(String url,String sign) {
+        //TODO
+    }
+    public boolean canDoIap() {
+        //TODO
+        return true;
+    }
+    public HashMap getSuspensiveIap() {
+        //TODO
+        return null;
+    }
+    public void setSuspensiveIap(HashMap iapInfo) {
+        //TODO
+    }
+    public void doIap(String iapId, String payLoad, InvokeJavaMethodDelegate delegate) {
+        GoogleIabHelper.getInstance().purchase(iapId,payLoad,delegate);
+    }
+    public void rateGame() {
+        // TODO
+    }
+
 }

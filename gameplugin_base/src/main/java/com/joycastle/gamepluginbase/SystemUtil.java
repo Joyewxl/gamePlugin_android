@@ -25,7 +25,6 @@ import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
@@ -34,11 +33,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * Created by geekgy on 16/4/23.
@@ -312,16 +309,13 @@ public class SystemUtil {
         mNotificationManager.cancelAll();
     }
 
-    public void postNotication(JSONObject notifications) {
+    public void postNotication(HashMap notifications) {
         Log.e(TAG, "postNotication: " + notifications.toString());
         String content = null;
         int notiTime = 0;
-        try {
-            content = notifications.getString("message");
-            notiTime = notifications.getInt("delay");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        content = (String)notifications.get("message");
+        notiTime = (int) notifications.get("delay");
+
         Intent intent = new Intent(this.activity, NotificationReceiver.class);
         intent.setData(Uri.parse("blackjack"));
         intent.putExtra("msg", "blackjack");
@@ -500,6 +494,10 @@ public class SystemUtil {
         assert(false);
     }
 
+    /**
+     * 通知接收器
+     *
+     */
     public static class NotificationReceiver extends BroadcastReceiver
     {
         @Override
@@ -518,10 +516,10 @@ public class SystemUtil {
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(activity.getApplicationContext())
                             .setAutoCancel(true)
-                            .setOngoing(true)
+                            .setOngoing(false)
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
-                            .setNumber(0)
+                            .setNumber(1)
                             .setContentTitle(title)
                             .setContentText(msg)
                             .setWhen(System.currentTimeMillis());

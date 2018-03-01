@@ -43,6 +43,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +71,16 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
     private FacebookHelper() {}
 
+    public void openFacebookPage(String installUrl, String url) {
+        //TODO
+    }
+    public void setLoginFunc(InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
+    public void setAppLinkFunc(InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
+
     public void setLoginListener(InvokeJavaMethodDelegate delegate) {
         this.loginListener = delegate;
     }
@@ -91,7 +102,14 @@ public class FacebookHelper implements LifeCycleDelegate {
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
 
-    public String getUserId() {
+    public void logout() {
+        if (!this.isLogin())
+            return;
+        LoginManager.getInstance().logOut();
+    }
+
+
+    public String getUserID() {
         if (!this.isLogin())
         {
             return null;
@@ -108,7 +126,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         return AccessToken.getCurrentAccessToken().getToken();
     }
 
-    public void getUserProfile(InvokeJavaMethodDelegate delegate){
+    public void getUserProfile(String fid,int picSize,InvokeJavaMethodDelegate delegate){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         final InvokeJavaMethodDelegate tdelegate = delegate;
         GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
@@ -117,15 +135,25 @@ public class FacebookHelper implements LifeCycleDelegate {
                 if (object != null) {
                     Log.e(TAG, "userProfile: "+object);
                     ArrayList<Object> arrayList = new ArrayList<>();
-                    arrayList.add(object.optString("name"));
-                    arrayList.add(object.optString("id"));
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("name","ddddd");
+                    hashMap.put("ind",123123);
+                    arrayList.add(hashMap);
                     tdelegate.onFinish(arrayList);
                 }
             }
         }).executeAsync();
     }
 
-    public void confirmRequest(JSONObject fidOrTokens,String title,String msg,InvokeJavaMethodDelegate delegate){
+    public void getInvitableFriends(HashMap inviteTokens,int picSize,InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
+
+    public void getFriends(int picSzie ,InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
+
+    public void confirmRequest(HashMap fidOrTokens,String title,String msg,InvokeJavaMethodDelegate delegate){
         requestDialog = new GameRequestDialog(SystemUtil.getInstance().getActivity());
         final InvokeJavaMethodDelegate tdelegate = delegate;
         requestDialog.registerCallback(callbackManager,
@@ -153,6 +181,12 @@ public class FacebookHelper implements LifeCycleDelegate {
         requestDialog.show(content);
     }
 
+    public void queryRequest(InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
+    public void acceptRequest(String requestId ,InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
     /**
      *
      * @param shareType Links/Photos/Videos/Multimedia/OpenGraph
@@ -161,6 +195,7 @@ public class FacebookHelper implements LifeCycleDelegate {
      * @param message 默认消息，只在Api方式下有效
      * @param listener 回调
      */
+    //std::string title, std::string i, std::string caption, std::string imageUrl, std::string contentUrl, std::function<void(bool)>& func
     public void share(String shareType, boolean customInterface, Map<String, String> map, String message, OnResultListener listener) {
         ShareContent content = null;
         if ("Links".equals(shareType)) {
@@ -238,10 +273,16 @@ public class FacebookHelper implements LifeCycleDelegate {
         }
     }
 
-    public void logout() {
-        if (!this.isLogin())
-            return;
-        LoginManager.getInstance().logOut();
+    public void setLevel(int level) {
+        //TODO
+    }
+
+    public void getLevel(String fid, InvokeJavaMethodDelegate delegate) {
+        //TODO
+    }
+
+    public void inviteFriend(String appLinkURL,String prviewImageURL ,InvokeJavaMethodDelegate delegate) {
+        //TODO
     }
 
     @Override
