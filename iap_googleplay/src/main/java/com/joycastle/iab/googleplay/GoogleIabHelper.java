@@ -8,8 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.joycastle.gamepluginbase.IabDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
+import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.iab.googleplay.util.IabBroadcastReceiver;
 import com.joycastle.iab.googleplay.util.IabHelper;
@@ -17,24 +17,21 @@ import com.joycastle.iab.googleplay.util.IabResult;
 import com.joycastle.iab.googleplay.util.Inventory;
 import com.joycastle.iab.googleplay.util.Purchase;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
  * Created by gaoyang on 10/9/16.
  */
 
-public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBroadcastListener, IabHelper.QueryInventoryFinishedListener {
+public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.IabBroadcastListener, IabHelper.QueryInventoryFinishedListener {
     private static String TAG = "GoogleIabHelper";
 
     private static GoogleIabHelper instance = new GoogleIabHelper();
 
     private IabHelper mHelper;
     private IabBroadcastReceiver mBroadcastReceiver;
-    private RestoreDelegate mRestoreDelegate;
 
     public static GoogleIabHelper getInstance() { return instance; }
 
@@ -107,13 +104,61 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
         mHelper.handleActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    public void setRestoreHandler(RestoreDelegate delegate) {
-        mRestoreDelegate = delegate;
+    private void quertInventory() {
+        try {
+            mHelper.queryInventoryAsync(this);
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            Log.w(TAG, "Error querying inventory. Another async operation in progress.");
+        }
+    }
+
+    private boolean verifyDeveloperPayload(Purchase purchase) {
+        return true;
     }
 
     @Override
-    public void purchase(String iapId, final String payLoad, final InvokeJavaMethodDelegate delegate) {
+    public void receivedBroadcast() {
+        quertInventory();
+    }
+
+    @Override
+    public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+//        if (mHelper == null) {
+//            return;
+//        }
+//        if (result.isFailure()) {
+//            Log.w(TAG, "Failed to query inventory: "+result);
+//            return;
+//        }
+//
+//        Log.d(TAG, "Query inventory was successful.");
+//
+//        if (mRestoreDelegate == null) {
+//            return;
+//        }
+//        Toast.makeText(SystemUtil.getInstance().getApplication(), "Restore Purchase...", Toast.LENGTH_LONG).show();
+//        List<Purchase> purchases = inv.getAllPurchases();
+//        try {
+//            mHelper.consumeAsync(purchases, new IabHelper.OnConsumeMultiFinishedListener() {
+//                @Override
+//                public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
+//                    for (int i=0; i<purchases.size(); i++) {
+//                        Purchase purchase = purchases.get(i);
+//                        IabResult iabResult = results.get(i);
+//                        boolean iapResult = iabResult.isSuccess();
+//                        String iapId = purchase.getSku();
+//                        String payload = purchase.getDeveloperPayload();
+//                        mRestoreDelegate.onResult(iapResult, iapId, payload);
+//                    }
+//                }
+//            });
+//        } catch (IabHelper.IabAsyncInProgressException e) {
+//            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
+//        }
+    }
+
+
+    public void purchase(String iapId, String payLoad, final InvokeJavaMethodDelegate delegate) {
         System.out.print("purchase");
         try {
             mHelper.launchPurchaseFlow(SystemUtil.getInstance().getActivity(), iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
@@ -142,59 +187,6 @@ public class GoogleIabHelper implements IabDelegate, IabBroadcastReceiver.IabBro
             }, payLoad);
         } catch (IabHelper.IabAsyncInProgressException e) {
             Log.w(TAG, "Error launch purchase. Another async operation in progress.");
-        }
-    }
-
-    private void quertInventory() {
-        try {
-            mHelper.queryInventoryAsync(this);
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            Log.w(TAG, "Error querying inventory. Another async operation in progress.");
-        }
-    }
-
-    private boolean verifyDeveloperPayload(Purchase purchase) {
-        return true;
-    }
-
-    @Override
-    public void receivedBroadcast() {
-        quertInventory();
-    }
-
-    @Override
-    public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-        if (mHelper == null) {
-            return;
-        }
-        if (result.isFailure()) {
-            Log.w(TAG, "Failed to query inventory: "+result);
-            return;
-        }
-
-        Log.d(TAG, "Query inventory was successful.");
-
-        if (mRestoreDelegate == null) {
-            return;
-        }
-        Toast.makeText(SystemUtil.getInstance().getApplication(), "Restore Purchase...", Toast.LENGTH_LONG).show();
-        List<Purchase> purchases = inv.getAllPurchases();
-        try {
-            mHelper.consumeAsync(purchases, new IabHelper.OnConsumeMultiFinishedListener() {
-                @Override
-                public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
-                    for (int i=0; i<purchases.size(); i++) {
-                        Purchase purchase = purchases.get(i);
-                        IabResult iabResult = results.get(i);
-                        boolean iapResult = iabResult.isSuccess();
-                        String iapId = purchase.getSku();
-                        String payload = purchase.getDeveloperPayload();
-                        mRestoreDelegate.onResult(iapResult, iapId, payload);
-                    }
-                }
-            });
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
         }
     }
 }
