@@ -542,7 +542,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         addToArrayList("isRoot", new OnClickListener() {
             @Override
             public void onClick() {
-                boolean isRoot = SystemUtil.getInstance().isRoot();
+                boolean isRoot = SystemUtil.getInstance().isJailbroken();
                 showAlert(String.valueOf(isRoot));
             }
         });

@@ -69,15 +69,6 @@ public class SystemUtil {
         return this.activity;
     }
 
-    /**
-     * 获取运行模式
-     * @return
-     */
-    public int getDebugMode() {
-        String isDebug = BuildConfig.DEBUG ? "0" : "1";
-        //TODO: 1 DEBUG, 2 RELEASE, 3 SUBMISSION
-        return 3;
-    }
 
     /**
      * 获取manifest中meta-data的值
@@ -104,24 +95,6 @@ public class SystemUtil {
     }
 
     /**
-     * 获取包名
-     * @return
-     */
-    public String getPackageName() {
-        PackageManager packageManager = application.getPackageManager();
-        return application.getPackageName();
-    }
-
-    /**
-     * 获取App名称
-     * @return
-     */
-    public String getAppName() {
-        PackageManager pm = application.getPackageManager();
-        return application.getApplicationInfo().loadLabel(pm).toString();
-    }
-
-    /**
      * 获取VersionName
      * @return
      */
@@ -135,14 +108,7 @@ public class SystemUtil {
         }
         return versionName;
     }
-    /**
-     * 获取AppBuild
-     * @return
-     */
-    public int getAppBuild() {
-        //TODO
-        return 10;
-    }
+
 
     /**
      * 获取VersionCode
@@ -159,6 +125,48 @@ public class SystemUtil {
         return versionCode;
     }
 
+
+    /**
+     * 获取运行模式
+     * @return
+     */
+    public int getDebugMode() {
+        String isDebug = BuildConfig.DEBUG ? "0" : "1";
+        //TODO: 1 DEBUG, 2 RELEASE, 3 SUBMISSION
+        return 3;
+    }
+
+    public String getPlatCfgValue() {
+        //TODO
+        return "";
+    }
+
+    public String getAppBundleId() {
+        //TODO
+        return "";
+    }
+
+    /**
+     * 获取App名称
+     * @return
+     */
+    public String getAppName() {
+        PackageManager pm = application.getPackageManager();
+        return application.getApplicationInfo().loadLabel(pm).toString();
+    }
+
+    public String getAppVersion() {
+        //TODO
+        return "";
+    }
+    /**
+     * 获取AppBuild
+     * @return
+     */
+    public int getAppBuild() {
+        //TODO
+        return 10;
+    }
     public String getDeviceName() {
         return Build.MODEL;
     }
@@ -179,6 +187,15 @@ public class SystemUtil {
         return Build.VERSION.RELEASE;
     }
 
+    public String getIDFV() {
+        //TODO
+        return "";
+    }
+
+    public String getIDFA() {
+        //TODO
+        return "";
+    }
     public String getUUID() {
         if (uuid == null) {
             synchronized (SystemUtil.class) {
@@ -200,6 +217,7 @@ public class SystemUtil {
         }
         return uuid;
     }
+
 
     public String getCountryCode() {
         return application.getResources().getConfiguration().locale.getCountry();
@@ -233,6 +251,16 @@ public class SystemUtil {
         }
         return ret;
     }
+
+    /**
+     * 获取包名
+     * @return
+     */
+    public String getPackageName() {
+        PackageManager packageManager = application.getPackageManager();
+        return application.getPackageName();
+    }
+
 
     public void showAlertDialog(String title, String message, String btnTitle1, String btnTitle2, final InvokeJavaMethodDelegate delegate) {
         assert(false);
@@ -476,7 +504,7 @@ public class SystemUtil {
     /**
      * 判断手机是否ROOT
      */
-    public boolean isRoot() {
+    public boolean isJailbroken() {
         boolean root = false;
         try {
             if ((!new File("/system/bin/su").exists())
