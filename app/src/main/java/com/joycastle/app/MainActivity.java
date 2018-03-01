@@ -169,7 +169,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                FacebookHelper.getInstance().login(null);
+                FacebookHelper.getInstance().login();
 //                JSONObject reqData = new JSONObject();
 //                JSONArray json =new JSONArray();
 //                JSONObject jso = new JSONObject();
@@ -201,13 +201,8 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                JSONObject respJson = null;
-                try {
-                    respJson = FacebookHelper.getInstance().isLogin(null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.i(TAG, "isLogin: "+respJson.toString());
+                boolean islogin = FacebookHelper.getInstance().isLogin();
+                Log.i(TAG, "isLogin: "+islogin);
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","isLogin","{}",-1);
             }
         });
@@ -218,13 +213,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() {
-                JSONObject respJson = null;
-                try {
-                    respJson = FacebookHelper.getInstance().getUserId(null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.i(TAG, "getUserId: "+respJson.toString());
+
+                String uid = FacebookHelper.getInstance().getUserId();
+                Log.i(TAG, "getUserId: "+uid);
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserId","{}",-1);
             }
         });
@@ -243,7 +234,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                     }
                 });
 
-
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
             }
         });
@@ -254,13 +244,9 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
             @Override
             public void onClick() throws JSONException {
-                JSONObject respJson = null;
-                try {
-                    respJson = FacebookHelper.getInstance().getAccessToken(null);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.i(TAG, "getAccessToken: "+respJson.toString());
+
+                String token = FacebookHelper.getInstance().getAccessToken();
+                Log.i(TAG, "getAccessToken: "+token);
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getAccessToken","{}",-1);
             }
         });

@@ -2,7 +2,9 @@
 
 build.gradle
 
-    compile project(path: ':gameplugin')
+```groovy
+compile project(path: ':gameplugin')
+```
 
 
 # 2 Analytics
@@ -56,17 +58,47 @@ strings.xml
 # 4 Facebook
 
 build.gradle
-​    
-    compile project(path: ':my_facebook')
+```groovy
+compile project(path: ':my_facebook')
+```
 
 AndroidManifest.xml
 
-    <provider 
-        android:authorities="com.facebook.app.FacebookContentProvider{APP_ID}"
-        android:name="com.facebook.FacebookContentProvider"
-        android:exported="true"/>
+```xml
+<activity startActivity 
+<intent-filter>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+/>
+<meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+```
 
 strings.xml
-​    
-    <string name="facebook_app_id">184666628540822</string>
-    <string name="fb_login_protocol_scheme">fb184666628540822</string>
+```xml
+<string name="facebook_app_id">184666628540822</string>
+<string name="fb_login_protocol_scheme">fb184666628540822</string>
+```
+
+
+
+# 5 iap_googleplay
+
+AndroidManifest.xml
+
+```xml
+<uses-permission android:name="com.android.vending.BILLING" />
+
+<meta-data android:name="google_iab_publickey" android:value="@string/google_iab_publickey"/>
+```
+
+Strings.xml
+
+```xml
+<string name="google_iab_publickey">XXXXXXXXXXXXX</string>
+```
+
