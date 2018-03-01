@@ -52,16 +52,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList = new ArrayList<>();
         HashMap<String, OnClickListener> hashMap;
 
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("--------AnalyticHelper", new OnClickListener() {
-            @Override
-            public void onClick() {
-                System.out.println("AnalyticHelper");
-            }
-        });
-
-
         ///////////////////////////////统计///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);

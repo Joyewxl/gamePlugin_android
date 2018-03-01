@@ -102,3 +102,17 @@ Strings.xml
 <string name="google_iab_publickey">XXXXXXXXXXXXX</string>
 ```
 
+# 6 Gameplugin_Base
+
+AndroidManifest.xml
+
+```xml
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+<uses-permission android:name="android.permission.VIBRATE" />
+<uses-permission android:name="com.huawei.android.launcher.permission.CHANGE_BADGE"/>
+
+<receiver android:name="com.joycastle.gamepluginbase.SystemUtil$NotificationReceiver"/>
+```
+

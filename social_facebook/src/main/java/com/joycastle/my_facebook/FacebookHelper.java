@@ -132,17 +132,11 @@ public class FacebookHelper implements LifeCycleDelegate {
                 new FacebookCallback<GameRequestDialog.Result>() {
                     public void onSuccess(GameRequestDialog.Result result) {
                         List<String> res = result.getRequestRecipients();
-                        JSONArray jsonArr = new JSONArray();
+                        ArrayList<Object> respData = new ArrayList<>();
                         for (String id:res) {
-                            jsonArr.put(id);
+                            respData.add(id);
                         }
-                        JSONObject respData = new JSONObject();
-                        try {
-                            respData.put("json",jsonArr);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-//                        tdelegate.onFinish(respData);
+                        tdelegate.onFinish(respData);
                     }
                     public void onCancel() {
 

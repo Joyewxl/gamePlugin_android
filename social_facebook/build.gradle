@@ -24,9 +24,6 @@ repositories {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-//    testCompile 'junit:junit:4.12'
-//    compile 'com.facebook.soloader:soloader:0.1.0+'
-//    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
     compile project(path: ':gameplugin_base')
 }
