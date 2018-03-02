@@ -128,10 +128,21 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
             Class clazz = Class.forName("com.joycastle.advertise.admob.adapter.vungle.VGAdvertiseHelper");
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
-            Method method = clazz.getMethod("init");
-            method.invoke(instance);
+            Method method = clazz.getMethod("init", Application.class);
+            method.invoke(instance, application);
         } catch (Exception e) {
             Log.e(TAG, "vungle adapter is disable");
+            e.printStackTrace();
+        }
+
+        try {
+            Class clazz = Class.forName("com.joycastle.advertise.admob.adapter.applovin.APAdvertiseHelper");
+            Method getInstanceMethod = clazz.getMethod("getInstance");
+            Object instance = getInstanceMethod.invoke(null);
+            Method method = clazz.getMethod("init", Application.class);
+            method.invoke(instance, application);
+        } catch (Exception e) {
+            Log.e(TAG, "applovin adapter is disable");
             e.printStackTrace();
         }
 
@@ -193,7 +204,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
             @Override
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);
-                requestNewBanner();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestNewBanner();
+                    }
+                }, 5000);
             }
         });
         bannerAd.setAdUnitId(bannerId);

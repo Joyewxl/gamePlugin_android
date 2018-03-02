@@ -31,9 +31,19 @@ import android.util.Log;
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * Created by geekgy on 16/4/23.
@@ -544,8 +554,41 @@ public class SystemUtil {
         clip.setText(str); // 复制
     }
 
-    public void requestUrl(String requestType, String url, HashMap<String, Object> map, InvokeJavaMethodDelegate delegate) {
-        assert(false);
+    public void requestUrl(String requestType, String url, HashMap<String, Object> map, final InvokeJavaMethodDelegate delegate) {
+        try {
+            Request.Builder builder = new Request.Builder();
+            builder.url(url);
+            if (requestType.equalsIgnoreCase("post")) {
+                JSONObject jsonObject = new JSONObject();
+                Iterator<String> it = map.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = it.next();
+                    jsonObject.put(key, map.get(key));
+                }
+                String jsonStr = jsonObject.toString();
+                RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonStr);
+                builder.post(body);
+            }
+            Request request = builder.build();
+            new OkHttpClient().newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    ArrayList arrayList = new ArrayList();
+                    arrayList.add(false);
+                    delegate.onFinish(arrayList);
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    ArrayList arrayList = new ArrayList();
+                    arrayList.add(true);
+                    arrayList.add(response.body().string());
+                    delegate.onFinish(arrayList);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
