@@ -104,36 +104,6 @@ public class SystemUtil {
         return value;
     }
 
-    /**
-     * 获取VersionName
-     * @return
-     */
-    public String getVersionName() {
-        String versionName = "default";
-        try {
-            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
-            versionName = packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionName;
-    }
-
-
-    /**
-     * 获取VersionCode
-     * @return
-     */
-    public int getVersionCode() {
-        int versionCode = -1;
-        try {
-            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
-            versionCode = packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionCode;
-    }
 
 
     /**
@@ -165,18 +135,37 @@ public class SystemUtil {
         return application.getApplicationInfo().loadLabel(pm).toString();
     }
 
-    public String getAppVersion() {
-        //TODO
-        return "";
-    }
     /**
-     * 获取AppBuild
+     * 获取VersionName
+     * @return
+     */
+    public String getAppVersion() {
+        String versionName = "default";
+        try {
+            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            versionName = packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionName;
+    }
+
+
+    /**
+     * 获取VersionCode
      * @return
      */
     public int getAppBuild() {
-        //TODO
-        return 10;
+        int versionCode = -1;
+        try {
+            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
     }
+
     public String getDeviceName() {
         return Build.MODEL;
     }

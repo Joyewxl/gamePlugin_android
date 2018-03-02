@@ -397,17 +397,17 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
                 showAlert(appName);
             }
         });
-        addToArrayList("getVersionName", new OnClickListener() {
+        addToArrayList("getAppVersion", new OnClickListener() {
             @Override
             public void onClick() {
-                String versionName = SystemUtil.getInstance().getVersionName();
+                String versionName = SystemUtil.getInstance().getAppVersion();
                 showAlert(versionName);
             }
         });
-        addToArrayList("getVersionCode", new OnClickListener() {
+        addToArrayList("getAppBuild", new OnClickListener() {
             @Override
             public void onClick() {
-                int versionCode = SystemUtil.getInstance().getVersionCode();
+                int versionCode = SystemUtil.getInstance().getAppBuild();
                 showAlert(String.valueOf(versionCode));
             }
         });
