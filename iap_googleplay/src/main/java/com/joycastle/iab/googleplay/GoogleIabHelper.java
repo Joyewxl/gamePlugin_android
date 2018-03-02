@@ -18,7 +18,6 @@ import com.joycastle.iab.googleplay.util.Inventory;
 import com.joycastle.iab.googleplay.util.Purchase;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**

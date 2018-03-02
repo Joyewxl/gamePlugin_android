@@ -9,6 +9,7 @@ import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,9 +29,6 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -69,6 +67,18 @@ public class SystemUtil {
         return this.activity;
     }
 
+    public void onCreate() {
+        this.changeSPLocation();
+    }
+
+    /**
+     * 获取包名
+     * @return
+     */
+    public String getPackageName() {
+        PackageManager packageManager = application.getPackageManager();
+        return application.getPackageName();
+    }
 
     /**
      * 获取manifest中meta-data的值
@@ -218,7 +228,6 @@ public class SystemUtil {
         return uuid;
     }
 
-
     public String getCountryCode() {
         return application.getResources().getConfiguration().locale.getCountry();
     }
@@ -251,16 +260,6 @@ public class SystemUtil {
         }
         return ret;
     }
-
-    /**
-     * 获取包名
-     * @return
-     */
-    public String getPackageName() {
-        PackageManager packageManager = application.getPackageManager();
-        return application.getPackageName();
-    }
-
 
     public void showAlertDialog(String title, String message, String btnTitle1, String btnTitle2, final InvokeJavaMethodDelegate delegate) {
         assert(false);
@@ -492,13 +491,43 @@ public class SystemUtil {
         assert(false);
     }
 
+    /**
+     * 修改 SharedPreferences 文件的路径
+     */
+    private void changeSPLocation() {
+        try {
+            Field field;
+            // 获取ContextWrapper对象中的mBase变量。该变量保存了ContextImpl对象
+            field = ContextWrapper.class.getDeclaredField("mBase");
+            field.setAccessible(true);
+            // 获取mBase变量
+            Object obj = field.get(this);
+            // 获取ContextImpl。mPreferencesDir变量，该变量保存了数据文件的保存路径
+            field = obj.getClass().getDeclaredField("mPreferencesDir");
+            field.setAccessible(true);
+            // 创建自定义路径
+            File file = new File(android.os.Environment.getExternalStorageDirectory().getPath());
+            // 修改mPreferencesDir变量的值
+            field.set(obj, file);
+
+        }catch (NoSuchFieldException ne){
+            ne.printStackTrace();
+        }catch (IllegalAccessException ae){
+            ae.printStackTrace();;
+        }
+    }
+
     public void keychainSet(String key, String value) {
-        //TODO:
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("blackData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key,value);
+        editor.commit();
     }
 
     public String keychainGet(String key) {
-        //TODO:
-        return null;
+        SharedPreferences sharedPreferences = activity.getSharedPreferences("blackData", Context.MODE_PRIVATE);
+        String value = sharedPreferences.getString(key,"");
+        return value;
     }
 
     /**
