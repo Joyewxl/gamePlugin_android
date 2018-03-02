@@ -36,7 +36,17 @@ public class NativeUtil {
             Object[] objectArr = new Object[argsNum];
             for (int i=0; i<reqArrayList.size(); i++) {
                 Object obj = reqArrayList.get(i);
-                classArr[i] = obj.getClass();
+                if(obj.getClass() == Integer.class){
+                    classArr[i] = int.class;
+                }else if (obj.getClass() == Float.class){
+                    classArr[i] = float.class;
+                }else if (obj.getClass() == Double.class) {
+                    classArr[i] = double.class;
+                }else if (obj.getClass() == Boolean.class) {
+                    classArr[i] = boolean.class;
+                }else{
+                    classArr[i] = obj.getClass();
+                }
                 objectArr[i] = obj;
             }
             if (requestId >= 0) {
