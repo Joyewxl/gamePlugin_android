@@ -1,4 +1,4 @@
-1 GamePlugin
+# 1 GamePlugin
 
 build.gradle
 
@@ -53,7 +53,9 @@ strings.xml
     <string name="vungle_spot_id">vungle_spot_id</string>
 ```
 
+### 3.1.2 Applovin-Adapter
 
+none
 
 # 4 Facebook
 
