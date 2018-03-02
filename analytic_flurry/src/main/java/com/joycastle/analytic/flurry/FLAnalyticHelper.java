@@ -102,7 +102,7 @@ public class FLAnalyticHelper implements AnalyticDelegate {
         new FlurryAgent.Builder()
                 .withLogEnabled(true)
                 .withCaptureUncaughtExceptions(false)
-                .withContinueSessionMillis(10)
+                .withContinueSessionMillis(10000)
                 .build(application, appKey);
         Log.i(TAG, "Flurry installed, Version: "+FlurryAgent.getReleaseVersion());
     }

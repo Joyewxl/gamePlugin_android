@@ -46,6 +46,15 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         arrayList = new ArrayList<>();
         HashMap<String, OnClickListener> hashMap;
 
+        GamePlugin.getInstance().setNotifyHandler(new InvokeJavaMethodDelegate() {
+            @Override
+            public void onFinish(ArrayList<Object> resArrayList) {
+
+            }
+        });
+
+        GamePlugin.getInstance().setIapVerifyUrlAndSign("", "");
+
         ///////////////////////////////Analytic///////////////////////////////
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
@@ -333,13 +342,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         hashMap = new HashMap<>();
         arrayList.add(hashMap);
         hashMap.put("--------IAB", null);
-
-        GamePlugin.getInstance().setNotifyHandler(new InvokeJavaMethodDelegate() {
-            @Override
-            public void onFinish(ArrayList<Object> resArrayList) {
-
-            }
-        });
 
         hashMap = new HashMap<>();
         arrayList.add(hashMap);

@@ -204,7 +204,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
             @Override
             public void onAdFailedToLoad(int i) {
                 super.onAdFailedToLoad(i);
-                requestNewBanner();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        requestNewBanner();
+                    }
+                }, 5000);
             }
         });
         bannerAd.setAdUnitId(bannerId);

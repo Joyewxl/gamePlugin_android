@@ -2,9 +2,12 @@ package com.joycastle.iab.googleplay;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -17,7 +20,14 @@ import com.joycastle.iab.googleplay.util.IabResult;
 import com.joycastle.iab.googleplay.util.Inventory;
 import com.joycastle.iab.googleplay.util.Purchase;
 
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,6 +41,9 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     private IabHelper mHelper;
     private IabBroadcastReceiver mBroadcastReceiver;
+    private String mVerifyUrl;
+    private String mVerifySign;
+    private SharedPreferences sharedPreferences;
 
     public static GoogleIabHelper getInstance() { return instance; }
 
@@ -40,13 +53,14 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     @Override
     public void init(Application application) {
-
+        sharedPreferences = application.getSharedPreferences("test", application.MODE_PRIVATE);
     }
 
     @Override
     public void onCreate(final Activity activity, Bundle savedInstanceState) {
         String base64PublicKey = SystemUtil.getInstance().getMetaData("google_iab_publickey");
         mHelper = new IabHelper(activity, base64PublicKey);
+        mHelper.enableDebugLogging(true);
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             @Override
             public void onIabSetupFinished(IabResult result) {
@@ -60,10 +74,10 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                 mBroadcastReceiver = new IabBroadcastReceiver(GoogleIabHelper.this);
                 IntentFilter broadcastFilter = new IntentFilter(IabBroadcastReceiver.ACTION);
                 activity.registerReceiver(mBroadcastReceiver, broadcastFilter);
+
                 quertInventory();
             }
         });
-        IabHelper.QueryInventoryFinishedListener mGotInventoryListener;
     }
 
     @Override
@@ -111,17 +125,13 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         }
     }
 
-    private boolean verifyDeveloperPayload(Purchase purchase) {
-        return true;
-    }
-
     @Override
     public void receivedBroadcast() {
         quertInventory();
     }
 
     @Override
-    public void onQueryInventoryFinished(IabResult result, Inventory inv) {
+    public void onQueryInventoryFinished(IabResult result, Inventory inventory) {
         if (mHelper == null) {
             return;
         }
@@ -132,19 +142,19 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
         Log.d(TAG, "Query inventory was successful.");
 
-        Toast.makeText(SystemUtil.getInstance().getApplication(), "Restore Purchase...", Toast.LENGTH_LONG).show();
-        List<Purchase> purchases = inv.getAllPurchases();
+        List<Purchase> purchases = inventory.getAllPurchases();
+        if (purchases.size() <= 0)
+            return;
+
         try {
-            mHelper.consumeAsync(purchases, new IabHelper.OnConsumeMultiFinishedListener() {
+            // 只处理一个，下次在处理剩余的
+            Purchase purchase = purchases.get(0);
+            mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
                 @Override
-                public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
-                    for (int i=0; i<purchases.size(); i++) {
-                        Purchase purchase = purchases.get(i);
-                        IabResult iabResult = results.get(i);
-                        boolean iapResult = iabResult.isSuccess();
-                        String iapId = purchase.getSku();
-                        String payload = purchase.getDeveloperPayload();
-                    }
+                public void onConsumeFinished(Purchase purchase, IabResult result) {
+                    boolean iapResult = result.isSuccess();
+                    String iapId = purchase.getSku();
+                    Log.e(TAG, iapResult+" : "+iapId);
                 }
             });
         } catch (IabHelper.IabAsyncInProgressException e) {
@@ -152,9 +162,52 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         }
     }
 
+    public void setIapVerifyUrlAndSign(String url, String sign) {
+        this.mVerifyUrl = url;
+        this.mVerifySign = sign;
+    }
 
-    public void purchase(String iapId, String payLoad, final InvokeJavaMethodDelegate delegate) {
-        System.out.print("purchase");
+    public boolean canDoIap() {
+        return true;
+    }
+
+    public HashMap getSuspensiveIap() {
+        HashMap hashMap = new HashMap<>();
+        try {
+            String jsonStr = sharedPreferences.getString("suspensiveIap","");
+            JSONObject iapinfo = new JSONObject(jsonStr);
+            Iterator<String> keys = iapinfo.keys();
+            while (keys.hasNext()) {
+                String key = keys.next();
+                hashMap.put(key, iapinfo.getString(key));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return hashMap;
+    }
+
+    public void setSuspensiveIap(HashMap iapInfo) {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            Iterator it = iapInfo.keySet().iterator();
+            while (it.hasNext()) {
+                String key = (String)it.next();
+                Object val = iapInfo.get(key);
+                jsonObject.put(key, val);
+            }
+            //得到SharedPreferences.Editor对象，并保存数据到该对象中
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString("suspensiveIap", jsonObject.toString());
+            //保存key-value对到文件中
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void doIap(String iapId, String userId, final InvokeJavaMethodDelegate delegate) {
         try {
             mHelper.launchPurchaseFlow(SystemUtil.getInstance().getActivity(), iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
@@ -166,22 +219,41 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                         mHelper.consumeAsync(info, new IabHelper.OnConsumeFinishedListener() {
                             @Override
                             public void onConsumeFinished(Purchase purchase, IabResult result) {
-                                boolean iapResult = result.isSuccess();
-                                String iapId = purchase.getSku();
-                                String payload = purchase.getDeveloperPayload();
                                 ArrayList<Object> arrayList =  new ArrayList<>();
-                                arrayList.add(iapResult);
-                                arrayList.add(payload);
+                                arrayList.add(result.isSuccess());
+                                arrayList.add("ProductionSandbox");
                                 delegate.onFinish(arrayList);
+                                verifyIap();
                             }
                         });
                     } catch (IabHelper.IabAsyncInProgressException e) {
                         Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
                     }
                 }
-            }, payLoad);
+            }, userId);
         } catch (IabHelper.IabAsyncInProgressException e) {
             Log.w(TAG, "Error launch purchase. Another async operation in progress.");
         }
+    }
+
+    private void verifyIap() {
+        HashMap hashMap = new HashMap();
+        SystemUtil.getInstance().requestUrl("post", this.mVerifyUrl, hashMap, new InvokeJavaMethodDelegate() {
+            @Override
+            public void onFinish(ArrayList<Object> resArrayList) {
+                boolean result = (boolean) resArrayList.get(0);
+                if (!result) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            verifyIap();
+                        }
+                    }, 5000);
+                } else {
+                    String resJson = (String) resArrayList.get(1);
+                    Log.e(TAG, resJson);
+                }
+            }
+        });
     }
 }

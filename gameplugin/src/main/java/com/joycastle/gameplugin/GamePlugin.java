@@ -30,9 +30,6 @@ public class GamePlugin implements LifeCycleDelegate {
 
     public static GamePlugin getInstance() { return instance; }
 
-    private SharedPreferences sharedPreferences;
-    private String _iapVerifyUrl;
-    private String _iapVerifySign;
     private InvokeJavaMethodDelegate notifyDelegate;
 
     private GamePlugin() {}
@@ -48,17 +45,11 @@ public class GamePlugin implements LifeCycleDelegate {
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
-        String name = null;
-        assert(name!=null);
-
-        Log.i("GamePlugin","GamePlugin onCreate");
         SystemUtil.getInstance().setActivity(activity);
         AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
         AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
         FacebookHelper.getInstance().onCreate(activity, savedInstanceState);
         GoogleIabHelper.getInstance().onCreate(activity, savedInstanceState);
-
-        sharedPreferences = activity.getSharedPreferences("test", activity.MODE_PRIVATE);
     }
 
     @Override
@@ -112,43 +103,27 @@ public class GamePlugin implements LifeCycleDelegate {
     public void setNotifyHandler(InvokeJavaMethodDelegate delegate) {
         notifyDelegate = delegate;
     }
-    public void setIapVerifyUrlAndSign(String url,String sign) {
-        _iapVerifyUrl = url;
-        _iapVerifySign = sign;
-    }
-    public boolean canDoIap() {
-        //TODO
-        return true;
-    }
-    public HashMap getSuspensiveIap() throws JSONException {
-        String jsonStr = sharedPreferences.getString("suspensiveIap",""));
-        JSONObject iapinfo = new JSONObject(jsonStr);
-        HashMap hashMap = new HashMap<>();
-        Iterator<String> keys = iapinfo.keys();
-        while (keys.hasNext()) {
-            String key = keys.next();
-            hashMap.put(key, iapinfo.getString(key));
-        }
-        return hashMap;
-    }
-    public void setSuspensiveIap(HashMap iapInfo) throws JSONException {
 
-        JSONObject jsonObject = new JSONObject();
-        Iterator it = iapInfo.keySet().iterator();
-        while (it.hasNext()) {
-            String key = (String)it.next();
-            Object val = iapInfo.get(key);
-            jsonObject.put(key, val);
-        }
-        //得到SharedPreferences.Editor对象，并保存数据到该对象中
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("suspensiveIap", jsonObject.toString());
-        //保存key-value对到文件中
-        editor.commit();
+    public void setIapVerifyUrlAndSign(String url, String sign) {
+        GoogleIabHelper.getInstance().setIapVerifyUrlAndSign(url, sign);
     }
-    public void doIap(String iapId, String payLoad, InvokeJavaMethodDelegate delegate) {
-        GoogleIabHelper.getInstance().purchase(iapId,payLoad,delegate);
+
+    public boolean canDoIap() {
+        return GoogleIabHelper.getInstance().canDoIap();
     }
+
+    public HashMap getSuspensiveIap() {
+        return GoogleIabHelper.getInstance().getSuspensiveIap();
+    }
+
+    public void setSuspensiveIap(HashMap iapInfo) {
+        GoogleIabHelper.getInstance().setSuspensiveIap(iapInfo);
+    }
+
+    public void doIap(String iapId, String userId, InvokeJavaMethodDelegate delegate) {
+        GoogleIabHelper.getInstance().doIap(iapId, userId, delegate);
+    }
+
     public void rateGame() {
         Activity activity = SystemUtil.getInstance().getActivity();
         final String appPackageName = SystemUtil.getInstance().getPackageName(); // getPackageName() from Context or Activity object
