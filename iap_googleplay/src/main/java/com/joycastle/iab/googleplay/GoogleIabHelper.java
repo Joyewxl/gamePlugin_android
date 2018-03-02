@@ -123,38 +123,34 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     @Override
     public void onQueryInventoryFinished(IabResult result, Inventory inv) {
-//        if (mHelper == null) {
-//            return;
-//        }
-//        if (result.isFailure()) {
-//            Log.w(TAG, "Failed to query inventory: "+result);
-//            return;
-//        }
-//
-//        Log.d(TAG, "Query inventory was successful.");
-//
-//        if (mRestoreDelegate == null) {
-//            return;
-//        }
-//        Toast.makeText(SystemUtil.getInstance().getApplication(), "Restore Purchase...", Toast.LENGTH_LONG).show();
-//        List<Purchase> purchases = inv.getAllPurchases();
-//        try {
-//            mHelper.consumeAsync(purchases, new IabHelper.OnConsumeMultiFinishedListener() {
-//                @Override
-//                public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
-//                    for (int i=0; i<purchases.size(); i++) {
-//                        Purchase purchase = purchases.get(i);
-//                        IabResult iabResult = results.get(i);
-//                        boolean iapResult = iabResult.isSuccess();
-//                        String iapId = purchase.getSku();
-//                        String payload = purchase.getDeveloperPayload();
-//                        mRestoreDelegate.onResult(iapResult, iapId, payload);
-//                    }
-//                }
-//            });
-//        } catch (IabHelper.IabAsyncInProgressException e) {
-//            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
-//        }
+        if (mHelper == null) {
+            return;
+        }
+        if (result.isFailure()) {
+            Log.w(TAG, "Failed to query inventory: "+result);
+            return;
+        }
+
+        Log.d(TAG, "Query inventory was successful.");
+
+        Toast.makeText(SystemUtil.getInstance().getApplication(), "Restore Purchase...", Toast.LENGTH_LONG).show();
+        List<Purchase> purchases = inv.getAllPurchases();
+        try {
+            mHelper.consumeAsync(purchases, new IabHelper.OnConsumeMultiFinishedListener() {
+                @Override
+                public void onConsumeMultiFinished(List<Purchase> purchases, List<IabResult> results) {
+                    for (int i=0; i<purchases.size(); i++) {
+                        Purchase purchase = purchases.get(i);
+                        IabResult iabResult = results.get(i);
+                        boolean iapResult = iabResult.isSuccess();
+                        String iapId = purchase.getSku();
+                        String payload = purchase.getDeveloperPayload();
+                    }
+                }
+            });
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
+        }
     }
 
 
