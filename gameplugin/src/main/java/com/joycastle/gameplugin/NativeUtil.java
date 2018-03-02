@@ -50,8 +50,8 @@ public class NativeUtil {
                 objectArr[i] = obj;
             }
             if (requestId >= 0) {
-                classArr[argsNum] = InvokeJavaMethodDelegate.class;
-                objectArr[argsNum] = new InvokeJavaMethodDelegate() {
+                classArr[argsNum-1] = InvokeJavaMethodDelegate.class;
+                objectArr[argsNum-1] = new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
                         try {
