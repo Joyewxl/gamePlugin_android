@@ -30,6 +30,8 @@ import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
