@@ -21,6 +21,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
@@ -524,7 +525,7 @@ public class SystemUtil {
         editor.putString(key,value);
         editor.commit();
 
-        Log.e(TAG, "thread id --- "+android.os.Process.myTid());
+        Log.e(TAG, "thread id --- "+android.os.Process.myTid()+" : "+ Looper.getMainLooper().getThread().getId());
     }
 
     public String keychainGet(String key) {
