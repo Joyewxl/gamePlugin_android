@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
@@ -18,9 +20,9 @@ import java.util.ArrayList;
 
 public class AdvertiseHelper implements AdvertiseDelegate {
     private static final String TAG = "AdvertiseHelper";
-
     private static AdvertiseHelper instance = new AdvertiseHelper();
 
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
     private ArrayList<AdvertiseDelegate> delegates;
 
     public static AdvertiseHelper getInstance() { return instance; }
@@ -30,11 +32,17 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public int showBannerAd(boolean protrait, boolean bottom) {
+    public int showBannerAd(final boolean protrait, final boolean bottom) {
         if (delegates.size() <= 0) {
             return 0;
         }
-        return delegates.get(0).showBannerAd(protrait, bottom);
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                delegates.get(0).showBannerAd(protrait, bottom);
+            }
+        });
+        return 0;
     }
 
     @Override
@@ -42,7 +50,12 @@ public class AdvertiseHelper implements AdvertiseDelegate {
         if (delegates.size() <= 0) {
             return;
         }
-        delegates.get(0).hideBannerAd();
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                delegates.get(0).hideBannerAd();
+            }
+        });
     }
 
     @Override
@@ -58,15 +71,19 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public boolean showInterstitialAd(InvokeJavaMethodDelegate listener) {
-        boolean result = false;
-        for (AdvertiseDelegate delegate : delegates) {
-            result = delegate.showInterstitialAd(listener);
-            if (result) {
-                break;
+    public boolean showInterstitialAd(final InvokeJavaMethodDelegate listener) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (AdvertiseDelegate delegate : delegates) {
+                    boolean result = delegate.showInterstitialAd(listener);
+                    if (result) {
+                        break;
+                    }
+                }
             }
-        }
-        return result;
+        });
+        return true;
     }
 
     @Override
@@ -82,15 +99,19 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
-    public boolean showVideoAd(InvokeJavaMethodDelegate listener) {
-        boolean result = false;
-        for (AdvertiseDelegate delegate : delegates) {
-            result = delegate.showVideoAd(listener);
-            if (result) {
-                break;
+    public boolean showVideoAd(final InvokeJavaMethodDelegate listener) {
+        mainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                for (AdvertiseDelegate delegate : delegates) {
+                    boolean result = delegate.showVideoAd(listener);
+                    if (result) {
+                        break;
+                    }
+                }
             }
-        }
-        return result;
+        });
+        return true;
     }
 
     @Override

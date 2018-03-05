@@ -1,8 +1,9 @@
-package com.joycastle.app;
+package org.cocos2dx.lua;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.media.FaceDetector;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.joycastle.app.R;
 import com.joycastle.gameplugin.AdvertiseHelper;
 import com.joycastle.gameplugin.AnalyticHelper;
 import com.joycastle.gameplugin.GamePlugin;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MainActivity extends Activity implements AdapterView.OnItemClickListener {
+public class AppActivity extends Activity implements AdapterView.OnItemClickListener {
     static {
         System.loadLibrary("cocos2dlua");
     }
@@ -43,9 +45,6 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 
         GamePlugin.getInstance().onCreate(this, savedInstanceState);
 
-        arrayList = new ArrayList<>();
-        HashMap<String, OnClickListener> hashMap;
-
         GamePlugin.getInstance().setNotifyHandler(new InvokeJavaMethodDelegate() {
             @Override
             public void onFinish(ArrayList<Object> resArrayList) {
@@ -53,16 +52,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
+        // 内购验证，地址，签名
         GamePlugin.getInstance().setIapVerifyUrlAndSign("", "");
 
-        ///////////////////////////////Analytic///////////////////////////////
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("--------AnalyticHelper", null);
+        arrayList = new ArrayList<>();
 
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("setAccoutInfo", new OnClickListener() {
+        ///////////////////////////////Analytic///////////////////////////////
+        addToArrayList("--------AnalyticHelper", null);
+        addToArrayList("setAccoutInfo", new OnClickListener() {
             @Override
             public void onClick() {
                 HashMap map = new HashMap();
@@ -80,28 +77,19 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                NativeUtil.invokeJavaMethod("com.joycastle.gamepluginbase.SystemUtil","showAlertDialog",reqData.toString(),0);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("onEvent", new OnClickListener() {
+        addToArrayList("onEvent", new OnClickListener() {
             @Override
             public void onClick() {
                 AnalyticHelper.getInstance().onEvent("dead");
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("onEventWithLabel", new OnClickListener() {
+        addToArrayList("onEventWithLabel", new OnClickListener() {
             @Override
             public void onClick() {
                 AnalyticHelper.getInstance().onEvent("dead", "10");
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("onEventWithData", new OnClickListener() {
+        addToArrayList("onEventWithData", new OnClickListener() {
             @Override
             public void onClick() {
                 HashMap<String, String> map = new HashMap<>();
@@ -112,43 +100,33 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
         });
 
         ///////////////////////////////Facebook///////////////////////////////
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("--------FaceBook", null);
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("inviteFBFriend", new OnClickListener() {
-
+        addToArrayList("--------FaceBook", null);
+        FacebookHelper.getInstance().setLoginFunc(new InvokeJavaMethodDelegate() {
             @Override
-            public void onClick() {
-//                JSONObject reqData = new JSONObject();
-//                JSONArray json =new JSONArray();
-//                JSONObject jso = new JSONObject();
-//                try {
-//                    json.put(jso);
-//                    json.put("blackjack");
-//                    json.put("blackjack");
-//                    reqData.put("json", json);
-//                } catch (JSONException e) {`
-//                    e.printStackTrace();
-//                }
-//                System.out.print("request json : "+reqData.toString());
-//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","confirmRequest",reqData.toString(),1);
-
-                FacebookHelper.getInstance().confirmRequest(null, "black", "black", new InvokeJavaMethodDelegate() {
-                    @Override
-                    public void onFinish(ArrayList<Object> resArrayList) {
-
-                    }
-
-                });
+            public void onFinish(ArrayList<Object> resArrayList) {
+                Log.e(TAG, resArrayList.toString());
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("facebooklogin", new OnClickListener() {
+        FacebookHelper.getInstance().setAppLinkFunc(new InvokeJavaMethodDelegate() {
+            @Override
+            public void onFinish(ArrayList<Object> resArrayList) {
+                Log.e(TAG, resArrayList.toString());
+            }
+        });
+        addToArrayList("openFacebookPage", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().openFacebookPage("", "");
+            }
+        });
+        addToArrayList("isLogin", new OnClickListener() {
+            @Override
+            public void onClick() {
+                boolean result = FacebookHelper.getInstance().isLogin();
+                Log.e(TAG, String.valueOf(result));
+            }
+        });
+        addToArrayList("login", new OnClickListener() {
 
             @Override
             public void onClick() {
@@ -166,10 +144,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","login",reqData.toString(),-1);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("facebooklogout", new OnClickListener() {
+        addToArrayList("logout", new OnClickListener() {
 
             @Override
             public void onClick() {
@@ -177,71 +152,134 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","logout","{}",-1);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("facebookIslogin", new OnClickListener() {
+        addToArrayList("getUserID", new OnClickListener() {
 
             @Override
             public void onClick() {
-                boolean islogin = FacebookHelper.getInstance().isLogin();
-                Log.i(TAG, "isLogin: "+islogin);
-//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","isLogin","{}",-1);
-            }
-        });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("facebookGetUserId", new OnClickListener() {
-
-            @Override
-            public void onClick() {
-
                 String uid = FacebookHelper.getInstance().getUserID();
-                Log.i(TAG, "getUserId: "+uid);
+                Log.e(TAG, "getUserId: "+uid);
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserId","{}",-1);
             }
         });
+        addToArrayList("getAccessToken", new OnClickListener() {
+            @Override
+            public void onClick() {
+                String accessToken = FacebookHelper.getInstance().getAccessToken();
+                Log.e(TAG, accessToken);
 
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("getFacebookProfile", new OnClickListener() {
+            }
+        });
+        addToArrayList("getUserProfile", new OnClickListener() {
 
             @Override
             public void onClick() {
-//               String str = FacebookHelper.getInstance().getUserProfile(null,null);
-                FacebookHelper.getInstance().getUserProfile("",0, new InvokeJavaMethodDelegate() {
+                FacebookHelper.getInstance().getUserProfile("me",320, new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
+//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
+            }
+        });
+        addToArrayList("getInvitableFriends", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().getInvitableFriends(new ArrayList<String>(), 320, new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
+            }
+        });
+        addToArrayList("getFriends", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().getFriends(320, new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
+            }
+        });
+        addToArrayList("confirmRequest", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().confirmRequest(new ArrayList<String>(), "title", "message", new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
+            }
+        });
+        addToArrayList("queryRequest", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().queryRequest(new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
+            }
+        });
+        addToArrayList("acceptRequest", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().acceptRequest("requestId", new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
+            }
+        });
+        addToArrayList("share", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().share("", false, null, "", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
 
                     }
                 });
-
-//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("getAccessToken", new OnClickListener() {
-
+        addToArrayList("setLevel", new OnClickListener() {
             @Override
             public void onClick() {
-                String token = FacebookHelper.getInstance().getAccessToken();
-                Log.i(TAG, "getAccessToken: "+token);
-//                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getAccessToken","{}",-1);
+                FacebookHelper.getInstance().setLevel(10);
+            }
+        });
+        addToArrayList("getLevel", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().getLevel("fid", new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
+            }
+        });
+        addToArrayList("inviteFriend", new OnClickListener() {
+            @Override
+            public void onClick() {
+                FacebookHelper.getInstance().inviteFriend("", "", new InvokeJavaMethodDelegate() {
+                    @Override
+                    public void onFinish(ArrayList<Object> resArrayList) {
+                        Log.e(TAG, resArrayList.toString());
+                    }
+                });
             }
         });
 
-
         ///////////////////////////////Advertise///////////////////////////////
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("--------AdvertiseHelper", null);
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("showBannerAd", new OnClickListener() {
+        addToArrayList("--------AdvertiseHelper", null);
+        addToArrayList("showBannerAd", new OnClickListener() {
             @Override
             public void onClick() {
                 int height = AdvertiseHelper.getInstance().showBannerAd(true, true);
@@ -249,20 +287,14 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showBannerAd","{}",-1);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("hideBannerAd", new OnClickListener() {
+        addToArrayList("hideBannerAd", new OnClickListener() {
             @Override
             public void onClick() {
                 AdvertiseHelper.getInstance().hideBannerAd();
 //                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","hideBannerAd","{}",-1);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("isInterstitialAdReady", new OnClickListener() {
+        addToArrayList("isInterstitialAdReady", new OnClickListener() {
             @Override
             public void onClick() {
                 boolean result = AdvertiseHelper.getInstance().isInterstitialAdReady();
@@ -270,10 +302,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isInterstitialAdReady","{}",-1);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("showInterstitialAd", new OnClickListener() {
+        addToArrayList("showInterstitialAd", new OnClickListener() {
             @Override
             public void onClick() {
                 boolean result = AdvertiseHelper.getInstance().showInterstitialAd(new InvokeJavaMethodDelegate() {
@@ -294,10 +323,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","showInterstitialAd",reqData.toString(),0);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("isVideoAdReady", new OnClickListener() {
+        addToArrayList("isVideoAdReady", new OnClickListener() {
             @Override
             public void onClick() {
                 boolean result = AdvertiseHelper.getInstance().isVideoAdReady();
@@ -313,10 +339,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 //                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isVideoAdReady",reqData.toString(),-1);
             }
         });
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("showVideoAd", new OnClickListener() {
+        addToArrayList("showVideoAd", new OnClickListener() {
             @Override
             public void onClick() {
                 boolean result = AdvertiseHelper.getInstance().showVideoAd(new InvokeJavaMethodDelegate() {
@@ -338,36 +361,46 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
             }
         });
 
-        ///////////////////////////////IAB///////////////////////////////
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("--------IAB", null);
-
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("purchase", new OnClickListener() {
+        ///////////////////////////////GamePlugin///////////////////////////////
+        addToArrayList("--------GamePlugin", null);
+        addToArrayList("canDoIap", new OnClickListener() {
             @Override
             public void onClick() {
-//                IabHelper.getInstance().purchase("managed_product", "user_001", new IabDelegate.PurchaseDelegate() {
-//                    @Override
-//                    public void onResult(boolean result, String message) {
-//                        showAlert(result+"\n"+message);
-//                    }
-//                });
-
+                boolean result = GamePlugin.getInstance().canDoIap();
+                showAlert(String.valueOf(result));
+            }
+        });
+        addToArrayList("getSuspensiveIap", new OnClickListener() {
+            @Override
+            public void onClick() {
+                HashMap hashMap = GamePlugin.getInstance().getSuspensiveIap();
+                showAlert(hashMap.toString());
+            }
+        });
+        addToArrayList("setSuspensiveIap", new OnClickListener() {
+            @Override
+            public void onClick() {
+                HashMap hashMap = new HashMap();
+                GamePlugin.getInstance().setSuspensiveIap(hashMap);
+            }
+        });
+        addToArrayList("doIap", new OnClickListener() {
+            @Override
+            public void onClick() {
                 GamePlugin.getInstance().doIap("blackjack.chip1", "user_001", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
         });
-
-        ///////////////////////////////GamePlugin///////////////////////////////
-        hashMap = new HashMap<>();
-        arrayList.add(hashMap);
-        hashMap.put("--------GamePlugin", null);
+        addToArrayList("rateGame", new OnClickListener() {
+            @Override
+            public void onClick() {
+                GamePlugin.getInstance().rateGame();
+            }
+        });
 
         ///////////////////////////////SystemUtil///////////////////////////////
         addToArrayList("--------SystemUtil", null);

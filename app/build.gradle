@@ -1,14 +1,6 @@
 apply plugin: 'com.android.application'
 
 android {
-    signingConfigs {
-        debug {
-            storeFile file("test.jks")
-            keyAlias 'test'
-            keyPassword 'Aa112112'
-            storePassword 'Aa112112'
-        }
-    }
     dexOptions {
         javaMaxHeapSize "4g"
     }

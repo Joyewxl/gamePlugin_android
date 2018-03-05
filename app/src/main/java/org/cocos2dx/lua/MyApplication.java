@@ -1,4 +1,4 @@
-package com.joycastle.app;
+package org.cocos2dx.lua;
 
 import android.support.multidex.MultiDexApplication;
 

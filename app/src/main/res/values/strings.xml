@@ -13,4 +13,7 @@
     <string name="vungle_video_id">REWARDE91320</string>
 
     <string name="google_iab_publickey">google_iab_publickey</string>
+
+    <string name="facebook_app_id">392706894400250</string>
+    <string name="fb_login_protocol_scheme">fb392706894400250</string>
 </resources>

@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -55,6 +56,9 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
     private InterstitialAd interstitialAd = null;
     private RewardedVideoAd mRewardedVideoAd = null;
 
+    private boolean isInterstitialAdLoaded = false;
+    private boolean isRewardAdLoaded = false;
+
     private boolean interstitialAdClicked = false;
     private InvokeJavaMethodDelegate interstitialAdListener = null;
 
@@ -74,7 +78,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
     }
 
     @Override
-    public int showBannerAd(boolean protrait, boolean bottom) {
+    public int showBannerAd(final boolean protrait, final boolean bottom) {
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) bannerAd.getLayoutParams();
         layoutParams.gravity = bottom ? Gravity.BOTTOM : Gravity.TOP;
         bannerAd.setLayoutParams(layoutParams);
@@ -89,7 +93,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public boolean isInterstitialAdReady() {
-        return interstitialAd.isLoaded();
+        return isInterstitialAdLoaded;
     }
 
     @Override
@@ -103,7 +107,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public boolean isVideoAdReady() {
-        return mRewardedVideoAd.isLoaded();
+        return isRewardAdLoaded;
     }
 
     @Override
@@ -226,7 +230,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
         interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
-                super.onAdClosed();
+                isInterstitialAdLoaded = false;
                 requestNewInterstitial();
                 ArrayList arrayList = new ArrayList();
                 arrayList.add(interstitialAdClicked);
@@ -248,6 +252,12 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
             public void onAdLeftApplication() {
                 super.onAdLeftApplication();
                 interstitialAdClicked = true;
+            }
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
+                isInterstitialAdLoaded = true;
             }
         });
         requestNewInterstitial();
@@ -290,7 +300,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public void onRewardedVideoAdLoaded() {
-
+        isRewardAdLoaded = true;
     }
 
     @Override
@@ -305,6 +315,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public void onRewardedVideoAdClosed() {
+        isRewardAdLoaded = false;
         requestNewVideo();
         ArrayList arrayList = new ArrayList();
         arrayList.add(rewardAdViewed);
