@@ -523,6 +523,8 @@ public class SystemUtil {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key,value);
         editor.commit();
+
+        Log.e(TAG, "thread id --- "+android.os.Process.myTid());
     }
 
     public String keychainGet(String key) {
