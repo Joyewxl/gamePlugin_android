@@ -13,7 +13,6 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.Profile;
@@ -37,33 +36,40 @@ import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by geekgy on 16/4/24.
  */
 public class FacebookHelper implements LifeCycleDelegate {
-    public interface OnLoginListener {
-        void onLogin(String userId, String accessToken);
-    }
-    public interface OnResultListener {
-        void onResult(boolean result, Map data);
+    private enum PermissionType {
+        READ,
+        PUBLISH,
     }
 
-    private static final String TAG = "facebook";
-    private Activity activity;
-    private InvokeJavaMethodDelegate loginListener;
-    private CallbackManager callbackManager;
-    private String userName;
+    private interface GrantPermissionListener {
+        void onFinish(boolean result);
+    }
+
+    private static final String TAG = "FacebookHelper";
     private static FacebookHelper instance = new FacebookHelper();
-    private GameRequestDialog requestDialog;
+
+    private InvokeJavaMethodDelegate loginListener;
+    private InvokeJavaMethodDelegate appLinkListener;
+    private GrantPermissionListener grantPermissionListener;
+    private CallbackManager callbackManager;
 
     public static FacebookHelper getInstance() {
         return instance;
@@ -73,32 +79,31 @@ public class FacebookHelper implements LifeCycleDelegate {
     public void openFacebookPage(String installUrl, String url) {
         //TODO
     }
+
     public void setLoginFunc(InvokeJavaMethodDelegate delegate) {
-        //TODO
-    }
-    public void setAppLinkFunc(InvokeJavaMethodDelegate delegate) {
-        //TODO
+        this.loginListener = delegate;
     }
 
-    public void setLoginListener(InvokeJavaMethodDelegate delegate) {
-        this.loginListener = delegate;
+    public void setAppLinkFunc(InvokeJavaMethodDelegate delegate) {
+        this.appLinkListener = delegate;
     }
 
     public boolean isLogin(){
         AccessToken token = AccessToken.getCurrentAccessToken();
-        Log.v("facebook help","token:"+token);
-        if (token == null || token.isExpired()) {
-            return false;
-        }
-        return true;
+        return !(token == null || token.isExpired());
     }
 
     public void login() {
-        if (this.isLogin())
+        if (this.isLogin()) {
             return;
-        List<String> permissions = Arrays.asList("public_profile", "user_friends", "email", "user_birthday", "user_status");
-        Activity activity = SystemUtil.getInstance().getActivity();
-        LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
+        }
+        List<String> permissions = Arrays.asList("public_profile", "user_friends", "email");
+        grantPermissions(permissions, PermissionType.READ, new GrantPermissionListener() {
+            @Override
+            public void onFinish(boolean result) {
+                Log.e(TAG, "login result: " + result);
+            }
+        });
     }
 
     public void logout() {
@@ -107,44 +112,52 @@ public class FacebookHelper implements LifeCycleDelegate {
         LoginManager.getInstance().logOut();
     }
 
-
     public String getUserID() {
-        if (!this.isLogin())
-        {
+        if (!this.isLogin()) {
             return null;
         }
-        String uid = Profile.getCurrentProfile().getId();
-        return uid;
+        return Profile.getCurrentProfile().getId();
     }
 
     public String getAccessToken() {
-        if (!this.isLogin())
-        {
+        if (!this.isLogin()) {
             return null;
         }
         return AccessToken.getCurrentAccessToken().getToken();
     }
 
-    public void getUserProfile(String fid,int picSize,InvokeJavaMethodDelegate delegate){
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        final InvokeJavaMethodDelegate tdelegate = delegate;
-        GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
+    public void getUserProfile(final String fid, final int picSize, final InvokeJavaMethodDelegate delegate){
+        List<String> permissions = Arrays.asList("public_profile", "user_friends", "email");
+        grantPermissions(permissions, PermissionType.READ, new GrantPermissionListener() {
             @Override
-            public void onCompleted(JSONObject object, GraphResponse response) {
-                if (object != null) {
-                    Log.e(TAG, "userProfile: "+object);
-                    ArrayList<Object> arrayList = new ArrayList<>();
-                    HashMap hashMap = new HashMap();
-                    hashMap.put("name","ddddd");
-                    hashMap.put("ind",123123);
-                    arrayList.add(hashMap);
-                    tdelegate.onFinish(arrayList);
+            public void onFinish(boolean result) {
+                if (!result) {
+                    delegate.onFinish(new ArrayList());
+                } else {
+                    String graphPath = String.format(Locale.getDefault(), "/%s?fields=id,name,gender,picture.height(%d).width(%d),email", fid, picSize, picSize);
+                    GraphRequest.newGraphPathRequest(AccessToken.getCurrentAccessToken(), graphPath, new GraphRequest.Callback() {
+                        @Override
+                        public void onCompleted(GraphResponse response) {
+                            if (response.getError() != null) {
+                                delegate.onFinish(new ArrayList());
+                            } else {
+                                try {
+                                    ArrayList<Object> arrayList = new ArrayList<>();
+                                    arrayList.add(jsonObject2HashMap(response.getJSONObject()));
+                                    delegate.onFinish(arrayList);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    delegate.onFinish(new ArrayList());
+                                }
+                            }
+                        }
+                    }).executeAsync();
                 }
             }
-        }).executeAsync();
+        });
     }
 
-    public void getInvitableFriends(HashMap inviteTokens,int picSize,InvokeJavaMethodDelegate delegate) {
+    public void getInvitableFriends(ArrayList<String> inviteTokens, int picSize, InvokeJavaMethodDelegate delegate) {
         //TODO
     }
 
@@ -152,32 +165,50 @@ public class FacebookHelper implements LifeCycleDelegate {
         //TODO
     }
 
-    public void confirmRequest(HashMap fidOrTokens,String title,String msg,InvokeJavaMethodDelegate delegate){
-        requestDialog = new GameRequestDialog(SystemUtil.getInstance().getActivity());
-        final InvokeJavaMethodDelegate tdelegate = delegate;
-        requestDialog.registerCallback(callbackManager,
-                new FacebookCallback<GameRequestDialog.Result>() {
-                    public void onSuccess(GameRequestDialog.Result result) {
-                        List<String> res = result.getRequestRecipients();
-                        ArrayList<Object> respData = new ArrayList<>();
-                        for (String id:res) {
-                            respData.add(id);
+    public void confirmRequest(final ArrayList<String> fidOrTokens, final String title, final String msg, final InvokeJavaMethodDelegate delegate){
+        grantPermissions(Arrays.asList("public_profile"), PermissionType.READ, new GrantPermissionListener() {
+            @Override
+            public void onFinish(boolean result) {
+                if (!result) {
+                    delegate.onFinish(new ArrayList());
+                } else {
+                    GameRequestDialog gameRequestDialog = new GameRequestDialog(SystemUtil.getInstance().getActivity());
+                    gameRequestDialog.registerCallback(callbackManager, new FacebookCallback<GameRequestDialog.Result>() {
+                        @Override
+                        public void onSuccess(GameRequestDialog.Result result) {
+                            ArrayList arrayList = new ArrayList();
+                            List<String> recipients = result.getRequestRecipients();
+                            if (recipients.size() > 0) {
+                                HashMap hashMap = new HashMap();
+                                hashMap.put("request", result.getRequestId());
+                                for (int i=0; i<recipients.size(); i++) {
+                                    hashMap.put("to["+i+"]", recipients.get(i));
+                                }
+                                arrayList.add(hashMap);
+                            }
+                            delegate.onFinish(arrayList);
                         }
-                        tdelegate.onFinish(respData);
-                    }
-                    public void onCancel() {
 
-                    }
-                    public void onError(FacebookException error) {
+                        @Override
+                        public void onCancel() {
+                            delegate.onFinish(new ArrayList());
+                        }
 
-                    }
+                        @Override
+                        public void onError(FacebookException error) {
+                            Log.e(TAG, error.toString());
+                            delegate.onFinish(new ArrayList());
+                        }
+                    });
+                    GameRequestContent content = new GameRequestContent.Builder()
+                            .setRecipients(fidOrTokens)
+                            .setTitle(title)
+                            .setMessage(msg)
+                            .build();
+                    gameRequestDialog.show(content);
                 }
-        );
-
-        GameRequestContent content = new GameRequestContent.Builder()
-                .setMessage(msg)
-                .build();
-        requestDialog.show(content);
+            }
+        });
     }
 
     public void queryRequest(InvokeJavaMethodDelegate delegate) {
@@ -195,7 +226,7 @@ public class FacebookHelper implements LifeCycleDelegate {
      * @param listener 回调
      */
     //std::string title, std::string i, std::string caption, std::string imageUrl, std::string contentUrl, std::function<void(bool)>& func
-    public void share(String shareType, boolean customInterface, Map<String, String> map, String message, OnResultListener listener) {
+    public void share(String shareType, boolean customInterface, Map<String, String> map, String message, InvokeJavaMethodDelegate listener) {
         ShareContent content = null;
         if ("Links".equals(shareType)) {
             ShareLinkContent.Builder builder = new ShareLinkContent.Builder();
@@ -266,7 +297,7 @@ public class FacebookHelper implements LifeCycleDelegate {
             shareApi.setMessage(message);
             shareApi.share(callback);
         } else {
-            ShareDialog shareDialog = new ShareDialog(activity);
+            ShareDialog shareDialog = new ShareDialog(SystemUtil.getInstance().getActivity());
             shareDialog.registerCallback(callbackManager, callback);
             shareDialog.show(content);
         }
@@ -284,47 +315,103 @@ public class FacebookHelper implements LifeCycleDelegate {
         //TODO
     }
 
+    /**
+     * 分配权限
+     * @param permissions 所需要申请的权限
+     * @param permissionType read/publish
+     * @param listener 回调
+     */
+    private void grantPermissions(List<String> permissions, PermissionType permissionType, GrantPermissionListener listener) {
+        Set<String> grantedPermissions = new HashSet<>();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null) {
+            grantedPermissions = accessToken.getPermissions();
+        }
+        ArrayList<String> needGrantPermissions = new ArrayList<>();
+        for (String permission : permissions) {
+            if (!grantedPermissions.contains(permission)) {
+                needGrantPermissions.add(permission);
+            }
+        }
+        if (needGrantPermissions.size() <= 0){
+            listener.onFinish(true);
+            return;
+        }
+        grantPermissionListener = listener;
+        if (permissionType == PermissionType.READ) {
+            LoginManager.getInstance().logInWithReadPermissions(SystemUtil.getInstance().getActivity(), needGrantPermissions);
+        } else if (permissionType == PermissionType.PUBLISH) {
+            LoginManager.getInstance().logInWithPublishPermissions(SystemUtil.getInstance().getActivity(), needGrantPermissions);
+        }
+    }
+
+    private static ArrayList<Object> jsonArray2ArrayList(JSONArray valArr) throws JSONException {
+        ArrayList<Object> arrayList = new ArrayList<>();
+        for (int i = 0; i < valArr.length(); i++) {
+            if (valArr.optJSONArray(i) != null) {
+                arrayList.add(jsonArray2ArrayList(valArr.getJSONArray(i)));
+            } else if (valArr.optJSONObject(i) != null) {
+                arrayList.add(jsonObject2HashMap(valArr.getJSONObject(i)));
+            } else {
+                arrayList.add(valArr.get(i));
+            }
+        }
+        return arrayList;
+    }
+
+    private static HashMap<String, Object> jsonObject2HashMap(JSONObject valObj) throws JSONException {
+        HashMap<String, Object> hashMap = new HashMap<>();
+        Iterator<String> keys = valObj.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (valObj.optJSONArray(key) != null) {
+                hashMap.put(key, jsonArray2ArrayList(valObj.getJSONArray(key)));
+            } else if (valObj.optJSONObject(key) != null) {
+                hashMap.put(key, jsonObject2HashMap(valObj.getJSONObject(key)));
+            } else {
+                hashMap.put(key, valObj.get(key));
+            }
+        }
+        return hashMap;
+    }
+
     @Override
     public void init(Application application) {
 
-        FacebookSdk.sdkInitialize(application.getApplicationContext());
-//        AppEventsLogger.activateApp(application);
-        callbackManager = CallbackManager.Factory.create();
-        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                String userId = AccessToken.getCurrentAccessToken().getUserId();
-                String accessToken = AccessToken.getCurrentAccessToken().getToken();
-                Log.e(TAG, "userId = "+userId+", accessToken = "+accessToken);
-                if (null != FacebookHelper.this.loginListener)
-                {
-                    JSONObject resqData = new JSONObject();
-                    try {
-                        resqData.put("userId",userId);
-                        resqData.put("accessToken",accessToken);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-//                    FacebookHelper.this.loginListener.onFinish(resqData);
-                }
-            }
-
-            @Override
-            public void onCancel() {
-                Log.e(TAG,"login cancel!");
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.e(TAG,"login failed!");
-            }
-
-        });
     }
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
-        this.activity = activity;
+        callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.i(TAG, "facebook login success");
+                String userId = AccessToken.getCurrentAccessToken().getUserId();
+                String accessToken = AccessToken.getCurrentAccessToken().getToken();
+                Log.i(TAG, "userId = "+userId+", accessToken = "+accessToken);
+                if (null != FacebookHelper.this.loginListener) {
+                    ArrayList arrayList = new ArrayList();
+                    arrayList.add(userId);
+                    arrayList.add(accessToken);
+                    FacebookHelper.this.loginListener.onFinish(arrayList);
+                }
+                grantPermissionListener.onFinish(true);
+            }
+
+            @Override
+            public void onCancel() {
+                Log.i(TAG,"login cancel!");
+                grantPermissionListener.onFinish(false);
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.e(TAG,"login error!");
+                Log.e(TAG, error.toString());
+                grantPermissionListener.onFinish(false);
+            }
+        });
     }
 
     @Override

@@ -123,7 +123,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             @Override
             public void onClick() {
                 boolean result = FacebookHelper.getInstance().isLogin();
-                Log.e(TAG, String.valueOf(result));
+                showAlert(String.valueOf(result));
             }
         });
         addToArrayList("login", new OnClickListener() {
@@ -157,7 +157,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             @Override
             public void onClick() {
                 String uid = FacebookHelper.getInstance().getUserID();
-                Log.e(TAG, "getUserId: "+uid);
+                showAlert(uid);
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserId","{}",-1);
             }
         });
@@ -165,7 +165,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             @Override
             public void onClick() {
                 String accessToken = FacebookHelper.getInstance().getAccessToken();
-                Log.e(TAG, accessToken);
+                showAlert(accessToken);
 
             }
         });
@@ -176,7 +176,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().getUserProfile("me",320, new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
 //                NativeUtil.invokeJavaMethod("com.joycastle.my_facebook.FacebookHelper","getUserProfile","{}",1);
@@ -188,7 +188,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().getInvitableFriends(new ArrayList<String>(), 320, new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
@@ -199,7 +199,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().getFriends(320, new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
@@ -210,7 +210,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().confirmRequest(new ArrayList<String>(), "title", "message", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
@@ -221,7 +221,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().queryRequest(new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
@@ -232,7 +232,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().acceptRequest("requestId", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
@@ -243,7 +243,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().share("", false, null, "", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
@@ -260,7 +260,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().getLevel("fid", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
             }
@@ -271,7 +271,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 FacebookHelper.getInstance().inviteFriend("", "", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, resArrayList.toString());
+                        showAlert(resArrayList.toString());
                     }
                 });
             }

@@ -1,11 +1,5 @@
 # 1 GamePlugin
 
-build.gradle
-
-```groovy
-compile project(path: ':gameplugin')
-```
-
 
 # 2 Analytics
 
@@ -59,16 +53,11 @@ none
 
 # 4 Facebook
 
-build.gradle
-```groovy
-compile project(path: ':my_facebook')
-```
-
-strings.xml​
+strings.xml
 
 ```xml
-<string name="facebook_app_id">184666628540822</string>
-<string name="fb_login_protocol_scheme">fb184666628540822</string>
+    <string name="facebook_app_id">facebook_app_id</string>
+    <string name="fb_login_protocol_scheme">fb_login_protocol_scheme</string>
 ```
 
 
