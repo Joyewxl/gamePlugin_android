@@ -335,12 +335,12 @@ public class SystemUtil {
         mNotificationManager.cancelAll();
     }
 
-    public void postNotication(HashMap notifications) {
-        Log.e(TAG, "postNotication: " + notifications.toString());
+    public void postNotification(HashMap notifications) {
+        Log.e(TAG, "postNotification: " + notifications.toString());
         String content = null;
         int notiTime = 0;
         content = (String)notifications.get("message");
-        notiTime = (int) notifications.get("delay");
+        notiTime =  new Double((Double) notifications.get("delay")).intValue();
 
         Intent intent = new Intent(this.activity, NotificationReceiver.class);
         intent.setData(Uri.parse("blackjack"));
