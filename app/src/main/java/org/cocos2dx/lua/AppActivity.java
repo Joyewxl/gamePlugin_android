@@ -539,10 +539,10 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
         addToArrayList("postNotication", new OnClickListener() {
             @Override
             public void onClick() {
-                HashMap<String,Object> reqData = new HashMap<>();
+                HashMap reqData = new HashMap();
                 reqData.put("message","hello world ！！！");
                 reqData.put("delay",10);
-                SystemUtil.getInstance().postNotication(reqData);
+                SystemUtil.getInstance().postNotification(reqData);
             }
         });
         addToArrayList("copyToClipboard", new OnClickListener() {
