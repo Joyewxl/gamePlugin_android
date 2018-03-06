@@ -359,7 +359,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
 
         ///////////////////////////////GamePlugin///////////////////////////////
         addToArrayList("--------GamePlugin", null);
-        GamePlugin.getInstance().setIapVerifyUrlAndSign("https://blackjack.cardgamefree.com/misc/iapOrderVerify?platform=android", "$#^&GD198$(HJhwdP:[");
+        GamePlugin.getInstance().setIapVerifyUrlAndSign("url", "sign");
         addToArrayList("canDoIap", new OnClickListener() {
             @Override
             public void onClick() {
