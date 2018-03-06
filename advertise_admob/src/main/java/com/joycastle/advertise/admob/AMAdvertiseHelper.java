@@ -6,7 +6,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -26,9 +25,6 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -75,6 +71,21 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
     public void setVungle(Class clazz , Bundle extras){
         vungleClass = clazz;
         vungleExtras = extras;
+    }
+
+    @Override
+    public void setBannerAdName(String name) {
+
+    }
+
+    @Override
+    public void setSpotAdNames(ArrayList names) {
+
+    }
+
+    @Override
+    public void setVideoAdNames(ArrayList names) {
+
     }
 
     @Override
@@ -193,11 +204,11 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
-        appId = SystemUtil.getInstance().getMetaData("admob_app_id");
-        bannerId = SystemUtil.getInstance().getMetaData("admob_banner_id");
-        interstitialId = SystemUtil.getInstance().getMetaData("admob_interstitial_id");
-        videoId = SystemUtil.getInstance().getMetaData("admob_video_id");
-        testDeviceId = SystemUtil.getInstance().getMetaData("admob_test_device_id");
+        appId = SystemUtil.getInstance().getPlatCfgValue("admob_app_id");
+        bannerId = SystemUtil.getInstance().getPlatCfgValue("admob_banner_id");
+        interstitialId = SystemUtil.getInstance().getPlatCfgValue("admob_interstitial_id");
+        videoId = SystemUtil.getInstance().getPlatCfgValue("admob_video_id");
+        testDeviceId = SystemUtil.getInstance().getPlatCfgValue("admob_test_device_id");
 
         MobileAds.initialize(activity, appId);
 

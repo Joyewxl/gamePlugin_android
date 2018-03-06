@@ -3,10 +3,8 @@ package com.joycastle.gameplugin;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
@@ -14,11 +12,7 @@ import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.iab.googleplay.GoogleIabHelper;
 import com.joycastle.my_facebook.FacebookHelper;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Created by geekgy on 16/5/11.
@@ -126,7 +120,7 @@ public class GamePlugin implements LifeCycleDelegate {
 
     public void rateGame() {
         Activity activity = SystemUtil.getInstance().getActivity();
-        final String appPackageName = SystemUtil.getInstance().getPackageName(); // getPackageName() from Context or Activity object
+        final String appPackageName = SystemUtil.getInstance().getAppBundleId(); // getAppBundleId() from Context or Activity object
         try {
             activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
         } catch (android.content.ActivityNotFoundException anfe) {

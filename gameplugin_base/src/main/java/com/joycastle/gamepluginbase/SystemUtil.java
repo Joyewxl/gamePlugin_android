@@ -85,12 +85,13 @@ public class SystemUtil {
     }
 
     /**
-     * 获取包名
+     * 获取运行模式
      * @return
      */
-    public String getPackageName() {
-        PackageManager packageManager = application.getPackageManager();
-        return application.getPackageName();
+    public int getDebugMode() {
+        String isDebug = BuildConfig.DEBUG ? "0" : "1";
+        //TODO: 1 DEBUG, 2 RELEASE, 3 SUBMISSION
+        return 3;
     }
 
     /**
@@ -98,7 +99,7 @@ public class SystemUtil {
      * @param key
      * @return
      */
-    public String getMetaData(String key) {
+    public String getPlatCfgValue(String key) {
         String value = "";
         try {
             PackageManager packageManager = application.getPackageManager();
@@ -117,26 +118,13 @@ public class SystemUtil {
         return value;
     }
 
-
-
     /**
-     * 获取运行模式
+     * 获取包名
      * @return
      */
-    public int getDebugMode() {
-        String isDebug = BuildConfig.DEBUG ? "0" : "1";
-        //TODO: 1 DEBUG, 2 RELEASE, 3 SUBMISSION
-        return 3;
-    }
-
-    public String getPlatCfgValue() {
-        //TODO
-        return "";
-    }
-
     public String getAppBundleId() {
-        //TODO
-        return "";
+        PackageManager packageManager = application.getPackageManager();
+        return application.getPackageName();
     }
 
     /**
@@ -208,6 +196,7 @@ public class SystemUtil {
         //TODO
         return "";
     }
+
     public String getUUID() {
         if (uuid == null) {
             synchronized (SystemUtil.class) {
@@ -524,8 +513,6 @@ public class SystemUtil {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key,value);
         editor.commit();
-
-        Log.e(TAG, "thread id --- "+android.os.Process.myTid()+" : "+ Looper.getMainLooper().getThread().getId());
     }
 
     public String keychainGet(String key) {

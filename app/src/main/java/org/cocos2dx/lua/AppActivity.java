@@ -3,7 +3,6 @@ package org.cocos2dx.lua;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.media.FaceDetector;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -411,17 +410,17 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 showAlert(String.valueOf(debugMode));
             }
         });
-        addToArrayList("getMetaData", new OnClickListener() {
+        addToArrayList("getPlatCfgValue", new OnClickListener() {
             @Override
             public void onClick() {
-                String value = SystemUtil.getInstance().getMetaData("flurry_key");
+                String value = SystemUtil.getInstance().getPlatCfgValue("flurry_key");
                 showAlert(value);
             }
         });
-        addToArrayList("getPackageName", new OnClickListener() {
+        addToArrayList("getAppBundleId", new OnClickListener() {
             @Override
             public void onClick() {
-                String packageName = SystemUtil.getInstance().getPackageName();
+                String packageName = SystemUtil.getInstance().getAppBundleId();
                 showAlert(packageName);
             }
         });

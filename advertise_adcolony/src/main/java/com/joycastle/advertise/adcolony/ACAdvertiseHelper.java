@@ -11,6 +11,8 @@ import com.joycastle.gamepluginbase.AdvertiseDelegate;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import java.util.ArrayList;
+
 /**
  * Created by gaoyang on 9/30/16.
  */
@@ -32,6 +34,21 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     }
 
     private ACAdvertiseHelper() {}
+
+    @Override
+    public void setBannerAdName(String name) {
+
+    }
+
+    @Override
+    public void setSpotAdNames(ArrayList names) {
+
+    }
+
+    @Override
+    public void setVideoAdNames(ArrayList names) {
+
+    }
 
     @Override
     public int showBannerAd(boolean protrait, boolean bottom) {
@@ -87,9 +104,9 @@ public class ACAdvertiseHelper implements AdvertiseDelegate {
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
 
-        String origin_store = SystemUtil.getInstance().getMetaData("origin_store");
-        String app_id = SystemUtil.getInstance().getMetaData("app_id");
-        zone_id = SystemUtil.getInstance().getMetaData("zone_id");
+        String origin_store = SystemUtil.getInstance().getPlatCfgValue("origin_store");
+        String app_id = SystemUtil.getInstance().getPlatCfgValue("app_id");
+        zone_id = SystemUtil.getInstance().getPlatCfgValue("zone_id");
 
         AdColonyUserMetadata metadata = new AdColonyUserMetadata()
                 .setUserAge( 26 )

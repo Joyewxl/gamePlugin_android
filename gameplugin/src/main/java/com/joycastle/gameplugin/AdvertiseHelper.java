@@ -32,6 +32,21 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     }
 
     @Override
+    public void setBannerAdName(String name) {
+
+    }
+
+    @Override
+    public void setSpotAdNames(ArrayList names) {
+
+    }
+
+    @Override
+    public void setVideoAdNames(ArrayList names) {
+
+    }
+
+    @Override
     public int showBannerAd(final boolean protrait, final boolean bottom) {
         if (delegates.size() <= 0) {
             return 0;

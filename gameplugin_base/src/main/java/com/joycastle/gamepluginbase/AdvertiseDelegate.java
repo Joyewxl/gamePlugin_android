@@ -1,10 +1,31 @@
 package com.joycastle.gamepluginbase;
 
+import java.util.ArrayList;
+
 /**
  * Created by gaoyang on 9/29/16.
  */
 
 public interface AdvertiseDelegate extends LifeCycleDelegate {
+
+    /**
+     * 设置Banner广告
+     * @param name
+     */
+    void setBannerAdName(String name);
+
+    /**
+     * 设置插屏广告
+     * @param names
+     */
+    void setSpotAdNames(ArrayList names);
+
+    /**
+     * 设置视频广告
+     * @param names
+     */
+    void setVideoAdNames(ArrayList names);
+
     /**
      * 显示Banner广告
      * @param protrait

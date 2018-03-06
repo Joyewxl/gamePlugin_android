@@ -2,14 +2,12 @@ package com.joycastle.iab.googleplay;
 
 import android.app.Activity;
 import android.app.Application;
-import android.app.ExpandableListActivity;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
@@ -22,9 +20,6 @@ import com.joycastle.iab.googleplay.util.Purchase;
 
 import org.json.JSONObject;
 
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -58,7 +53,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     @Override
     public void onCreate(final Activity activity, Bundle savedInstanceState) {
-        String base64PublicKey = SystemUtil.getInstance().getMetaData("google_iab_publickey");
+        String base64PublicKey = SystemUtil.getInstance().getPlatCfgValue("google_iab_publickey");
         mHelper = new IabHelper(activity, base64PublicKey);
         mHelper.enableDebugLogging(true);
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {

@@ -98,7 +98,7 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void init(Application application) {
-        String appKey = SystemUtil.getInstance().getMetaData("flurry_key");
+        String appKey = SystemUtil.getInstance().getPlatCfgValue("flurry_key");
         new FlurryAgent.Builder()
                 .withLogEnabled(true)
                 .withCaptureUncaughtExceptions(false)
