@@ -335,8 +335,8 @@ public class SystemUtil {
         mNotificationManager.cancelAll();
     }
 
-    public void postNotication(HashMap notifications) {
-        Log.e(TAG, "postNotication: " + notifications.toString());
+    public void postNotification(HashMap notifications) {
+        Log.e(TAG, "postNotification: " + notifications.toString());
         String content = null;
         int notiTime = 0;
         content = (String)notifications.get("message");
