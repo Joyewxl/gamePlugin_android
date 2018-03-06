@@ -340,7 +340,7 @@ public class SystemUtil {
         String content = null;
         int notiTime = 0;
         content = (String)notifications.get("message");
-        notiTime = Integer.parseInt((String) notifications.get("delay"));
+        notiTime =  new Double((Double) notifications.get("delay")).intValue();
 
         Intent intent = new Intent(this.activity, NotificationReceiver.class);
         intent.setData(Uri.parse("blackjack"));
