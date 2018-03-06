@@ -18,8 +18,10 @@ import com.joycastle.iab.googleplay.util.IabResult;
 import com.joycastle.iab.googleplay.util.Inventory;
 import com.joycastle.iab.googleplay.util.Purchase;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -31,7 +33,6 @@ import java.util.List;
 
 public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.IabBroadcastListener, IabHelper.QueryInventoryFinishedListener {
     private static String TAG = "GoogleIabHelper";
-
     private static GoogleIabHelper instance = new GoogleIabHelper();
 
     private IabHelper mHelper;
@@ -141,20 +142,38 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         if (purchases.size() <= 0)
             return;
 
-        try {
-            // 只处理一个，下次在处理剩余的
-            Purchase purchase = purchases.get(0);
-            mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
-                @Override
-                public void onConsumeFinished(Purchase purchase, IabResult result) {
-                    boolean iapResult = result.isSuccess();
-                    String iapId = purchase.getSku();
-                    Log.e(TAG, iapResult+" : "+iapId);
+        HashMap suspensiveIap = getSuspensiveIap();
+        if (!suspensiveIap.isEmpty())
+            return;
+
+        // 只处理一个，下次在处理剩余的
+        final Purchase purchase = purchases.get(0);
+        verifyIap(purchase, new InvokeJavaMethodDelegate() {
+            @Override
+            public void onFinish(final ArrayList<Object> resArrayList) {
+                try {
+                    mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+                        @Override
+                        public void onConsumeFinished(Purchase purchase, IabResult result) {
+                            if (result.isFailure()) {
+                                return;
+                            }
+                            boolean payResult = (boolean) resArrayList.get(0);
+                            if (!payResult) {
+                                return;
+                            }
+                            String environment = (String) resArrayList.get(1);
+                            HashMap hashMap = new HashMap();
+                            hashMap.put("productId", purchase.getSku());
+                            hashMap.put("environment", environment);
+                            setSuspensiveIap(hashMap);
+                        }
+                    });
+                } catch (IabHelper.IabAsyncInProgressException e) {
+                    Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
                 }
-            });
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
-        }
+            }
+        });
     }
 
     public void setIapVerifyUrlAndSign(String url, String sign) {
@@ -206,24 +225,28 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         try {
             mHelper.launchPurchaseFlow(SystemUtil.getInstance().getActivity(), iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
-                public void onIabPurchaseFinished(IabResult result, Purchase info) {
+                public void onIabPurchaseFinished(IabResult result, final Purchase info) {
                     if (result.isFailure()) {
                         return;
                     }
-                    try {
-                        mHelper.consumeAsync(info, new IabHelper.OnConsumeFinishedListener() {
-                            @Override
-                            public void onConsumeFinished(Purchase purchase, IabResult result) {
-                                ArrayList<Object> arrayList =  new ArrayList<>();
-                                arrayList.add(result.isSuccess());
-                                arrayList.add("ProductionSandbox");
-                                delegate.onFinish(arrayList);
-                                verifyIap();
+                    verifyIap(info, new InvokeJavaMethodDelegate() {
+                        @Override
+                        public void onFinish(final ArrayList<Object> resArrayList) {
+                            try {
+                                mHelper.consumeAsync(info, new IabHelper.OnConsumeFinishedListener() {
+                                    @Override
+                                    public void onConsumeFinished(Purchase purchase, IabResult result) {
+                                        if (result.isFailure()) {
+                                            return;
+                                        }
+                                        delegate.onFinish(resArrayList);
+                                    }
+                                });
+                            } catch (IabHelper.IabAsyncInProgressException e) {
+                                Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
                             }
-                        });
-                    } catch (IabHelper.IabAsyncInProgressException e) {
-                        Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
-                    }
+                        }
+                    });
                 }
             }, userId);
         } catch (IabHelper.IabAsyncInProgressException e) {
@@ -231,24 +254,87 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         }
     }
 
-    private void verifyIap() {
+    private void verifyIap(final Purchase purchase, final InvokeJavaMethodDelegate listener) {
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("mPackageName", purchase.getPackageName());
+            jsonObject.put("mSku", purchase.getSku());
+            jsonObject.put("mToken", purchase.getToken());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        final String receipt = jsonObject.toString();
+        String token = purchase.getDeveloperPayload();
+        String sign = calcSign(mVerifySign+receipt+token);
         HashMap hashMap = new HashMap();
+        hashMap.put("receipt", receipt);
+        hashMap.put("token", purchase.getDeveloperPayload());
+        hashMap.put("sign", sign);
         SystemUtil.getInstance().requestUrl("post", this.mVerifyUrl, hashMap, new InvokeJavaMethodDelegate() {
             @Override
-            public void onFinish(ArrayList<Object> resArrayList) {
+            public void onFinish(final ArrayList<Object> resArrayList) {
                 boolean result = (boolean) resArrayList.get(0);
                 if (!result) {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            verifyIap();
+                            verifyIap(purchase, listener);
                         }
                     }, 5000);
                 } else {
                     String resJson = (String) resArrayList.get(1);
-                    Log.e(TAG, resJson);
+                    boolean ret = false;
+                    String msg = "unknow error";
+                    try {
+                        JSONObject jsonObject = new JSONObject(resJson);
+                        if (jsonObject.has("errCode") || jsonObject.has("errDesc")) {
+                            ret = false;
+                            msg = resJson;
+                        } else {
+                            String environment = jsonObject.getString("environment");
+                            String sign = jsonObject.getString("sign");
+                            String mySign = calcSign(mVerifySign+receipt+environment);
+                            if (!mySign.equalsIgnoreCase(sign)) {
+                                ret = false;
+                                msg = "sign error";
+                            } else {
+                                ret = true;
+                                msg = environment;
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    final boolean finalRet = ret;
+                    final String finalMsg = msg;
+                    SystemUtil.getInstance().getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ArrayList arrayList = new ArrayList();
+                            arrayList.add(finalRet);
+                            arrayList.add(finalMsg);
+                            listener.onFinish(arrayList);
+                        }
+                    });
                 }
             }
         });
+    }
+
+    private String calcSign(String input) {
+        byte[] bArr = new byte[0];
+        try {
+            bArr = java.security.MessageDigest.getInstance("MD5").digest(input.getBytes());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bArr) {
+            String h = Integer.toHexString(0xFF & b);
+            while (h.length() < 2)
+                h = "0" + h;
+            sb.append(h);
+        }
+        return sb.toString();
     }
 }

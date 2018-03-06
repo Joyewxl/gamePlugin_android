@@ -51,9 +51,6 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             }
         });
 
-        // 内购验证，地址，签名
-        GamePlugin.getInstance().setIapVerifyUrlAndSign("", "");
-
         arrayList = new ArrayList<>();
 
         ///////////////////////////////Analytic///////////////////////////////
@@ -362,6 +359,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
 
         ///////////////////////////////GamePlugin///////////////////////////////
         addToArrayList("--------GamePlugin", null);
+        GamePlugin.getInstance().setIapVerifyUrlAndSign("https://blackjack.cardgamefree.com/misc/iapOrderVerify?platform=android", "$#^&GD198$(HJhwdP:[");
         addToArrayList("canDoIap", new OnClickListener() {
             @Override
             public void onClick() {
@@ -386,7 +384,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
         addToArrayList("doIap", new OnClickListener() {
             @Override
             public void onClick() {
-                GamePlugin.getInstance().doIap("blackjack.chip1", "user_001", new InvokeJavaMethodDelegate() {
+                GamePlugin.getInstance().doIap("blackjack.chip1", "", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
                         showAlert(resArrayList.toString());
