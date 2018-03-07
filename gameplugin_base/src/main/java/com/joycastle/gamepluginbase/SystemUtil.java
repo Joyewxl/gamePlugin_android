@@ -232,7 +232,7 @@ public class SystemUtil {
      * @return
      */
     public long getCpuTime() {
-        return SystemClock.elapsedRealtime();
+        return SystemClock.elapsedRealtime()/1000;
     }
 
     public String getNetworkState() {

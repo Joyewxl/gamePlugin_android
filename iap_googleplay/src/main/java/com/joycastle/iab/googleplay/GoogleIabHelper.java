@@ -223,10 +223,12 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     public void doIap(String iapId, String userId, final InvokeJavaMethodDelegate delegate) {
         try {
+            SystemUtil.getInstance().showLoading("Loading...");
             mHelper.launchPurchaseFlow(SystemUtil.getInstance().getActivity(), iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
                 public void onIabPurchaseFinished(IabResult result, final Purchase info) {
                     if (result.isFailure()) {
+                        SystemUtil.getInstance().hideLoading();
                         return;
                     }
                     verifyIap(info, new InvokeJavaMethodDelegate() {
@@ -236,6 +238,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                                 mHelper.consumeAsync(info, new IabHelper.OnConsumeFinishedListener() {
                                     @Override
                                     public void onConsumeFinished(Purchase purchase, IabResult result) {
+                                        SystemUtil.getInstance().hideLoading();
                                         if (result.isFailure()) {
                                             return;
                                         }
