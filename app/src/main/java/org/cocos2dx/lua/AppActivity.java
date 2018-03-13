@@ -294,7 +294,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             @Override
             public void onClick() {
                 boolean result = AdvertiseHelper.getInstance().isInterstitialAdReady();
-                Log.e(TAG, "isInterstitialAdReady: "+result);
+                showAlert(String.valueOf(result));
 //                NativeUtil.invokeJavaMethod("com.joycastle.gameplugin.AdvertiseHelper","isInterstitialAdReady","{}",-1);
             }
         });
@@ -305,10 +305,10 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
                         Log.e(TAG, "showInterstitialAd Result: "+resArrayList);
+                        showAlert(resArrayList.toString());
                     }
                 });
                 Log.e(TAG, "showInterstitialAd: "+result);
-
 //                JSONObject reqData = new JSONObject();
 //                JSONArray json = new JSONArray();
 //                try {
@@ -323,7 +323,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             @Override
             public void onClick() {
                 boolean result = AdvertiseHelper.getInstance().isVideoAdReady();
-                Log.e(TAG, "isVideoAdReady: "+result);
+                showAlert(String.valueOf(result));
 
 //                JSONObject reqData = new JSONObject();
 //                JSONArray json =new JSONArray();
@@ -341,7 +341,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 boolean result = AdvertiseHelper.getInstance().showVideoAd(new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
-                        Log.e(TAG, "showVideoAd Result: "+resArrayList);
+                        showAlert(resArrayList.toString());
                     }
                 });
                 Log.e(TAG, "showVideoAd: "+result);

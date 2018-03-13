@@ -54,32 +54,33 @@ import okhttp3.Response;
  */
 public class SystemUtil {
     private static final String TAG = "SystemUtil";
-    private static SystemUtil instance = new SystemUtil();
     private static final String PREFS_FILE = "device_id";
     private static final String PREFS_DEVICE_ID = "device_id";
-    private static String uuid;
 
-    private Application application;
-    private Activity activity;
-    private KProgressHUD hud;
+    private static SystemUtil mInstance = new SystemUtil();
+
+    private Application mApplication;
+    private Activity mActivity;
+    private KProgressHUD mProgressHUD;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private String mUUID;
 
-    public static SystemUtil getInstance() { return instance; }
+    public static SystemUtil getInstance() { return mInstance; }
 
     public void setApplication(Application application) {
-        this.application = application;
+        this.mApplication = application;
     }
 
     public Application getApplication() {
-        return this.application;
+        return this.mApplication;
     }
 
     public void setActivity(Activity activity) {
-        this.activity = activity;
+        this.mActivity = activity;
     }
 
     public Activity getActivity() {
-        return this.activity;
+        return this.mActivity;
     }
 
     public void onCreate() {
@@ -104,8 +105,8 @@ public class SystemUtil {
     public String getPlatCfgValue(String key) {
         String value = "";
         try {
-            PackageManager packageManager = application.getPackageManager();
-            String packageName = application.getPackageName();
+            PackageManager packageManager = mApplication.getPackageManager();
+            String packageName = mApplication.getPackageName();
             PackageInfo packageInfo = packageManager.getPackageInfo(packageName, PackageManager.GET_META_DATA);
             Bundle metaData = packageInfo.applicationInfo.metaData;
             Object obj = metaData.get(key);
@@ -125,8 +126,8 @@ public class SystemUtil {
      * @return
      */
     public String getAppBundleId() {
-        PackageManager packageManager = application.getPackageManager();
-        return application.getPackageName();
+        PackageManager packageManager = mApplication.getPackageManager();
+        return mApplication.getPackageName();
     }
 
     /**
@@ -134,8 +135,8 @@ public class SystemUtil {
      * @return
      */
     public String getAppName() {
-        PackageManager pm = application.getPackageManager();
-        return application.getApplicationInfo().loadLabel(pm).toString();
+        PackageManager pm = mApplication.getPackageManager();
+        return mApplication.getApplicationInfo().loadLabel(pm).toString();
     }
 
     /**
@@ -145,7 +146,7 @@ public class SystemUtil {
     public String getAppVersion() {
         String versionName = "default";
         try {
-            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            PackageInfo packageInfo = mApplication.getPackageManager().getPackageInfo(mApplication.getPackageName(), 0);
             versionName = packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -161,7 +162,7 @@ public class SystemUtil {
     public int getAppBuild() {
         int versionCode = -1;
         try {
-            PackageInfo packageInfo = application.getPackageManager().getPackageInfo(application.getPackageName(), 0);
+            PackageInfo packageInfo = mApplication.getPackageManager().getPackageInfo(mApplication.getPackageName(), 0);
             versionCode = packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -200,33 +201,33 @@ public class SystemUtil {
     }
 
     public String getUUID() {
-        if (uuid == null) {
+        if (mUUID == null) {
             synchronized (SystemUtil.class) {
-                if (uuid == null) {
-                    Context context = this.application.getApplicationContext();
+                if (mUUID == null) {
+                    Context context = this.mApplication.getApplicationContext();
                     final SharedPreferences prefs = context.getSharedPreferences(PREFS_FILE, 0);
                     final String id = prefs.getString(PREFS_DEVICE_ID, null);
 
                     if (id != null) {
                         // Use the ids previously computed and stored in the prefs file
-                        uuid = id;
+                        mUUID = id;
                     } else {
-                        uuid = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+                        mUUID = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
                         // Write the value out to the prefs file
-                        prefs.edit().putString(PREFS_DEVICE_ID, uuid).commit();
+                        prefs.edit().putString(PREFS_DEVICE_ID, mUUID).commit();
                     }
                 }
             }
         }
-        return uuid;
+        return mUUID;
     }
 
     public String getCountryCode() {
-        return application.getResources().getConfiguration().locale.getCountry();
+        return mApplication.getResources().getConfiguration().locale.getCountry();
     }
 
     public String getLanguageCode() {
-        return application.getResources().getConfiguration().locale.getLanguage();
+        return mApplication.getResources().getConfiguration().locale.getLanguage();
     }
 
     /**
@@ -239,7 +240,7 @@ public class SystemUtil {
 
     public String getNetworkState() {
         String ret = "NotReachable";
-        ConnectivityManager manager = (ConnectivityManager) application.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager manager = (ConnectivityManager) mApplication.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (manager != null) {
             NetworkInfo networkInfo = manager.getActiveNetworkInfo();
             if (networkInfo != null) {
@@ -258,7 +259,7 @@ public class SystemUtil {
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                new AlertDialog.Builder(activity)
+                new AlertDialog.Builder(mActivity)
                         .setTitle(title)
                         .setMessage(message)
                         .setPositiveButton(btnTitle1, new DialogInterface.OnClickListener() {
@@ -291,23 +292,34 @@ public class SystemUtil {
         assert(false);
     }
 
-    public void showLoading(String message) {
-        if (hud != null) {
-            return;
-        }
-        hud = KProgressHUD.create(this.activity)
-                .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
-                .setLabel(message)
-                .setCancellable(false)
-                .show();
+    public void showLoading(final String message) {
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mProgressHUD != null) {
+                    return;
+                }
+                mProgressHUD = KProgressHUD.create(mActivity)
+                        .setStyle(KProgressHUD.Style.SPIN_INDETERMINATE)
+                        .setLabel(message)
+                        .setCancellable(false)
+                        .show();
+            }
+        });
+
     }
 
     public void hideLoading() {
-        if (hud == null) {
-            return;
-        }
-        hud.dismiss();
-        hud = null;
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mProgressHUD == null) {
+                    return;
+                }
+                mProgressHUD.dismiss();
+                mProgressHUD = null;
+            }
+        });
     }
 
     public void showMessage(String message) {
@@ -315,7 +327,7 @@ public class SystemUtil {
     }
 
     public void vibrate() {
-        Vibrator mVibrator = (Vibrator) application.getSystemService(Service.VIBRATOR_SERVICE);
+        Vibrator mVibrator = (Vibrator) mApplication.getSystemService(Service.VIBRATOR_SERVICE);
         mVibrator.vibrate(new long[]{1000, 3000}, -1);
     }
 
@@ -332,11 +344,11 @@ public class SystemUtil {
         myIntent.putExtra(android.content.Intent.EXTRA_EMAIL, reciver);
         myIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, subject);
         myIntent.putExtra(android.content.Intent.EXTRA_TEXT, emailBody);
-        activity.startActivity(Intent.createChooser(myIntent, "mail test"));
+        mActivity.startActivity(Intent.createChooser(myIntent, "mail test"));
     }
 
     public void setNotificationState(boolean enabled) {
-        Context context = activity.getApplicationContext();
+        Context context = mActivity.getApplicationContext();
         NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
         mNotificationManager.cancelAll();
     }
@@ -346,14 +358,14 @@ public class SystemUtil {
         String content = null;
         int notiTime = 0;
         content = (String)notifications.get("message");
-        notiTime =  new Double((Double) notifications.get("delay")).intValue();
-
-        Intent intent = new Intent(this.activity, NotificationReceiver.class);
+        notiTime = (int)notifications.get("delay");
+        
+        Intent intent = new Intent(this.mActivity, NotificationReceiver.class);
         intent.setData(Uri.parse("blackjack"));
         intent.putExtra("msg", "blackjack");
         intent.putExtra("content", content);
-        PendingIntent pi = PendingIntent.getBroadcast(this.activity, 0, intent, 0);
-        AlarmManager am = (AlarmManager) this.activity.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pi = PendingIntent.getBroadcast(this.mActivity, 0, intent, 0);
+        AlarmManager am = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
 
         int anHour =  notiTime * 1000 ;  // 6秒
         long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
@@ -366,7 +378,7 @@ public class SystemUtil {
         } else {
             num = Math.max(0, Math.min(num, 99));
         }
-        Context context = this.application.getApplicationContext();
+        Context context = this.mApplication.getApplicationContext();
         if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
             sendToXiaoMi(context,num);
         } else if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
@@ -515,14 +527,14 @@ public class SystemUtil {
     }
 
     public void keychainSet(String key, String value) {
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("blackData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mActivity.getSharedPreferences("blackData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key,value);
         editor.commit();
     }
 
     public String keychainGet(String key) {
-        SharedPreferences sharedPreferences = activity.getSharedPreferences("blackData", Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = mActivity.getSharedPreferences("blackData", Context.MODE_PRIVATE);
         String value = sharedPreferences.getString(key,"");
         return value;
     }
@@ -546,7 +558,7 @@ public class SystemUtil {
     }
 
     public void copyToPasteboard(String str) {
-        Context context = this.application.getApplicationContext();
+        Context context = this.mApplication.getApplicationContext();
         ClipboardManager clip = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
         //clip.getText(); // 粘贴
         clip.setText(str); // 复制

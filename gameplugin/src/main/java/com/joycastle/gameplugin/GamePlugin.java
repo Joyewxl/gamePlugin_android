@@ -116,13 +116,8 @@ public class GamePlugin implements LifeCycleDelegate {
         GoogleIabHelper.getInstance().setSuspensiveIap(iapInfo);
     }
 
-    public void doIap(final String iapId, final String userId, final InvokeJavaMethodDelegate delegate) {
-        mMainHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                GoogleIabHelper.getInstance().doIap(iapId, userId, delegate);
-            }
-        });
+    public void doIap(String iapId, String userId, InvokeJavaMethodDelegate delegate) {
+        GoogleIabHelper.getInstance().doIap(iapId, userId, delegate);
     }
 
     public void rateGame() {
