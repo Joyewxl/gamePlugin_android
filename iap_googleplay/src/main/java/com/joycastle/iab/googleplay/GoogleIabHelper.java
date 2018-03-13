@@ -40,7 +40,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     private String mVerifyUrl;
     private String mVerifySign;
     private SharedPreferences sharedPreferences;
-
+    private boolean canIap = false;
     public static GoogleIabHelper getInstance() { return instance; }
 
     private GoogleIabHelper() {
@@ -70,7 +70,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                 mBroadcastReceiver = new IabBroadcastReceiver(GoogleIabHelper.this);
                 IntentFilter broadcastFilter = new IntentFilter(IabBroadcastReceiver.ACTION);
                 activity.registerReceiver(mBroadcastReceiver, broadcastFilter);
-
+                canIap=true;
                 quertInventory();
             }
         });
@@ -182,7 +182,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     public boolean canDoIap() {
-        return true;
+        return canIap;
     }
 
     public HashMap getSuspensiveIap() {
@@ -222,6 +222,17 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     public void doIap(String iapId, String userId, final InvokeJavaMethodDelegate delegate) {
+        if (!canDoIap())
+        {
+            SystemUtil.getInstance().showAlertDialog("Iap Failed", "Problem setting up In-app Billing!", "OK", null, new InvokeJavaMethodDelegate() {
+                @Override
+                public void onFinish(ArrayList<Object> resArrayList) {
+
+                }
+            });
+            return;
+        }
+
         try {
             mHelper.launchPurchaseFlow(SystemUtil.getInstance().getActivity(), iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
