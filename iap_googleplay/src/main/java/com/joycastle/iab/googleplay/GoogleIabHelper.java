@@ -198,7 +198,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     public HashMap getSuspensiveIap() {
         HashMap hashMap = new HashMap<>();
         try {
-            String jsonStr = mSharedPreferences.getString("suspensiveIap","");
+            String jsonStr = mSharedPreferences.getString("suspensiveIap","{}");
             JSONObject iapinfo = new JSONObject(jsonStr);
             Iterator<String> keys = iapinfo.keys();
             while (keys.hasNext()) {

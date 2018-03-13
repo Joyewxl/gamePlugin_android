@@ -22,13 +22,13 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     private static final String TAG = "AdvertiseHelper";
     private static AdvertiseHelper instance = new AdvertiseHelper();
 
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
-    private ArrayList<AdvertiseDelegate> delegates;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private ArrayList<AdvertiseDelegate> mDelegates;
 
     public static AdvertiseHelper getInstance() { return instance; }
 
     private AdvertiseHelper() {
-        delegates = new ArrayList<>();
+        mDelegates = new ArrayList<>();
     }
 
     @Override
@@ -48,13 +48,13 @@ public class AdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public int showBannerAd(final boolean protrait, final boolean bottom) {
-        if (delegates.size() <= 0) {
+        if (mDelegates.size() <= 0) {
             return 0;
         }
-        mainHandler.post(new Runnable() {
+        mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                delegates.get(0).showBannerAd(protrait, bottom);
+                mDelegates.get(0).showBannerAd(protrait, bottom);
             }
         });
         return 0;
@@ -62,13 +62,13 @@ public class AdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void hideBannerAd() {
-        if (delegates.size() <= 0) {
+        if (mDelegates.size() <= 0) {
             return;
         }
-        mainHandler.post(new Runnable() {
+        mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                delegates.get(0).hideBannerAd();
+                mDelegates.get(0).hideBannerAd();
             }
         });
     }
@@ -76,7 +76,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     @Override
     public boolean isInterstitialAdReady() {
         boolean result = false;
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             result = delegate.isInterstitialAdReady();
             if (result) {
                 break;
@@ -87,10 +87,10 @@ public class AdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public boolean showInterstitialAd(final InvokeJavaMethodDelegate listener) {
-        mainHandler.post(new Runnable() {
+        mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                for (AdvertiseDelegate delegate : delegates) {
+                for (AdvertiseDelegate delegate : mDelegates) {
                     boolean result = delegate.showInterstitialAd(listener);
                     if (result) {
                         break;
@@ -104,7 +104,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
     @Override
     public boolean isVideoAdReady() {
         boolean result = false;
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             result = delegate.isVideoAdReady();
             if (result) {
                 break;
@@ -115,10 +115,10 @@ public class AdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public boolean showVideoAd(final InvokeJavaMethodDelegate listener) {
-        mainHandler.post(new Runnable() {
+        mMainHandler.post(new Runnable() {
             @Override
             public void run() {
-                for (AdvertiseDelegate delegate : delegates) {
+                for (AdvertiseDelegate delegate : mDelegates) {
                     boolean result = delegate.showVideoAd(listener);
                     if (result) {
                         break;
@@ -140,7 +140,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
             Class clazz = Class.forName("com.joycastle.advertise.admob.AMAdvertiseHelper");
             Method method = clazz.getMethod("getInstance");
             AdvertiseDelegate delegate = (AdvertiseDelegate) method.invoke(null);
-            delegates.add(delegate);
+            mDelegates.add(delegate);
             delegate.init(application);
         } catch (Exception e) {
             Log.e(TAG, "Admob is disable");
@@ -150,7 +150,7 @@ public class AdvertiseHelper implements AdvertiseDelegate {
 //            Class clazz = Class.forName("com.joycastle.advertise.adcolony.ACAdvertiseHelper");
 //            Method method = clazz.getMethod("getInstance");
 //            AdvertiseDelegate delegate = (AdvertiseDelegate) method.invoke(null);
-//            delegates.add(delegate);
+//            mDelegates.add(delegate);
 //            delegate.init(application);
 //        } catch (Exception e) {
 //            Log.e(TAG, "Adcolony is disable");
@@ -159,49 +159,49 @@ public class AdvertiseHelper implements AdvertiseDelegate {
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             delegate.onCreate(activity, savedInstanceState);
         }
     }
 
     @Override
     public void onStart(Activity activity) {
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             delegate.onStart(activity);
         }
     }
 
     @Override
     public void onResume(Activity activity) {
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             delegate.onResume(activity);
         }
     }
 
     @Override
     public void onPause(Activity activity) {
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             delegate.onPause(activity);
         }
     }
 
     @Override
     public void onStop(Activity activity) {
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             delegate.onStop(activity);
         }
     }
 
     @Override
     public void onDestroy(Activity activity) {
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             delegate.onDestroy(activity);
         }
     }
 
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
-        for (AdvertiseDelegate delegate : delegates) {
+        for (AdvertiseDelegate delegate : mDelegates) {
             delegate.onActivityResult(activity, requestCode, resultCode, data);
         }
     }

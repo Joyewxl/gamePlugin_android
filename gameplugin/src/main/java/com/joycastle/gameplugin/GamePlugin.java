@@ -5,6 +5,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
@@ -19,12 +21,12 @@ import java.util.HashMap;
  */
 public class GamePlugin implements LifeCycleDelegate {
     private static final String TAG = "GamePlugin";
-
     private static GamePlugin instance = new GamePlugin();
 
-    public static GamePlugin getInstance() { return instance; }
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
+    private InvokeJavaMethodDelegate mNotifyDelegate;
 
-    private InvokeJavaMethodDelegate notifyDelegate;
+    public static GamePlugin getInstance() { return instance; }
 
     private GamePlugin() {}
 
@@ -95,7 +97,7 @@ public class GamePlugin implements LifeCycleDelegate {
     }
 
     public void setNotifyHandler(InvokeJavaMethodDelegate delegate) {
-        notifyDelegate = delegate;
+        mNotifyDelegate = delegate;
     }
 
     public void setIapVerifyUrlAndSign(String url, String sign) {
@@ -114,8 +116,13 @@ public class GamePlugin implements LifeCycleDelegate {
         GoogleIabHelper.getInstance().setSuspensiveIap(iapInfo);
     }
 
-    public void doIap(String iapId, String userId, InvokeJavaMethodDelegate delegate) {
-        GoogleIabHelper.getInstance().doIap(iapId, userId, delegate);
+    public void doIap(final String iapId, final String userId, final InvokeJavaMethodDelegate delegate) {
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                GoogleIabHelper.getInstance().doIap(iapId, userId, delegate);
+            }
+        });
     }
 
     public void rateGame() {
