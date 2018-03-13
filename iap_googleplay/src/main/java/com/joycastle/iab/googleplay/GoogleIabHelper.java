@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
@@ -35,6 +36,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     private static String TAG = "GoogleIabHelper";
     private static GoogleIabHelper instance = new GoogleIabHelper();
 
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private IabHelper mHelper;
     private IabBroadcastReceiver mBroadcastReceiver;
     private String mVerifyUrl;
@@ -305,7 +307,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
             public void onFinish(final ArrayList<Object> resArrayList) {
                 boolean result = (boolean) resArrayList.get(0);
                 if (!result) {
-                    new Handler().postDelayed(new Runnable() {
+                    mMainHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             verifyIap(purchase, listener);
