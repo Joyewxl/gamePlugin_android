@@ -222,7 +222,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     public void doIap(String iapId, String userId, final InvokeJavaMethodDelegate delegate) {
-        if (!canDoIap())
+        if (canIap==false)
         {
             SystemUtil.getInstance().showAlertDialog("Iap Failed", "Problem setting up In-app Billing!", "OK", null, new InvokeJavaMethodDelegate() {
                 @Override
