@@ -225,12 +225,10 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     public void doIap(String iapId, String userId, final InvokeJavaMethodDelegate delegate) {
         if (!canDoIap()) {
-            SystemUtil.getInstance().showAlertDialog("Iap Failed", "Problem setting up In-app Billing!", "OK", null, new InvokeJavaMethodDelegate() {
-                @Override
-                public void onFinish(ArrayList<Object> resArrayList) {
-
-                }
-            });
+            ArrayList respon = new ArrayList();
+            respon.add(false);
+            respon.add("can not make payment.");
+            delegate.onFinish(respon);
             return;
         }
 
@@ -241,6 +239,10 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                 public void onIabPurchaseFinished(IabResult result, final Purchase info) {
                     if (result.isFailure()) {
                         SystemUtil.getInstance().hideLoading();
+                        ArrayList respon = new ArrayList();
+                        respon.add(false);
+                        respon.add("purchase failed.");
+                        delegate.onFinish(respon);
                         return;
                     }
                     verifyIap(info, new InvokeJavaMethodDelegate() {
@@ -252,6 +254,10 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                                     public void onConsumeFinished(Purchase purchase, IabResult result) {
                                         SystemUtil.getInstance().hideLoading();
                                         if (result.isFailure()) {
+                                            ArrayList respon = new ArrayList();
+                                            respon.add(false);
+                                            respon.add("consume failed.");
+                                            delegate.onFinish(respon);
                                             return;
                                         }
                                         delegate.onFinish(resArrayList);
