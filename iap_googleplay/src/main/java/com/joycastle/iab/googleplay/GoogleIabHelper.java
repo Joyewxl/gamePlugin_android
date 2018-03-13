@@ -41,6 +41,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     private String mVerifySign;
     private SharedPreferences mSharedPreferences;
     private boolean mCanDoIap = false;
+
     public static GoogleIabHelper getInstance() { return instance; }
 
     private GoogleIabHelper() {

@@ -21,6 +21,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.os.Vibrator;
@@ -54,13 +55,14 @@ import okhttp3.Response;
 public class SystemUtil {
     private static final String TAG = "SystemUtil";
     private static SystemUtil instance = new SystemUtil();
+    private static final String PREFS_FILE = "device_id";
+    private static final String PREFS_DEVICE_ID = "device_id";
+    private static String uuid;
 
     private Application application;
     private Activity activity;
     private KProgressHUD hud;
-    private static final String PREFS_FILE = "device_id";
-    private static final String PREFS_DEVICE_ID = "device_id";
-    private static String uuid;
+    private Handler mMainHandler = new Handler(Looper.getMainLooper());
 
     public static SystemUtil getInstance() { return instance; }
 
@@ -252,28 +254,33 @@ public class SystemUtil {
         return ret;
     }
 
-    public void showAlertDialog(String title, String message, String btnTitle1, String btnTitle2, final InvokeJavaMethodDelegate delegate) {
-        new AlertDialog.Builder(activity)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton(btnTitle1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ArrayList<Object> arrayList = new ArrayList<>();
-                        arrayList.add(true);
-                        delegate.onFinish(arrayList);
-                    }
-                })
-                .setNegativeButton(btnTitle2, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        ArrayList<Object> arrayList = new ArrayList<>();
-                        arrayList.add(false);
-                        delegate.onFinish(arrayList);
-                    }
-                })
-                .setCancelable(false)
-                .show();
+    public void showAlertDialog(final String title, final String message, final String btnTitle1, final String btnTitle2, final InvokeJavaMethodDelegate delegate) {
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(activity)
+                        .setTitle(title)
+                        .setMessage(message)
+                        .setPositiveButton(btnTitle1, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ArrayList<Object> arrayList = new ArrayList<>();
+                                arrayList.add(true);
+                                delegate.onFinish(arrayList);
+                            }
+                        })
+                        .setNegativeButton(btnTitle2, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                ArrayList<Object> arrayList = new ArrayList<>();
+                                arrayList.add(false);
+                                delegate.onFinish(arrayList);
+                            }
+                        })
+                        .setCancelable(false)
+                        .show();
+            }
+        });
     }
 
     public void showProgressDialog(String message, int percent) {
