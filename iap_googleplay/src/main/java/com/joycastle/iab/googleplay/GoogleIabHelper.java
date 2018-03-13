@@ -182,7 +182,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     public boolean canDoIap() {
-        return canIap;
+        return true;
     }
 
     public HashMap getSuspensiveIap() {
