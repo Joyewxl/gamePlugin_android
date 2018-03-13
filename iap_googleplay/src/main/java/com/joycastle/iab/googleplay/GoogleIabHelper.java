@@ -184,6 +184,14 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     public boolean canDoIap() {
+        if(!mCanDoIap){
+            SystemUtil.getInstance().showAlertDialog("Failure", "Can not make payment.", "OK", "", new InvokeJavaMethodDelegate() {
+                @Override
+                public void onFinish(ArrayList<Object> resArrayList) {
+                    
+                }
+            });
+        }
         return mCanDoIap;
     }
 

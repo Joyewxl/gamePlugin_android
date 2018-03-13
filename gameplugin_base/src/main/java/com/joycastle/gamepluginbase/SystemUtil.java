@@ -253,7 +253,6 @@ public class SystemUtil {
     }
 
     public void showAlertDialog(String title, String message, String btnTitle1, String btnTitle2, final InvokeJavaMethodDelegate delegate) {
-        assert(false);
         new AlertDialog.Builder(activity)
                 .setTitle(title)
                 .setMessage(message)
