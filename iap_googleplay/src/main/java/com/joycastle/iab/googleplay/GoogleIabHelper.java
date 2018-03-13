@@ -39,8 +39,8 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     private IabBroadcastReceiver mBroadcastReceiver;
     private String mVerifyUrl;
     private String mVerifySign;
-    private SharedPreferences sharedPreferences;
-    private boolean canIap = false;
+    private SharedPreferences mSharedPreferences;
+    private boolean mCanDoIap = false;
     public static GoogleIabHelper getInstance() { return instance; }
 
     private GoogleIabHelper() {
@@ -49,7 +49,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     @Override
     public void init(Application application) {
-        sharedPreferences = application.getSharedPreferences("test", application.MODE_PRIVATE);
+        mSharedPreferences = application.getSharedPreferences("test", application.MODE_PRIVATE);
     }
 
     @Override
@@ -67,10 +67,12 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                 if (mHelper == null) {
                     return;
                 }
+                mCanDoIap = true;
+
                 mBroadcastReceiver = new IabBroadcastReceiver(GoogleIabHelper.this);
                 IntentFilter broadcastFilter = new IntentFilter(IabBroadcastReceiver.ACTION);
                 activity.registerReceiver(mBroadcastReceiver, broadcastFilter);
-                canIap=true;
+
                 quertInventory();
             }
         });
@@ -182,13 +184,13 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     public boolean canDoIap() {
-        return true;
+        return mCanDoIap;
     }
 
     public HashMap getSuspensiveIap() {
         HashMap hashMap = new HashMap<>();
         try {
-            String jsonStr = sharedPreferences.getString("suspensiveIap","");
+            String jsonStr = mSharedPreferences.getString("suspensiveIap","");
             JSONObject iapinfo = new JSONObject(jsonStr);
             Iterator<String> keys = iapinfo.keys();
             while (keys.hasNext()) {
@@ -212,7 +214,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                 jsonObject.put(key, val);
             }
             //得到SharedPreferences.Editor对象，并保存数据到该对象中
-            SharedPreferences.Editor editor = sharedPreferences.edit();
+            SharedPreferences.Editor editor = mSharedPreferences.edit();
             editor.putString("suspensiveIap", jsonObject.toString());
             //保存key-value对到文件中
             editor.commit();
@@ -222,8 +224,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     public void doIap(String iapId, String userId, final InvokeJavaMethodDelegate delegate) {
-        if (canIap==false)
-        {
+        if (!canDoIap()) {
             SystemUtil.getInstance().showAlertDialog("Iap Failed", "Problem setting up In-app Billing!", "OK", null, new InvokeJavaMethodDelegate() {
                 @Override
                 public void onFinish(ArrayList<Object> resArrayList) {
