@@ -538,12 +538,14 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 SystemUtil.getInstance().setNotificationState(false);
             }
         });
-        addToArrayList("postNotication", new OnClickListener() {
+        addToArrayList("postNotification", new OnClickListener() {
             @Override
             public void onClick() {
                 HashMap reqData = new HashMap();
-                reqData.put("message","hello world ！！！");
-                reqData.put("delay",10);
+                reqData.put("message","♥ ♠ Your FREE BONUS is ready NOW! ♣ ♦");
+                reqData.put("from", "local");
+                reqData.put("delay", 5.0);
+                reqData.put("badge", 1.0);
                 SystemUtil.getInstance().postNotification(reqData);
             }
         });

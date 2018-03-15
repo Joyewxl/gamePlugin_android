@@ -126,7 +126,6 @@ public class SystemUtil {
      * @return
      */
     public String getAppBundleId() {
-        PackageManager packageManager = mApplication.getPackageManager();
         return mApplication.getPackageName();
     }
 
@@ -358,11 +357,14 @@ public class SystemUtil {
         String content = null;
         int notiTime = 0;
         content = (String)notifications.get("message");
-        notiTime = (int)notifications.get("delay");
-        
+        Object delayObject = notifications.get("delay");
+        if (delayObject instanceof Double) {
+            notiTime = ((Double)delayObject).intValue();
+        } else {
+            notiTime = (int) delayObject;
+        }
+
         Intent intent = new Intent(this.mActivity, NotificationReceiver.class);
-        intent.setData(Uri.parse("blackjack"));
-        intent.putExtra("msg", "blackjack");
         intent.putExtra("content", content);
         PendingIntent pi = PendingIntent.getBroadcast(this.mActivity, 0, intent, 0);
         AlarmManager am = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
