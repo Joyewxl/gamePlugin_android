@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -88,9 +89,10 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
         addToArrayList("onEventWithData", new OnClickListener() {
             @Override
             public void onClick() {
-                HashMap<String, String> map = new HashMap<>();
+                HashMap map = new HashMap<>();
                 map.put("level", "10");
-                map.put("score", "100");
+                map.put("score", 7.5);
+                map.put("coin", 100);
                 AnalyticHelper.getInstance().onEvent("dead", map);
             }
         });
@@ -510,7 +512,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             @Override
             public void onClick() {
                 SystemUtil.getInstance().showLoading("Loading...");
-                new Handler().postDelayed(new Runnable() {
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         SystemUtil.getInstance().hideLoading();
@@ -590,9 +592,15 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         HashMap<String, OnClickListener> hashMap = arrayList.get(i);
-        OnClickListener listener = hashMap.entrySet().iterator().next().getValue();
-        if (listener != null)
-            listener.onClick();
+        final OnClickListener listener = hashMap.entrySet().iterator().next().getValue();
+        if (listener == null)
+            return;
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                listener.onClick();
+            }
+        }).start();
     }
 
     @Override
@@ -639,10 +647,16 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
 
     public void showAlert(String message) {
         message = message==null ? "null" : message;
-        new AlertDialog.Builder(this)
-                .setMessage(message)
-                .create()
-                .show();
-        Log.e(TAG, message);
+        final String finalMessage = message;
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(AppActivity.this)
+                        .setMessage(finalMessage)
+                        .create()
+                        .show();
+                Log.e(TAG, finalMessage);
+            }
+        });
     }
 }

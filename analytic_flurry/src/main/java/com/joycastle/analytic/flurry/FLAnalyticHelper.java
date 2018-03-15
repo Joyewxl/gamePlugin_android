@@ -12,6 +12,9 @@ import com.joycastle.gamepluginbase.AnalyticDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by geekgy on 16/4/23.
@@ -61,7 +64,13 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void onEvent(String eventId, HashMap eventData) {
-        FlurryAgent.logEvent(eventId, eventData);
+        HashMap<String, String> hashMap = new HashMap<>();
+        Iterator iterator = eventData.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry entry = (Map.Entry) iterator.next();
+            hashMap.put(String.valueOf(entry.getKey()), String.valueOf(entry.getValue()));
+        }
+        FlurryAgent.logEvent(eventId, hashMap);
     }
 
     @Override
