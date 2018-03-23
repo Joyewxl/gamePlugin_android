@@ -90,11 +90,28 @@ public class AdvertiseHelper implements AdvertiseDelegate {
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
+                boolean result = false;
                 for (AdvertiseDelegate delegate : mDelegates) {
-                    boolean result = delegate.showInterstitialAd(listener);
+                    result = delegate.showInterstitialAd(new InvokeJavaMethodDelegate() {
+                        @Override
+                        public void onFinish(ArrayList<Object> resArrayList) {
+                            boolean interstitialAdClicked = (boolean) resArrayList.get(0);
+                            if (interstitialAdClicked) {
+                                AnalyticHelper.getInstance().onEvent("SpotAd Clicked");
+                            } else {
+                                AnalyticHelper.getInstance().onEvent("SpotAd Dismiss");
+                            }
+                            listener.onFinish(resArrayList);
+                        }
+                    });
                     if (result) {
                         break;
                     }
+                }
+                if (result) {
+                    AnalyticHelper.getInstance().onEvent("SpotAd Show Success");
+                } else {
+                    AnalyticHelper.getInstance().onEvent("SpotAd Show Failed");
                 }
             }
         });
@@ -118,11 +135,30 @@ public class AdvertiseHelper implements AdvertiseDelegate {
         mMainHandler.post(new Runnable() {
             @Override
             public void run() {
+                boolean result = false;
                 for (AdvertiseDelegate delegate : mDelegates) {
-                    boolean result = delegate.showVideoAd(listener);
+                    result = delegate.showVideoAd(new InvokeJavaMethodDelegate() {
+                        @Override
+                        public void onFinish(ArrayList<Object> resArrayList) {
+                            boolean rewardAdViewed = (boolean) resArrayList.get(0);
+                            boolean rewardAdClicked = (boolean) resArrayList.get(1);
+                            if (rewardAdViewed) {
+                                AnalyticHelper.getInstance().onEvent("VedioAd Play Finish");
+                            }
+                            if (rewardAdClicked) {
+                                AnalyticHelper.getInstance().onEvent("VedioAd Clicked");
+                            }
+                            listener.onFinish(resArrayList);
+                        }
+                    });
                     if (result) {
                         break;
                     }
+                }
+                if (result) {
+                    AnalyticHelper.getInstance().onEvent("VedioAd Show Success");
+                } else {
+                    AnalyticHelper.getInstance().onEvent("VedioAd Show Failed");
                 }
             }
         });
