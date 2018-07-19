@@ -383,6 +383,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
         callbackManager = CallbackManager.Factory.create();
+
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
