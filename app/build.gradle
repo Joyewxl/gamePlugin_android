@@ -1,19 +1,22 @@
 apply plugin: 'com.android.application'
 
 android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+
     dexOptions {
         javaMaxHeapSize "4g"
     }
 
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
 
     defaultConfig {
-        applicationId "com.cardgamefree.blackjack"
+        applicationId "com.blackjack.cardgame"
         minSdkVersion 16
         targetSdkVersion 26
-        versionCode 122
-        versionName "1.0"
+//        versionCode 122
+//        versionName "1.0"
+        versionCode 17
+        versionName "2.6.1"
         multiDexEnabled true
         ndk {
             abiFilters "armeabi", "x86"
@@ -40,6 +43,8 @@ dependencies {
     compile project(path: ':gameplugin_base');
     compile project(path: ':gameplugin')
     compile project(path: ':analytic_flurry')
+    compile project(path: ':analytic_kochava')
+    compile project(path: ':analytic_gameanalytics')
     compile project(path: ':advertise_admob')
     compile project(path: ':advertise_admob_adapter_vungle')
     compile project(path: ':advertise_admob_adapter_applovin')

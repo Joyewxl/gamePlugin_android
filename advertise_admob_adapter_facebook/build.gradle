@@ -26,12 +26,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    testImplementation 'junit:junit:4.12'
-
     implementation 'com.facebook.android:audience-network-sdk:4.28.2'
     implementation 'com.google.ads.mediation:facebook:4.28.2.0'
-
     compile project(path: ':gameplugin_base')
 }

@@ -140,13 +140,13 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
     @Override
     public void init(Application application) {
         try {
-            Class clazz = Class.forName("com.joycastle.advertise.admob.adapter.vungle.VGAdvertiseHelper");
+            Class clazz = Class.forName("com.joycastle.advertise.admob.adapter.facebook.FBAdvertiseHelper");
             Method getInstanceMethod = clazz.getMethod("getInstance");
             Object instance = getInstanceMethod.invoke(null);
             Method method = clazz.getMethod("init", Application.class);
             method.invoke(instance, application);
         } catch (Exception e) {
-            Log.e(TAG, "vungle adapter is disable");
+            Log.e(TAG, "facebook adapter is disable");
             e.printStackTrace();
         }
 

@@ -87,6 +87,7 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void purchase(String good, int amount, double coin){
+
     }
 
     @Override
