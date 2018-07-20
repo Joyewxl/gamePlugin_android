@@ -124,6 +124,16 @@ public class AnalyticHelper implements AnalyticDelegate{
         } catch (Exception e) {
             Log.e(TAG, "Flurry is disable");
         }
+
+        try {
+            Class clazz = Class.forName("com.joycastle.analytic.facebook.FBAnalyticHelper");
+            Method method = clazz.getMethod("getInstance");
+            AnalyticDelegate delegate = (AnalyticDelegate) method.invoke(null);
+            delegates.add(delegate);
+            delegate.init(application);
+        } catch (Exception e) {
+            Log.e(TAG, "facebook is disable");
+        }
     }
 
     @Override

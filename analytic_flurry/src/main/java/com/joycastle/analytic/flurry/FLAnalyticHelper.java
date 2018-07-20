@@ -8,11 +8,14 @@ import android.util.Log;
 
 import com.flurry.android.Constants;
 import com.flurry.android.FlurryAgent;
+import com.flurry.android.FlurryEventRecordStatus;
 import com.joycastle.gamepluginbase.AnalyticDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -87,7 +90,10 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void purchase(String good, int amount, double coin){
-
+        Currency currency = Currency.getInstance(Locale.getDefault().getCountry());
+        String currencyCode = currency.getCurrencyCode();
+        HashMap<String, String> params = new HashMap<>();
+        FlurryAgent.logPayment(good, good, 1, coin, currencyCode, "", params);
     }
 
     @Override
