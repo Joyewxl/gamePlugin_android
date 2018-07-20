@@ -12,6 +12,57 @@ strings.xml
 <string name="flurry_key">flurry_key</string>
 ```
 
+## 2.2 kochava
+
+Project level build.gradle
+
+```
+maven {
+    url "http://kochava.bintray.com/maven"
+}
+```
+
+Module  level build.gradle
+
+```
+dependencies {
+    compile 'com.kochava.base:tracker:3.4.0'
+    compile 'com.android.installreferrer:installreferrer:1.0'
+}
+```
+
+strings.xml
+
+```
+<string name="kochava_key">kochava_key</string>
+```
+
+## 2.3 gameanalytics
+
+Project level build.gradle
+
+```
+maven {
+    url 'http://maven.gameanalytics.com/release'
+}
+```
+
+Module  level build.gradle
+
+```
+dependencies {
+    compile 'com.gameanalytics.sdk:gameanalytics-android:3.2.2'
+}
+```
+
+strings.xml
+
+```
+<string name="gameanalytics_game_key">game_key</string>
+<string name="gameanalytics_secret_key">secret_key</string>
+```
+
+
 
 # 3 Advertise
 
