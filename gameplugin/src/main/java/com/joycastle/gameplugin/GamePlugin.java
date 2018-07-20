@@ -8,11 +8,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 
+
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.iab.googleplay.GoogleIabHelper;
 import com.joycastle.my_facebook.FacebookHelper;
+import com.joycastle.analytic.kochava.KCAnalyticHelper;
+import com.joycastle.analytic.gameanalytics.GameAnalyticsHelper;
+
 
 import java.util.HashMap;
 
@@ -37,6 +41,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().init(application);
         FacebookHelper.getInstance().init(application);
         GoogleIabHelper.getInstance().init(application);
+        KCAnalyticHelper.getInstance().init(application);
+        GameAnalyticsHelper.getInstance().init(application);
     }
 
     @Override
@@ -46,6 +52,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
         FacebookHelper.getInstance().onCreate(activity, savedInstanceState);
         GoogleIabHelper.getInstance().onCreate(activity, savedInstanceState);
+        KCAnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
+        GameAnalyticsHelper.getInstance().onCreate(activity, savedInstanceState);
     }
 
     @Override
@@ -54,6 +62,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().onStart(activity);
         FacebookHelper.getInstance().onStart(activity);
         GoogleIabHelper.getInstance().onStart(activity);
+        KCAnalyticHelper.getInstance().onStart(activity);
+        GameAnalyticsHelper.getInstance().onStart(activity);
     }
 
     @Override
@@ -62,6 +72,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().onResume(activity);
         FacebookHelper.getInstance().onResume(activity);
         GoogleIabHelper.getInstance().onResume(activity);
+        KCAnalyticHelper.getInstance().onResume(activity);
+        GameAnalyticsHelper.getInstance().onResume(activity);
     }
 
     @Override
@@ -70,6 +82,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().onPause(activity);
         FacebookHelper.getInstance().onPause(activity);
         GoogleIabHelper.getInstance().onPause(activity);
+        KCAnalyticHelper.getInstance().onResume(activity);
+        GameAnalyticsHelper.getInstance().onResume(activity);
     }
 
     @Override
@@ -78,6 +92,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().onStop(activity);
         FacebookHelper.getInstance().onStop(activity);
         GoogleIabHelper.getInstance().onStop(activity);
+        KCAnalyticHelper.getInstance().onStop(activity);
+        GameAnalyticsHelper.getInstance().onStop(activity);
     }
 
     @Override
@@ -86,6 +102,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().onDestroy(activity);
         FacebookHelper.getInstance().onDestroy(activity);
         GoogleIabHelper.getInstance().onDestroy(activity);
+        KCAnalyticHelper.getInstance().onDestroy(activity);
+        GameAnalyticsHelper.getInstance().onDestroy(activity);
     }
 
     @Override
@@ -94,6 +112,8 @@ public class GamePlugin implements LifeCycleDelegate {
         AdvertiseHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         FacebookHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         GoogleIabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
+        KCAnalyticHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
+        GameAnalyticsHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
     }
 
     public void setNotifyHandler(InvokeJavaMethodDelegate delegate) {

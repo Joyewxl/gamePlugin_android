@@ -24,4 +24,7 @@ dependencies {
     compile project(path: ':gameplugin_base')
     compile project(path: ':social_facebook')
     compile project(path: ':iap_googleplay')
+    compile project(path: ':analytic_kochava')
+    compile project(path: ':analytic_gameanalytics')
+
 }
