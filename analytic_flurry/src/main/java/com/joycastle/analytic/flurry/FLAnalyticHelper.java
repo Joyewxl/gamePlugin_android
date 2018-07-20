@@ -90,7 +90,7 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void purchase(String good, int amount, double coin){
-        Currency currency = Currency.getInstance(Locale.getDefault().getCountry());
+        Currency currency = Currency.getInstance(Locale.US);
         String currencyCode = currency.getCurrencyCode();
         HashMap<String, String> params = new HashMap<>();
         FlurryAgent.logPayment(good, good, 1, coin, currencyCode, "", params);
