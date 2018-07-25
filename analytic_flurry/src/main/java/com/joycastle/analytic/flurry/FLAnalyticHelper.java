@@ -82,6 +82,10 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void charge(String iapId, double cash, double coin, int channal){
+        Currency currency = Currency.getInstance(Locale.US);
+        String currencyCode = currency.getCurrencyCode();
+        HashMap<String, String> params = new HashMap<>();
+        FlurryAgent.logPayment(iapId, iapId, (int)coin, cash, currencyCode, "", params);
     }
 
     @Override
@@ -90,10 +94,7 @@ public class FLAnalyticHelper implements AnalyticDelegate {
 
     @Override
     public void purchase(String good, int amount, double coin){
-        Currency currency = Currency.getInstance(Locale.US);
-        String currencyCode = currency.getCurrencyCode();
-        HashMap<String, String> params = new HashMap<>();
-        FlurryAgent.logPayment(good, good, 1, coin, currencyCode, "", params);
+
     }
 
     @Override
