@@ -47,19 +47,19 @@ public class KCAnalyticHelper implements LifeCycleDelegate {
                     .setPrice(price)
                     .setCurrency(currencyCode)
                     .setUserId(String.valueOf(jso.get("userIdString")));
+            Tracker.sendEvent(e);
         }
         else if(eventId == 2)
         {
             event = Tracker.EVENT_TYPE_LEVEL_COMPLETE;
             e = new Tracker.Event(event)
                     .setLevel(String.valueOf(jso.get("levelString")));
+            Tracker.sendEvent(e);
         }
         else
         {
             return;
         }
-        
-        Tracker.sendEvent(e);
     }
 
     public void onEvent(String eventName, HashMap map) {
