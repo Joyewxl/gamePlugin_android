@@ -32,6 +32,8 @@ import android.util.Log;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -642,6 +644,37 @@ public class SystemUtil {
             NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
             mNotificationManager.notify(0, mBuilder.build());
         }
+    }
+
+    private static JSONArray arrayList2JsonArray(ArrayList arrayList) throws JSONException {
+        JSONArray jsonArray = new JSONArray();
+        for (Object val : arrayList) {
+            if (val instanceof ArrayList) {
+                jsonArray.put(arrayList2JsonArray((ArrayList) val));
+            } else if (val instanceof HashMap) {
+                jsonArray.put(hashMap2JsonObject((HashMap) val));
+            } else {
+                jsonArray.put(val);
+            }
+        }
+        return jsonArray;
+    }
+
+    public static JSONObject hashMap2JsonObject(HashMap hashMap) throws JSONException {
+        JSONObject jsonObject = new JSONObject();
+        Iterator it = hashMap.keySet().iterator();
+        while (it.hasNext()) {
+            String key = (String)it.next();
+            Object val = hashMap.get(key);
+            if (val instanceof ArrayList) {
+                jsonObject.put(key, arrayList2JsonArray((ArrayList) val));
+            } else if (val instanceof HashMap) {
+                jsonObject.put(key, hashMap2JsonObject((HashMap) val));
+            } else {
+                jsonObject.put(key, val);
+            }
+        }
+        return jsonObject;
     }
 }
 
