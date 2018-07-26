@@ -5,7 +5,6 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.StateSet;
 
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
@@ -14,8 +13,10 @@ import com.kochava.base.Tracker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Currency;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
 
 public class KCAnalyticHelper implements LifeCycleDelegate {
@@ -40,8 +41,11 @@ public class KCAnalyticHelper implements LifeCycleDelegate {
         if(eventId == 1) {
             event = Tracker.EVENT_TYPE_PURCHASE;
             double price = Double.parseDouble(map.get("priceDoubleNumber").toString());
+            Currency currency = Currency.getInstance(Locale.US);
+            String currencyCode = currency.getCurrencyCode();
             e = new Tracker.Event(event)
                     .setPrice(price)
+                    .setCurrency(currencyCode)
                     .setUserId(String.valueOf(jso.get("userIdString")));
         }
         else if(eventId == 2)
