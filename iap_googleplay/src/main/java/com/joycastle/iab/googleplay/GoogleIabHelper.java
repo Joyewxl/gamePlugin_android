@@ -119,6 +119,9 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     }
 
     private void quertInventory() {
+        if (mHelper == null) {
+            return;
+        }
         try {
             mHelper.queryInventoryAsync(this);
         } catch (IabHelper.IabAsyncInProgressException e) {

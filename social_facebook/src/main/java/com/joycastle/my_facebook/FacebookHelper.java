@@ -397,20 +397,23 @@ public class FacebookHelper implements LifeCycleDelegate {
                     arrayList.add(accessToken);
                     FacebookHelper.this.loginListener.onFinish(arrayList);
                 }
-                grantPermissionListener.onFinish(true);
+                if(grantPermissionListener!=null)
+                    grantPermissionListener.onFinish(true);
             }
 
             @Override
             public void onCancel() {
                 Log.i(TAG,"login cancel!");
-                grantPermissionListener.onFinish(false);
+                if(grantPermissionListener!=null)
+                    grantPermissionListener.onFinish(false);
             }
 
             @Override
             public void onError(FacebookException error) {
                 Log.e(TAG,"login error!");
                 Log.e(TAG, error.toString());
-                grantPermissionListener.onFinish(false);
+                if(grantPermissionListener!=null)
+                    grantPermissionListener.onFinish(false);
             }
         });
     }
