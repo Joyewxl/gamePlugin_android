@@ -367,6 +367,7 @@ public class SystemUtil {
         }
 
         Intent intent = new Intent(this.mActivity, NotificationReceiver.class);
+        intent.putExtra("title", this.getAppName());
         intent.putExtra("content", content);
         PendingIntent pi = PendingIntent.getBroadcast(this.mActivity, 0, intent, 0);
         AlarmManager am = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
@@ -613,19 +614,16 @@ public class SystemUtil {
     {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String msg = intent.getStringExtra("msg");
+            String title = intent.getStringExtra("title");
             String content = intent.getStringExtra("content");
             //推送一条通知
-            shownotification(context,msg,content);
-            return;
+            shownotification(context, title, content);
         }
 
-        public void shownotification(Context context,String title, String msg)
+        private void shownotification(Context context,String title, String msg)
         {
-            Activity activity = SystemUtil.getInstance().getActivity();
-
             NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(activity.getApplicationContext())
+                    new NotificationCompat.Builder(context)
                             .setAutoCancel(true)
                             .setOngoing(false)
                             .setSmallIcon(R.mipmap.ic_launcher)
@@ -635,7 +633,7 @@ public class SystemUtil {
                             .setContentText(msg)
                             .setWhen(System.currentTimeMillis());
 
-            Intent resultIntent = new Intent(context,activity.getClass());
+            Intent resultIntent = new Intent(context, context.getClass());
 
             PendingIntent resultPendingIntent = PendingIntent.getActivity(context,0, resultIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
