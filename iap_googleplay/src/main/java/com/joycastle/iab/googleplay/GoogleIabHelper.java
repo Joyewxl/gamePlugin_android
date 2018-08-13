@@ -43,6 +43,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     private String mVerifySign;
     private SharedPreferences mSharedPreferences;
     private boolean mCanDoIap = false;
+    private Activity mActivity;
 
     public static GoogleIabHelper getInstance() { return instance; }
 
@@ -58,6 +59,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
     @Override
     public void onCreate(final Activity activity, Bundle savedInstanceState) {
         String base64PublicKey = SystemUtil.getInstance().getPlatCfgValue("google_iab_publickey");
+        mActivity = activity;
         mHelper = new IabHelper(activity, base64PublicKey);
         mHelper.enableDebugLogging(true);
         mHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
@@ -248,7 +250,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
         try {
             SystemUtil.getInstance().showLoading("Loading...");
-            mHelper.launchPurchaseFlow(SystemUtil.getInstance().getActivity(), iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
+            mHelper.launchPurchaseFlow(mActivity, iapId, 10001, new IabHelper.OnIabPurchaseFinishedListener() {
                 @Override
                 public void onIabPurchaseFinished(IabResult result, final Purchase info) {
                     if (result.isFailure()) {
@@ -342,7 +344,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                     }
                     final boolean finalRet = ret;
                     final String finalMsg = msg;
-                    SystemUtil.getInstance().getActivity().runOnUiThread(new Runnable() {
+                    mActivity.runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             ArrayList arrayList = new ArrayList();
