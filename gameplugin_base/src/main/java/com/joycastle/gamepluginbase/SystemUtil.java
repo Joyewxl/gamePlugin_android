@@ -372,7 +372,7 @@ public class SystemUtil {
         } else {
             notiTime = (int) delayObject;
         }
-        long anHour =  notiTime * 1000 ;
+        long anHour =  notiTime * 1000l ;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
                 JobScheduler jobScheduler = (JobScheduler) this.mActivity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
@@ -387,6 +387,7 @@ public class SystemUtil {
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE) //任何状态
                         .setPersisted(true) //系统重启后保留job
                         .setMinimumLatency(anHour)
+                        .setOverrideDeadline(anHour+1)
                         .setExtras(extras)
                         .build();
                 jobScheduler.schedule(jobInfo);
