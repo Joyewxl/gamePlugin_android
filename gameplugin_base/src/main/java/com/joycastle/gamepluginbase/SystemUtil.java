@@ -1,13 +1,16 @@
 package com.joycastle.gamepluginbase;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Application;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
+import android.app.job.JobInfo;
+import android.app.job.JobParameters;
+import android.app.job.JobScheduler;
+import android.app.job.JobService;
 import android.content.ClipboardManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -23,9 +26,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -50,11 +55,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-
 /**
  * Created by geekgy on 16/4/23.
  */
+
 public class SystemUtil {
+
+    static final String SYS_NOTIFY_ACTION = "sys.notify";
+
     private static final String TAG = "SystemUtil";
     private static final String PREFS_FILE = "device_id";
     private static final String PREFS_DEVICE_ID = "device_id";
@@ -356,25 +364,36 @@ public class SystemUtil {
 
     public void postNotification(HashMap notifications) {
         Log.e(TAG, "postNotification: " + notifications.toString());
-        String content = null;
         int notiTime = 0;
-        content = (String)notifications.get("message");
+        String  content = (String)notifications.get("message");
         Object delayObject = notifications.get("delay");
         if (delayObject instanceof Double) {
             notiTime = ((Double)delayObject).intValue();
         } else {
             notiTime = (int) delayObject;
         }
+        long anHour =  notiTime * 1000 ;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+                JobScheduler jobScheduler = (JobScheduler) this.mActivity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-        Intent intent = new Intent(this.mActivity, NotificationReceiver.class);
-        intent.putExtra("title", this.getAppName());
-        intent.putExtra("content", content);
-        PendingIntent pi = PendingIntent.getBroadcast(this.mActivity, 0, intent, 0);
-        AlarmManager am = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
+                // Extras, work duration.
+                PersistableBundle extras = new PersistableBundle();
+                extras.putString("title",this.getAppName());
+                extras.putString("content",content);
 
-        int anHour =  notiTime * 1000 ;  // 6秒
-        long triggerAtTime = SystemClock.elapsedRealtime() + anHour;
-        am.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, triggerAtTime, pi);
+                JobInfo jobInfo = new JobInfo.Builder(1, new ComponentName(this.mActivity.getPackageName(), NotificationService.class.getName()))
+                        .setRequiresCharging(false)
+                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE) //任何状态
+                        .setPersisted(true) //系统重启后保留job
+                        .setMinimumLatency(anHour)
+                        .setExtras(extras)
+                        .build();
+                jobScheduler.schedule(jobInfo);
+            } catch (Exception ex) {
+                Log.e(TAG,"scheduleNotifications failure");
+            }
+        }
     }
 
     public void setBadgeNum(int num) {
@@ -606,22 +625,21 @@ public class SystemUtil {
         }
     }
 
-    /**
-     * 通知接收器
-     *
-     */
-    public static class NotificationReceiver extends BroadcastReceiver
-    {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String title = intent.getStringExtra("title");
-            String content = intent.getStringExtra("content");
-            //推送一条通知
-            shownotification(context, title, content);
-        }
 
-        private void shownotification(Context context,String title, String msg)
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public static class NotificationService extends JobService
+    {
+
+        public NotificationService()
         {
+        }
+        @Override
+        public boolean onStartJob(JobParameters params) {
+
+            Context context = NotificationService.this;
+            String title    = params.getExtras().getString("title");
+            String content  = params.getExtras().getString("content");
+
             NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(context)
                             .setAutoCancel(true)
@@ -630,17 +648,24 @@ public class SystemUtil {
                             .setDefaults(NotificationCompat.DEFAULT_ALL)
                             .setNumber(1)
                             .setContentTitle(title)
-                            .setContentText(msg)
+                            .setContentText(content)
                             .setWhen(System.currentTimeMillis());
 
-            Intent resultIntent = new Intent(context, context.getClass());
-
-            PendingIntent resultPendingIntent = PendingIntent.getActivity(context,0, resultIntent,
+            Intent resultIntent = new Intent(SystemUtil.SYS_NOTIFY_ACTION);
+            PendingIntent resultPendingIntent = PendingIntent.getActivity(NotificationService.this,0, resultIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
 
             mBuilder.setContentIntent(resultPendingIntent);
             NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
             mNotificationManager.notify(0, mBuilder.build());
+
+
+            return false;
+        }
+
+        @Override
+        public boolean onStopJob(JobParameters params) {
+            return false;
         }
     }
 
