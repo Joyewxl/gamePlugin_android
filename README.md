@@ -123,3 +123,14 @@ Strings.xml
 
 # 6 Gameplugin_Base
 
+## 6.1 SystemUtil
+
+Add AndroidManifest.xml main activty 
+
+```
+<intent-filter>
+    <action android:name="sys.notify"/>
+    <category android:name="android.intent.category.DEFAULT" />
+</intent-filter>
+```
+

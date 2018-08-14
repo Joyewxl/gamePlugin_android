@@ -383,10 +383,10 @@ public class SystemUtil {
                 extras.putString("content",content);
 
                 JobInfo jobInfo = new JobInfo.Builder(1, new ComponentName(this.mActivity.getPackageName(), NotificationService.class.getName()))
-                        .setRequiresCharging(false)
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE) //任何状态
                         .setPersisted(true) //系统重启后保留job
                         .setMinimumLatency(anHour)
+                        .setOverrideDeadline(anHour+1)
                         .setExtras(extras)
                         .build();
                 jobScheduler.schedule(jobInfo);
