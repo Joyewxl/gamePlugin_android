@@ -372,16 +372,14 @@ public class SystemUtil {
         } else {
             notiTime = (int) delayObject;
         }
-        long anHour =  notiTime * 1000l ;
+        long anHour =  notiTime * 1000;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             try {
-                JobScheduler jobScheduler = (JobScheduler) this.mActivity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-
                 // Extras, work duration.
                 PersistableBundle extras = new PersistableBundle();
                 extras.putString("title",this.getAppName());
                 extras.putString("content",content);
-
+                JobScheduler jobScheduler = (JobScheduler) this.mActivity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
                 JobInfo jobInfo = new JobInfo.Builder(1, new ComponentName(this.mActivity.getPackageName(), NotificationService.class.getName()))
                         .setRequiresCharging(false)
                         .setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE) //任何状态
@@ -393,6 +391,7 @@ public class SystemUtil {
                 jobScheduler.schedule(jobInfo);
             } catch (Exception ex) {
                 Log.e(TAG,"scheduleNotifications failure");
+                ex.printStackTrace();
             }
         }
     }
