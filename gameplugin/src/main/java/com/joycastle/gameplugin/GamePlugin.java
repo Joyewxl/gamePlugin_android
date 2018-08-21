@@ -8,7 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
-
+import android.os.Process;
 
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
@@ -45,12 +45,12 @@ public class GamePlugin implements LifeCycleDelegate {
                 AdvertiseHelper.getInstance().init(mApplication);
                 FacebookHelper.getInstance().init(mApplication);
             }
-        },2000);
-
+        },1500);
         BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
             @Override
             public void run() {
+                android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SystemUtil.getInstance().setApplication(mApplication);
                 AnalyticHelper.getInstance().init(mApplication);
                 GoogleIabHelper.getInstance().init(mApplication);
@@ -69,16 +69,15 @@ public class GamePlugin implements LifeCycleDelegate {
         mMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 AdvertiseHelper.getInstance().onCreate(mActivity, mState);
                 FacebookHelper.getInstance().onCreate(mActivity, mState);
             }
-        },2000);
+        },1500);
 
-        BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
             @Override
             public void run() {
+                android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SystemUtil.getInstance().setActivity(mActivity);
                 AnalyticHelper.getInstance().onCreate(mActivity, mState);
                 GoogleIabHelper.getInstance().onCreate(mActivity, mState);
@@ -86,7 +85,6 @@ public class GamePlugin implements LifeCycleDelegate {
                 GameAnalyticsHelper.getInstance().onCreate(mActivity, mState);
             }
         });
-
     }
 
     @Override
@@ -137,6 +135,7 @@ public class GamePlugin implements LifeCycleDelegate {
         GoogleIabHelper.getInstance().onDestroy(activity);
         KCAnalyticHelper.getInstance().onDestroy(activity);
         GameAnalyticsHelper.getInstance().onDestroy(activity);
+        BackgroundThread.destroyThread();
     }
 
     @Override
