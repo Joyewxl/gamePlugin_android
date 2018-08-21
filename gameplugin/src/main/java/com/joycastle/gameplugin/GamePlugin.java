@@ -38,7 +38,7 @@ public class GamePlugin implements LifeCycleDelegate {
     public void init(Application application) {
         SystemUtil.getInstance().setApplication(application);
         AnalyticHelper.getInstance().init(application);
-        AdvertiseHelper.getInstance().init(application);
+//        AdvertiseHelper.getInstance().init(application);
         FacebookHelper.getInstance().init(application);
         GoogleIabHelper.getInstance().init(application);
         KCAnalyticHelper.getInstance().init(application);
@@ -49,7 +49,7 @@ public class GamePlugin implements LifeCycleDelegate {
     public void onCreate(Activity activity, Bundle savedInstanceState) {
         SystemUtil.getInstance().setActivity(activity);
         AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
-        AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
+//        AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
         FacebookHelper.getInstance().onCreate(activity, savedInstanceState);
         GoogleIabHelper.getInstance().onCreate(activity, savedInstanceState);
         KCAnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
@@ -59,7 +59,7 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void onStart(Activity activity) {
         AnalyticHelper.getInstance().onStart(activity);
-        AdvertiseHelper.getInstance().onStart(activity);
+//        AdvertiseHelper.getInstance().onStart(activity);
         FacebookHelper.getInstance().onStart(activity);
         GoogleIabHelper.getInstance().onStart(activity);
         KCAnalyticHelper.getInstance().onStart(activity);
@@ -69,7 +69,7 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void onResume(Activity activity) {
         AnalyticHelper.getInstance().onResume(activity);
-        AdvertiseHelper.getInstance().onResume(activity);
+//        AdvertiseHelper.getInstance().onResume(activity);
         FacebookHelper.getInstance().onResume(activity);
         GoogleIabHelper.getInstance().onResume(activity);
         KCAnalyticHelper.getInstance().onResume(activity);
@@ -79,7 +79,7 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void onPause(Activity activity) {
         AnalyticHelper.getInstance().onPause(activity);
-        AdvertiseHelper.getInstance().onPause(activity);
+//        AdvertiseHelper.getInstance().onPause(activity);
         FacebookHelper.getInstance().onPause(activity);
         GoogleIabHelper.getInstance().onPause(activity);
         KCAnalyticHelper.getInstance().onResume(activity);
@@ -89,7 +89,7 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void onStop(Activity activity) {
         AnalyticHelper.getInstance().onStop(activity);
-        AdvertiseHelper.getInstance().onStop(activity);
+//        AdvertiseHelper.getInstance().onStop(activity);
         FacebookHelper.getInstance().onStop(activity);
         GoogleIabHelper.getInstance().onStop(activity);
         KCAnalyticHelper.getInstance().onStop(activity);
@@ -99,7 +99,7 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void onDestroy(Activity activity) {
         AnalyticHelper.getInstance().onDestroy(activity);
-        AdvertiseHelper.getInstance().onDestroy(activity);
+//        AdvertiseHelper.getInstance().onDestroy(activity);
         FacebookHelper.getInstance().onDestroy(activity);
         GoogleIabHelper.getInstance().onDestroy(activity);
         KCAnalyticHelper.getInstance().onDestroy(activity);
@@ -109,7 +109,7 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
         AnalyticHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
-        AdvertiseHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
+//        AdvertiseHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         FacebookHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         GoogleIabHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
         KCAnalyticHelper.getInstance().onActivityResult(activity, requestCode, resultCode, data);
