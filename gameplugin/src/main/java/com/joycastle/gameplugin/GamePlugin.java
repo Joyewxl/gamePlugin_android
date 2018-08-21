@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 
 
@@ -56,16 +57,23 @@ public class GamePlugin implements LifeCycleDelegate {
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
-        SystemUtil.getInstance().setActivity(activity);
-        AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
-//        AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
-//        FacebookHelper.getInstance().onCreate(activity, savedInstanceState);
-        GoogleIabHelper.getInstance().onCreate(activity, savedInstanceState);
-        KCAnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
-        GameAnalyticsHelper.getInstance().onCreate(activity, savedInstanceState);
-
         final Activity mAct = activity;
         final Bundle mSinc  = savedInstanceState;
+
+        BackgroundThread.prepareThread();
+        BackgroundThread.post(new Runnable() {
+            @Override
+            public void run() {
+                SystemUtil.getInstance().setActivity(mAct);
+                AnalyticHelper.getInstance().onCreate(mAct, mSinc);
+//        AdvertiseHelper.getInstance().onCreate(activity, savedInstanceState);
+//        FacebookHelper.getInstance().onCreate(activity, savedInstanceState);
+                GoogleIabHelper.getInstance().onCreate(mAct, mSinc);
+                KCAnalyticHelper.getInstance().onCreate(mAct, mSinc);
+                GameAnalyticsHelper.getInstance().onCreate(mAct, mSinc);
+            }
+        });
+        
         mMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -174,5 +182,52 @@ public class GamePlugin implements LifeCycleDelegate {
             activity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
         }
     }
+
+
+    /**
+     * 需要自己控制生命周期，在这个生命周期内都可以使用这个线程
+     *
+     */
+    public static class BackgroundThread extends HandlerThread {
+        private static BackgroundThread mInstance;
+        private static Handler mHandler;
+
+        public BackgroundThread() {
+            super("ThreadName", android.os.Process.THREAD_PRIORITY_DEFAULT);
+        }
+
+        public static void prepareThread() {
+            if (mInstance == null) {
+                mInstance = new BackgroundThread();
+                // 创建HandlerThread后一定要记得start()
+                mInstance.start();
+                // 获取HandlerThread的Looper,创建Handler，通过Looper初始化
+                mHandler = new Handler(mInstance.getLooper());
+            }
+        }
+
+        /**
+         * 如果需要在后台线程做一件事情，那么直接调用post方法，使用非常方便
+         */
+        public static void post(final Runnable runnable) {
+            mHandler.post(runnable);
+        }
+
+        public static void postDelayed(final Runnable runnable, long nDelay) {
+            mHandler.postDelayed(runnable, nDelay);
+        }
+
+        /**
+         * 退出HandlerThread
+         */
+        public static void destroyThread() {
+            if (mInstance != null) {
+                mInstance.quit();
+                mInstance = null;
+                mHandler = null;
+            }
+        }
+    }
+
 
 }
