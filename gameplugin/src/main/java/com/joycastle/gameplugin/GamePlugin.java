@@ -37,14 +37,13 @@ public class GamePlugin implements LifeCycleDelegate {
 
     @Override
     public void init(Application application) {
-        SystemUtil.getInstance().setApplication(application);
-        
-        final  Application mAcp = application;
+        final  Application mApplication = application;
+
         mMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                AdvertiseHelper.getInstance().init(mAcp);
-                FacebookHelper.getInstance().init(mAcp);
+                AdvertiseHelper.getInstance().init(mApplication);
+                FacebookHelper.getInstance().init(mApplication);
             }
         },2000);
 
@@ -52,37 +51,42 @@ public class GamePlugin implements LifeCycleDelegate {
         BackgroundThread.post(new Runnable() {
             @Override
             public void run() {
-                AnalyticHelper.getInstance().init(mAcp);
-                GoogleIabHelper.getInstance().init(mAcp);
-                KCAnalyticHelper.getInstance().init(mAcp);
-                GameAnalyticsHelper.getInstance().init(mAcp);
+                SystemUtil.getInstance().setApplication(mApplication);
+                AnalyticHelper.getInstance().init(mApplication);
+                GoogleIabHelper.getInstance().init(mApplication);
+                KCAnalyticHelper.getInstance().init(mApplication);
+                GameAnalyticsHelper.getInstance().init(mApplication);
             }
         });
     }
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
-        SystemUtil.getInstance().setActivity(activity);
-        final Activity mAct = activity;
-        final Bundle mSinc  = savedInstanceState;
-        BackgroundThread.prepareThread();
-        BackgroundThread.post(new Runnable() {
-            @Override
-            public void run() {
-                AnalyticHelper.getInstance().onCreate(mAct, mSinc);
-                GoogleIabHelper.getInstance().onCreate(mAct, mSinc);
-                KCAnalyticHelper.getInstance().onCreate(mAct, mSinc);
-                GameAnalyticsHelper.getInstance().onCreate(mAct, mSinc);
-            }
-        });
+
+        final Activity mActivity    = activity;
+        final Bundle mState         = savedInstanceState;
 
         mMainHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                AdvertiseHelper.getInstance().onCreate(mAct, mSinc);
-                FacebookHelper.getInstance().onCreate(mAct, mSinc);
+
+                AdvertiseHelper.getInstance().onCreate(mActivity, mState);
+                FacebookHelper.getInstance().onCreate(mActivity, mState);
             }
         },2000);
+
+        BackgroundThread.prepareThread();
+        BackgroundThread.post(new Runnable() {
+            @Override
+            public void run() {
+                SystemUtil.getInstance().setActivity(mActivity);
+                AnalyticHelper.getInstance().onCreate(mActivity, mState);
+                GoogleIabHelper.getInstance().onCreate(mActivity, mState);
+                KCAnalyticHelper.getInstance().onCreate(mActivity, mState);
+                GameAnalyticsHelper.getInstance().onCreate(mActivity, mState);
+            }
+        });
+
     }
 
     @Override
