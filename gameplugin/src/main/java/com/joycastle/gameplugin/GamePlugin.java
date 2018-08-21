@@ -38,11 +38,7 @@ public class GamePlugin implements LifeCycleDelegate {
     @Override
     public void init(Application application) {
         SystemUtil.getInstance().setApplication(application);
-        AnalyticHelper.getInstance().init(application);
-        GoogleIabHelper.getInstance().init(application);
-        KCAnalyticHelper.getInstance().init(application);
-        GameAnalyticsHelper.getInstance().init(application);
-
+        
         final  Application mAcp = application;
         mMainHandler.postDelayed(new Runnable() {
             @Override
@@ -51,17 +47,28 @@ public class GamePlugin implements LifeCycleDelegate {
                 FacebookHelper.getInstance().init(mAcp);
             }
         },2000);
+
+        BackgroundThread.prepareThread();
+        BackgroundThread.post(new Runnable() {
+            @Override
+            public void run() {
+                AnalyticHelper.getInstance().init(mAcp);
+                GoogleIabHelper.getInstance().init(mAcp);
+                KCAnalyticHelper.getInstance().init(mAcp);
+                GameAnalyticsHelper.getInstance().init(mAcp);
+            }
+        });
     }
 
     @Override
     public void onCreate(Activity activity, Bundle savedInstanceState) {
+        SystemUtil.getInstance().setActivity(activity);
         final Activity mAct = activity;
         final Bundle mSinc  = savedInstanceState;
         BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
             @Override
             public void run() {
-                SystemUtil.getInstance().setActivity(mAct);
                 AnalyticHelper.getInstance().onCreate(mAct, mSinc);
                 GoogleIabHelper.getInstance().onCreate(mAct, mSinc);
                 KCAnalyticHelper.getInstance().onCreate(mAct, mSinc);
