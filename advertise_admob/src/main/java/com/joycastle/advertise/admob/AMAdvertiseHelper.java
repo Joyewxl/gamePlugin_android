@@ -90,6 +90,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public int showBannerAd(final boolean protrait, final boolean bottom) {
+        if(bannerAd==null) return 0;
         FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) bannerAd.getLayoutParams();
         layoutParams.gravity = bottom ? Gravity.BOTTOM : Gravity.TOP;
         bannerAd.setLayoutParams(layoutParams);
@@ -99,6 +100,7 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public void hideBannerAd() {
+        if(bannerAd==null) return;
         bannerAd.setVisibility(View.INVISIBLE);
     }
 
@@ -213,27 +215,27 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
         MobileAds.initialize(activity, appId);
 
         // init banner ad
-        bannerAd = new AdView(activity);
-        bannerAd.setAdSize(AdSize.SMART_BANNER);
-        bannerAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdFailedToLoad(int i) {
-                super.onAdFailedToLoad(i);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        requestNewBanner();
-                    }
-                }, 5000);
-            }
-        });
-        bannerAd.setAdUnitId(bannerId);
-        ViewGroup viewGroup = (ViewGroup) activity.findViewById(android.R.id.content);
-        AdSize adSize = bannerAd.getAdSize();
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(adSize.getWidth(), adSize.getHeight());
-        viewGroup.addView(bannerAd, layoutParams);
-        bannerAd.setVisibility(View.INVISIBLE);
-        requestNewBanner();
+//        bannerAd = new AdView(activity);
+//        bannerAd.setAdSize(AdSize.SMART_BANNER);
+//        bannerAd.setAdListener(new AdListener() {
+//            @Override
+//            public void onAdFailedToLoad(int i) {
+//                super.onAdFailedToLoad(i);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        requestNewBanner();
+//                    }
+//                }, 5000);
+//            }
+//        });
+//        bannerAd.setAdUnitId(bannerId);
+//        ViewGroup viewGroup = (ViewGroup) activity.findViewById(android.R.id.content);
+//        AdSize adSize = bannerAd.getAdSize();
+//        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(adSize.getWidth(), adSize.getHeight());
+//        viewGroup.addView(bannerAd, layoutParams);
+//        bannerAd.setVisibility(View.INVISIBLE);
+//        requestNewBanner();
 
         // init interstitial Ad
         interstitialAd = new InterstitialAd(activity);
