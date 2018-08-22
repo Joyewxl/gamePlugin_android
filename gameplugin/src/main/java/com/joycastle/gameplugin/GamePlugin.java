@@ -45,7 +45,7 @@ public class GamePlugin implements LifeCycleDelegate {
                 AdvertiseHelper.getInstance().init(mApplication);
                 FacebookHelper.getInstance().init(mApplication);
             }
-        },1500);
+        },6000);
         BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
             @Override
@@ -72,7 +72,7 @@ public class GamePlugin implements LifeCycleDelegate {
                 AdvertiseHelper.getInstance().onCreate(mActivity, mState);
                 FacebookHelper.getInstance().onCreate(mActivity, mState);
             }
-        },1500);
+        },6000);
 
         BackgroundThread.post(new Runnable() {
             @Override
