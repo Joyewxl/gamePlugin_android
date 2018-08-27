@@ -288,12 +288,14 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public void onResume(Activity activity) {
-        mRewardedVideoAd.resume(activity);
+        if(mRewardedVideoAd!=null)
+            mRewardedVideoAd.resume(activity);
     }
 
     @Override
     public void onPause(Activity activity) {
-        mRewardedVideoAd.pause(activity);
+        if(mRewardedVideoAd!=null)
+            mRewardedVideoAd.pause(activity);
     }
 
     @Override
@@ -303,7 +305,8 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
 
     @Override
     public void onDestroy(Activity activity) {
-        mRewardedVideoAd.destroy(activity);
+        if(mRewardedVideoAd!=null)
+            mRewardedVideoAd.destroy(activity);
     }
 
     @Override

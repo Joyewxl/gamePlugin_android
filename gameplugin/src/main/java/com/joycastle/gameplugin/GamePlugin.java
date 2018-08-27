@@ -74,6 +74,7 @@ public class GamePlugin implements LifeCycleDelegate {
             }
         },6000);
 
+        BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
             @Override
             public void run() {
