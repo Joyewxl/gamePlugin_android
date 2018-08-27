@@ -217,11 +217,13 @@ public class GamePlugin implements LifeCycleDelegate {
          * 如果需要在后台线程做一件事情，那么直接调用post方法，使用非常方便
          */
         public static void post(final Runnable runnable) {
-            mHandler.post(runnable);
+            if(mHandler != null)
+                mHandler.post(runnable);
         }
 
         public static void postDelayed(final Runnable runnable, long nDelay) {
-            mHandler.postDelayed(runnable, nDelay);
+            if(mHandler != null)
+                mHandler.postDelayed(runnable, nDelay);
         }
 
         /**
