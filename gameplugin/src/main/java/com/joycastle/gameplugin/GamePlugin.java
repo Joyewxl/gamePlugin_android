@@ -73,13 +73,12 @@ public class GamePlugin implements LifeCycleDelegate {
                 AdvertiseHelper.getInstance().onCreate(mActivity, mState);
             }
         },6000);
-
+        AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
         BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
             @Override
             public void run() {
-//                android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-                AnalyticHelper.getInstance().onCreate(mActivity, mState);
+                android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SystemUtil.getInstance().setActivity(mActivity);
                 FacebookHelper.getInstance().onCreate(mActivity, mState);
                 GoogleIabHelper.getInstance().onCreate(mActivity, mState);
