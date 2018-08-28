@@ -48,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -162,7 +163,6 @@ public class SystemUtil {
         }
         return versionName;
     }
-
 
     /**
      * 获取VersionCode
@@ -402,93 +402,9 @@ public class SystemUtil {
         } else {
             num = Math.max(0, Math.min(num, 99));
         }
-        Context context = this.mApplication.getApplicationContext();
-        if (Build.MANUFACTURER.equalsIgnoreCase("Xiaomi")) {
-            sendToXiaoMi(context,num);
-        } else if (Build.MANUFACTURER.equalsIgnoreCase("huawei")) {
-//            sendToHuaWei(context,num);
-        } else if (Build.MANUFACTURER.equalsIgnoreCase("sony")) {
-            sendToSony(context,num);
-        } else if (Build.MANUFACTURER.toLowerCase().contains("samsung")) {
-            sendToSamsumg(context,num);
-        } else {
-            Log.d(TAG, "setBadgeNum  Not Support ");
-        }
+        ShortcutBadger.applyCount(this.mActivity, num);
     }
 
-    /**
-     * 向华为手机发送未读消息广播
-     */
-    private static void sendToHuaWei(Context context,int count) {
-        String launcherClassName = getLauncherClassName(context);
-        Bundle localBundle = new Bundle();//需要存储的数据
-        localBundle.putString("package", context.getPackageName());//包名
-        localBundle.putString("class", launcherClassName);
-        localBundle.putInt("badgenumber", count);//未读信息条数
-        context.getContentResolver().call(
-                Uri.parse("content://com.huawei.android.launcher.settings/badge/"),
-                "change_badge", null, localBundle);
-    }
-    /**
-     * 向小米手机发送未读消息数广播
-     * @param count
-     */
-    private static void sendToXiaoMi(Context context,int count) {
-        try{
-            Class miuiNotificationClass = Class.forName("android.app.MiuiNotification");
-            Object miuiNotification = miuiNotificationClass.newInstance();
-            Field field = miuiNotification.getClass().getDeclaredField("messageCount");
-            field.setAccessible(true);
-            field.set(miuiNotification,String.valueOf(count==0?"":count));
-        }catch (Exception e){
-            e.printStackTrace();
-            // miui6之前
-            Intent localIntent = new Intent("android.intent.action.APPLICATION_MESSAGE_UPDATE");
-            localIntent.putExtra("android.intent.extra.update_application_component_name",context.getPackageName()+"/."+"MainActivity");
-            localIntent.putExtra("android.intent.extra.update_application_message_text",String.valueOf(count==0?"":count));
-            context.sendBroadcast(localIntent);
-        }
-    }
-
-    /**
-     * 向索尼手机发送未读消息数广播<br/>
-     * 据说：需添加权限：<uses-permission android:name="com.sonyericsson.home.permission.BROADCAST_BADGE" /> [未验证]
-     * @param count
-     */
-    private static void sendToSony(Context context, int count){
-        String launcherClassName = getLauncherClassName(context);
-        if (launcherClassName == null) {
-            return;
-        }
-
-        boolean isShow = true;
-        if (count == 0) {
-            isShow = false;
-        }
-        Intent localIntent = new Intent();
-        localIntent.setAction("com.sonyericsson.home.action.UPDATE_BADGE");
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.SHOW_MESSAGE",isShow);//是否显示
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.ACTIVITY_NAME",launcherClassName );//启动页
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.MESSAGE", String.valueOf(count));//数字
-        localIntent.putExtra("com.sonyericsson.home.intent.extra.badge.PACKAGE_NAME", context.getPackageName());//包名
-        context.sendBroadcast(localIntent);
-    }
-
-    /**
-     * 向三星手机发送未读消息数广播
-     * @param count
-     */
-    private static void sendToSamsumg(Context context, int count){
-        String launcherClassName = getLauncherClassName(context);
-        if (launcherClassName == null) {
-            return;
-        }
-        Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
-        intent.putExtra("badge_count", count);
-        intent.putExtra("badge_count_package_name", context.getPackageName());
-        intent.putExtra("badge_count_class_name", launcherClassName);
-        context.sendBroadcast(intent);
-    }
 
     /**
      * Retrieve launcher activity name of the application from the context
@@ -584,7 +500,7 @@ public class SystemUtil {
     public void copyToPasteboard(String str) {
         Context context = this.mApplication.getApplicationContext();
         ClipboardManager clip = (ClipboardManager)context.getSystemService(Context.CLIPBOARD_SERVICE);
-        //clip.getText(); // 粘贴
+//        clip.getText(); // 粘贴
         clip.setText(str); // 复制
     }
 
@@ -631,8 +547,7 @@ public class SystemUtil {
     {
 
         public NotificationService()
-        {
-        }
+        {}
         @Override
         public boolean onStartJob(JobParameters params) {
 
@@ -658,7 +573,6 @@ public class SystemUtil {
             mBuilder.setContentIntent(resultPendingIntent);
             NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
             mNotificationManager.notify(0, mBuilder.build());
-
 
             return false;
         }

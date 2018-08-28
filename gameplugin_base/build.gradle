@@ -23,5 +23,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:support-v4:24.1.1'
     compile 'com.kaopiz:kprogresshud:1.0.5'
+    compile "me.leolin:ShortcutBadger:1.1.22@aar"
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
 }

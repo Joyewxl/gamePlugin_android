@@ -52,8 +52,8 @@ public class GamePlugin implements LifeCycleDelegate {
             public void run() {
                 android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SystemUtil.getInstance().setApplication(mApplication);
-                FacebookHelper.getInstance().init(mApplication);
                 AnalyticHelper.getInstance().init(mApplication);
+                FacebookHelper.getInstance().init(mApplication);
                 GoogleIabHelper.getInstance().init(mApplication);
                 KCAnalyticHelper.getInstance().init(mApplication);
                 GameAnalyticsHelper.getInstance().init(mApplication);
@@ -79,9 +79,9 @@ public class GamePlugin implements LifeCycleDelegate {
             @Override
             public void run() {
                 android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+                AnalyticHelper.getInstance().onCreate(mActivity, mState);
                 SystemUtil.getInstance().setActivity(mActivity);
                 FacebookHelper.getInstance().onCreate(mActivity, mState);
-                AnalyticHelper.getInstance().onCreate(mActivity, mState);
                 GoogleIabHelper.getInstance().onCreate(mActivity, mState);
                 KCAnalyticHelper.getInstance().onCreate(mActivity, mState);
                 GameAnalyticsHelper.getInstance().onCreate(mActivity, mState);
