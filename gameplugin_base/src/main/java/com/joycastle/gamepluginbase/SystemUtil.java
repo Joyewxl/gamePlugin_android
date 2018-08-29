@@ -60,6 +60,7 @@ import okhttp3.Response;
  * Created by geekgy on 16/4/23.
  */
 
+
 public class SystemUtil {
 
     static final String SYS_NOTIFY_ACTION = "sys.notify";
@@ -75,6 +76,45 @@ public class SystemUtil {
     private KProgressHUD mProgressHUD;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private String mUUID;
+
+
+    private final static int[][] AnalyticDataDiscrete = {
+            {0, 10, 10},
+            {11, 20, 20},
+            {21, 30, 30},
+            {31, 40, 40},
+            {41, 60, 60},
+            {61, 80, 80},
+            {81, 100, 100},
+            {101, 150, 150},
+            {151, 200, 200},
+            {201, 250, 250},
+            {251, 300, 300},
+            {301, 350, 350},
+            {351, 400, 400},
+            {401, 500, 500},
+            {501, 600, 600},
+            {601, 700, 700},
+            {701, 800, 800},
+            {801, 900, 900},
+            {901, 1000, 1000},
+            {1001, 1200, 1200},
+            {1201, 1400, 1400},
+            {1401, 1600, 1600},
+            {1601, 1800, 1800},
+            {1801, 2000, 2000},
+            {2001, 2500, 2500},
+            {2501, 3000, 3000},
+            {3001, 3500, 3500},
+            {3501, 4000, 4000},
+            {4001, 4500, 4500},
+            {4501, 5000, 5000},
+            {5001, 6000, 6000},
+            {6001, 7000, 7000},
+            {7001, 8000, 8000},
+            {8001, 9000, 9000},
+            {9001, 10000, 10000}
+    };
 
     public static SystemUtil getInstance() { return mInstance; }
 
@@ -613,6 +653,21 @@ public class SystemUtil {
         }
         return jsonObject;
     }
+
+
+    public int calculateDiscreteNum(int acNum) {
+        int markNum = -1;
+        for (int i = 0; i < AnalyticDataDiscrete.length; i++) {
+            if ( acNum >= AnalyticDataDiscrete[i][0] && acNum <= AnalyticDataDiscrete[i][1])
+            {
+                markNum = AnalyticDataDiscrete[i][2];
+                Log.i(TAG, "calculateDiscreteNum: "+acNum+" - "+markNum);
+                return markNum;
+            }
+        }
+        return markNum;
+    }
+
 }
 
 

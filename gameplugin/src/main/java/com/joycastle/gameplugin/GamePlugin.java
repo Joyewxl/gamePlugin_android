@@ -53,8 +53,6 @@ public class GamePlugin implements LifeCycleDelegate {
             }
         },6000);
 
-        final long st1 = System.currentTimeMillis();
-        AnalyticHelper.getInstance().init(mApplication);
 
         BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
@@ -63,20 +61,22 @@ public class GamePlugin implements LifeCycleDelegate {
                 android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SystemUtil.getInstance().setApplication(mApplication);
 
+                long st1 = System.currentTimeMillis();
+                AnalyticHelper.getInstance().init(mApplication);
                 long st2 = System.currentTimeMillis();
-                acInitTime = st2 - st1;
+                acInitTime = SystemUtil.getInstance().calculateDiscreteNum((int)(st2 - st1)) ;
                 FacebookHelper.getInstance().init(mApplication);
                 long st3 = System.currentTimeMillis();
-                fbInitTime = st3 - st2;
+                fbInitTime = SystemUtil.getInstance().calculateDiscreteNum((int)(st3 - st2));
                 GoogleIabHelper.getInstance().init(mApplication);
                 long st4 = System.currentTimeMillis();
-                iabInitTime = st4 - st3;
+                iabInitTime = SystemUtil.getInstance().calculateDiscreteNum((int)(st4 - st3));
                 KCAnalyticHelper.getInstance().init(mApplication);
                 long st5 = System.currentTimeMillis();
-                kcInitTime = st5 - st4;
+                kcInitTime = SystemUtil.getInstance().calculateDiscreteNum((int)(st5 - st4));
                 GameAnalyticsHelper.getInstance().init(mApplication);
                 long st6 = System.currentTimeMillis();
-                gaInitTime = st6 - st5;
+                gaInitTime = SystemUtil.getInstance().calculateDiscreteNum((int)(st6 - st5));
             }
         });
     }
@@ -94,46 +94,48 @@ public class GamePlugin implements LifeCycleDelegate {
             }
         },6000);
 
-        long st1 = System.currentTimeMillis();
-        AnalyticHelper.getInstance().onCreate(activity, savedInstanceState);
-        final long st2 = System.currentTimeMillis();
-
-        HashMap<String, Object> eventData = new HashMap<>();
-        eventData.put("AnalyticHelperInitTime", String.valueOf(acInitTime));
-        AnalyticHelper.getInstance().onEvent("GameStartTime", eventData);
-        Log.i(TAG, "AnalyticHelperInitTime: "+acInitTime);
-
-        HashMap<String, Object> eventData2 = new HashMap<>();
-        eventData2.put("FacebookHelperInitTime", String.valueOf(fbInitTime));
-        AnalyticHelper.getInstance().onEvent("GameStartTime", eventData2);
-        Log.i(TAG, "FacebookHelperInitTime: "+fbInitTime);
-
-        HashMap<String, Object> eventData3 = new HashMap<>();
-        eventData3.put("GoogleIabHelperInitTime", String.valueOf(iabInitTime));
-        AnalyticHelper.getInstance().onEvent("GameStartTime", eventData3);
-        Log.i(TAG, "GoogleIabHelperInitTime: "+iabInitTime);
-
-        HashMap<String, Object> eventData4 = new HashMap<>();
-        eventData4.put("KCAnalyticHelperInitTime", String.valueOf(kcInitTime));
-        AnalyticHelper.getInstance().onEvent("GameStartTime", eventData4);
-        Log.i(TAG, "KCAnalyticHelperInitTime: "+kcInitTime);
-
-        HashMap<String, Object> eventData5 = new HashMap<>();
-        eventData5.put("GameAnalyticsHelperInitTime", String.valueOf(gaInitTime));
-        AnalyticHelper.getInstance().onEvent("GameStartTime", eventData5);
-        Log.i(TAG, "GameAnalyticsHelperInitTime: "+gaInitTime);
-
-        HashMap<String, Object> eventData6 = new HashMap<>();
-        eventData6.put("AnalyticHelperOnCreateTime", String.valueOf(st2-st1));
-        AnalyticHelper.getInstance().onEvent("GameStartTime", eventData);
-        Log.i(TAG, "AnalyticHelperOnCreateTime: "+(st2-st1));
-
         BackgroundThread.prepareThread();
         BackgroundThread.post(new Runnable() {
             @Override
             public void run() {
                 android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SystemUtil.getInstance().setActivity(mActivity);
+
+                long st1 = System.currentTimeMillis();
+                AnalyticHelper.getInstance().onCreate(mActivity, mState);
+                final long st2 = System.currentTimeMillis();
+
+                HashMap<String, Object> ed = new HashMap<>();
+                ed.put("AnalyticHelperInitTime", acInitTime);
+                AnalyticHelper.getInstance().onEvent("GameStartTime", ed);
+                Log.i(TAG, "AnalyticHelperInitTime: "+acInitTime);
+
+                HashMap<String, Object> ed2 = new HashMap<>();
+                ed2.put("FacebookHelperInitTime", fbInitTime);
+                AnalyticHelper.getInstance().onEvent("GameStartTime", ed2);
+                Log.i(TAG, "FacebookHelperInitTime: "+fbInitTime);
+
+                HashMap<String, Object> ed3 = new HashMap<>();
+                ed3.put("GoogleIabHelperInitTime", iabInitTime);
+                AnalyticHelper.getInstance().onEvent("GameStartTime", ed3);
+                Log.i(TAG, "GoogleIabHelperInitTime: "+iabInitTime);
+
+                HashMap<String, Object> ed4 = new HashMap<>();
+                ed4.put("KCAnalyticHelperInitTime", kcInitTime);
+                AnalyticHelper.getInstance().onEvent("GameStartTime", ed4);
+                Log.i(TAG, "KCAnalyticHelperInitTime: "+kcInitTime);
+
+                HashMap<String, Object> ed5 = new HashMap<>();
+                ed5.put("GameAnalyticsHelperInitTime", gaInitTime);
+                AnalyticHelper.getInstance().onEvent("GameStartTime", ed5);
+                Log.i(TAG, "GameAnalyticsHelperInitTime: "+gaInitTime);
+
+                HashMap<String, Object> ed6 = new HashMap<>();
+                int d = SystemUtil.getInstance().calculateDiscreteNum((int)(st2-st1));
+                ed6.put("AnalyticHelperOnCreateTime", d);
+                AnalyticHelper.getInstance().onEvent("GameStartTime", ed6);
+                Log.i(TAG, "AnalyticHelperOnCreateTime: "+d);
+
                 FacebookHelper.getInstance().onCreate(mActivity, mState);
                 long st3 = System.currentTimeMillis();
                 GoogleIabHelper.getInstance().onCreate(mActivity, mState);
@@ -144,24 +146,28 @@ public class GamePlugin implements LifeCycleDelegate {
                 long st6 = System.currentTimeMillis();
 
                 HashMap<String, Object> eventData = new HashMap<>();
-                eventData.put("FacebookHelperOnCreateTime", String.valueOf(st3-st2));
+                int d1 = SystemUtil.getInstance().calculateDiscreteNum((int)(st3-st2));
+                eventData.put("FacebookHelperOnCreateTime", d1);
                 AnalyticHelper.getInstance().onEvent("GameStartTime", eventData);
-                Log.i(TAG, "FacebookHelperOnCreateTime: "+(st3-st2));
+                Log.i(TAG, "FacebookHelperOnCreateTime: "+d1);
 
                 HashMap<String, Object> eventData1 = new HashMap<>();
-                eventData1.put("GoogleIabHelperOnCreateTime", String.valueOf(st4-st3));
+                int d2 = SystemUtil.getInstance().calculateDiscreteNum((int)(st4-st3));
+                eventData1.put("GoogleIabHelperOnCreateTime", d2);
                 AnalyticHelper.getInstance().onEvent("GameStartTime", eventData1);
-                Log.i(TAG, "GoogleIabHelperOnCreateTime: "+(st4-st3));
+                Log.i(TAG, "GoogleIabHelperOnCreateTime: "+d2);
 
                 HashMap<String, Object> eventData2 = new HashMap<>();
-                eventData2.put("KCAnalyticHelperOnCreateTime", String.valueOf(st5-st4));
+                int d3 = SystemUtil.getInstance().calculateDiscreteNum((int)(st5-st4));
+                eventData2.put("KCAnalyticHelperOnCreateTime", d3);
                 AnalyticHelper.getInstance().onEvent("GameStartTime", eventData2);
-                Log.i(TAG, "KCAnalyticHelperOnCreateTime: "+(st5-st4));
+                Log.i(TAG, "KCAnalyticHelperOnCreateTime: "+d3);
 
                 HashMap<String, Object> eventData3 = new HashMap<>();
-                eventData3.put("GameAnalyticsHelperOnCreateTime", String.valueOf(st6-st5));
+                int d4 = SystemUtil.getInstance().calculateDiscreteNum((int)(st6-st5));
+                eventData3.put("GameAnalyticsHelperOnCreateTime", d4);
                 AnalyticHelper.getInstance().onEvent("GameStartTime", eventData3);
-                Log.i(TAG, "GameAnalyticsHelperOnCreateTime: "+(st6-st5));
+                Log.i(TAG, "GameAnalyticsHelperOnCreateTime: "+d4);
             }
         });
     }
