@@ -28,5 +28,5 @@ dependencies {
     })
     testCompile 'junit:junit:4.12'
     compile project(path: ':gameplugin_base')
-    implementation 'com.google.android.gms:play-services-ads:11.8.0'
+    compile 'com.google.android.gms:play-services-ads:11.8.0'
 }
