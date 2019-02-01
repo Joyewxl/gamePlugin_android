@@ -6,12 +6,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.joycastle.analytic.gameanalytics.GameAnalyticsHelper;
 import com.joycastle.app.R;
 import com.joycastle.gameplugin.AdvertiseHelper;
 import com.joycastle.gameplugin.AnalyticHelper;
@@ -20,6 +22,7 @@ import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
 import com.joycastle.my_facebook.FacebookHelper;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -361,7 +364,6 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
 
         ///////////////////////////////GamePlugin///////////////////////////////
         addToArrayList("--------GamePlugin", null);
-        GamePlugin.getInstance().setIapVerifyUrlAndSign("url", "sign");
         addToArrayList("canDoIap", new OnClickListener() {
             @Override
             public void onClick() {
@@ -386,7 +388,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
         addToArrayList("doIap", new OnClickListener() {
             @Override
             public void onClick() {
-                GamePlugin.getInstance().doIap("blackjack.chip1", "", new InvokeJavaMethodDelegate() {
+                GamePlugin.getInstance().doIap("blackjack.chip4", "", new InvokeJavaMethodDelegate() {
                     @Override
                     public void onFinish(ArrayList<Object> resArrayList) {
                         showAlert(resArrayList.toString());
@@ -543,9 +545,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
             public void onClick() {
                 HashMap reqData = new HashMap();
                 reqData.put("message","♥ ♠ Your FREE BONUS is ready NOW! ♣ ♦");
-                reqData.put("from", "local");
-                reqData.put("delay", 5.0);
-                reqData.put("badge", 1.0);
+                reqData.put("delay", 10.0);
                 SystemUtil.getInstance().postNotification(reqData);
             }
         });
@@ -558,7 +558,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
         addToArrayList("setBadgeNum", new OnClickListener() {
             @Override
             public void onClick() {
-                SystemUtil.getInstance().setBadgeNum(3);
+                SystemUtil.getInstance().setBadgeNum(0);
             }
         });
         addToArrayList("keychainSet", new OnClickListener() {

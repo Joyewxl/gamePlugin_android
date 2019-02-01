@@ -10,13 +10,13 @@ android {
 
 
     defaultConfig {
-        applicationId "com.joycastle.app"
+        applicationId "com.gameplugin.app"
         minSdkVersion 16
         targetSdkVersion 26
 //        versionCode 122
 //        versionName "1.0"
-        versionCode 17
-        versionName "2.6.1"
+        versionCode 18
+        versionName "2.6.2"
         multiDexEnabled true
         ndk {
             abiFilters "armeabi", "x86"
@@ -28,6 +28,10 @@ android {
         }
     }
     buildTypes {
+        debug{
+            minifyEnabled false
+            debuggable true
+        }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

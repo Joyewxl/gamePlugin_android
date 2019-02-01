@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-/**
- * Created by gaoyang on 10/19/16.
- */
 
 public class NativeUtil {
     private static final String TAG = "NativeUtil";
