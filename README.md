@@ -1,3 +1,4 @@
+
 # 1 GamePlugin
 
 
@@ -133,4 +134,5 @@ Add AndroidManifest.xml main activty
     <category android:name="android.intent.category.DEFAULT" />
 </intent-filter>
 ```
+
 
