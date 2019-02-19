@@ -145,7 +145,7 @@ public class SystemUtil {
     public int getDebugMode() {
         String isDebug = BuildConfig.DEBUG ? "0" : "1";
         //TODO: 1 DEBUG, 2 RELEASE, 3 SUBMISSION
-        return 3;
+        return 1;
     }
 
     /**
