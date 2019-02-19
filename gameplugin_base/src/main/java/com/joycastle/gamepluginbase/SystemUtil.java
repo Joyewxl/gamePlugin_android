@@ -219,12 +219,20 @@ public class SystemUtil {
         return versionCode;
     }
 
+    /**
+     * 设备厂商
+     * @return
+     */
     public String getDeviceName() {
-        return Build.MODEL;
+        return android.os.Build.BRAND;
     }
 
+    /**
+     * 手机设备型号
+     * @return
+     */
     public String getDeviceModel() {
-        return Build.MODEL;
+        return android.os.Build.MODEL;
     }
 
     public String getDeviceType() {
@@ -235,6 +243,10 @@ public class SystemUtil {
         return "Android OS";
     }
 
+    /**
+     * 系统版本号
+     * @return
+     */
     public String getSystemVersion() {
         return Build.VERSION.RELEASE;
     }
