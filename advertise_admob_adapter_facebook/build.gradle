@@ -26,4 +26,5 @@ dependencies {
     implementation 'com.facebook.android:audience-network-sdk:5.2.0'
     implementation 'com.google.ads.mediation:facebook:5.2.0.1'
     compile project(path: ':gameplugin_base')
+
 }
