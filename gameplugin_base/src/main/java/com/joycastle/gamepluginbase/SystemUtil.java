@@ -34,6 +34,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.view.View;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
@@ -47,6 +48,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.Call;
@@ -315,6 +317,24 @@ public class SystemUtil {
         }
         return ret;
     }
+
+    /**
+     * 隐藏虚拟键
+     */
+    public static void hideNavigation(Activity context) {
+
+        if ((Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)) {
+//            Logger.get().d("myth hideNavigation  " + context.getClass().getSimpleName());
+            context.getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
 
     public void showAlertDialog(final String title, final String message, final String btnTitle1, final String btnTitle2, final InvokeJavaMethodDelegate delegate) {
         mMainHandler.post(new Runnable() {
