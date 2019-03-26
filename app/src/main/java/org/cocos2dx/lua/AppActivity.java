@@ -46,6 +46,8 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
 
         setContentView(R.layout.activity_main);
 
+        SystemUtil.getInstance().hideNavigation(this);
+
         GamePlugin.getInstance().onCreate(this, savedInstanceState);
 
         GamePlugin.getInstance().setNotifyHandler(new InvokeJavaMethodDelegate() {

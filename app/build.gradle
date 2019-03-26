@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 27
-    buildToolsVersion '27.0.2'
+    buildToolsVersion '28.0.0'
 
     dexOptions {
         javaMaxHeapSize "4g"
@@ -46,11 +46,11 @@ dependencies {
     compile 'com.android.support:multidex:1.0.2'
     compile project(path: ':gameplugin_base');
     compile project(path: ':gameplugin')
+    compile project(path: ':advertise_admob')
     compile project(path: ':analytic_flurry')
     compile project(path: ':analytic_kochava')
     compile project(path: ':analytic_gameanalytics')
     compile project(path: ':analytic_facebook')
-    compile project(path: ':advertise_admob')
     compile project(path: ':advertise_admob_adapter_vungle')
     compile project(path: ':advertise_admob_adapter_applovin')
     compile project(path: ':advertise_admob_adapter_facebook')
