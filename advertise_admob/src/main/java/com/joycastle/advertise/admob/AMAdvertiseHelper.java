@@ -358,4 +358,9 @@ public class AMAdvertiseHelper implements AdvertiseDelegate, RewardedVideoAdList
             }
         }, 5000);
     }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+
+    }
 }
