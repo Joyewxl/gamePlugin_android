@@ -148,9 +148,10 @@ public class SystemUtil {
      * @return
      */
     public int getDebugMode() {
-        String isDebug = BuildConfig.DEBUG ? "0" : "1";
+//        String isDebug = BuildConfig.DEBUG ? "0" : "1";
         //TODO: 1 DEBUG, 2 RELEASE, 3 SUBMISSION
-        return 3;
+        Integer gameMode = Integer.parseInt(this.mApplication.getString(R.string.game_mode));
+        return gameMode;
     }
 
     /**

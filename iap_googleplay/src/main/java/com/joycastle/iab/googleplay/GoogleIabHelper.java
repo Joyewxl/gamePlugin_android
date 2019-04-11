@@ -125,7 +125,9 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
             return;
         }
         try {
-            mHelper.queryInventoryAsync(this);
+            if(mHelper.isSetupDone() && !mHelper.isAsyncInProgress()) {
+                mHelper.queryInventoryAsync(this);
+            }
         } catch (IabHelper.IabAsyncInProgressException e) {
             Log.w(TAG, "Error querying inventory. Another async operation in progress.");
         }
