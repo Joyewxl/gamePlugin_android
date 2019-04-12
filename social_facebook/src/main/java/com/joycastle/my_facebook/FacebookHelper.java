@@ -97,7 +97,7 @@ public class FacebookHelper implements LifeCycleDelegate {
         if (this.isLogin()) {
             return;
         }
-        List<String> permissions = Arrays.asList("public_profile", "user_friends", "email");
+        List<String> permissions = Arrays.asList("public_profile", "email");
         grantPermissions(permissions, PermissionType.READ, new GrantPermissionListener() {
             @Override
             public void onFinish(boolean result) {
@@ -127,7 +127,7 @@ public class FacebookHelper implements LifeCycleDelegate {
     }
 
     public void getUserProfile(final String fid, final int picSize, final InvokeJavaMethodDelegate delegate){
-        List<String> permissions = Arrays.asList("public_profile", "user_friends", "email");
+        List<String> permissions = Arrays.asList("public_profile", "email");
         grantPermissions(permissions, PermissionType.READ, new GrantPermissionListener() {
             @Override
             public void onFinish(boolean result) {
