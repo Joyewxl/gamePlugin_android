@@ -1,16 +1,15 @@
 package com.joycastle.gamepluginbase;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.app.job.JobInfo;
-import android.app.job.JobParameters;
-import android.app.job.JobScheduler;
-import android.app.job.JobService;
 import android.content.ClipboardManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -21,20 +20,13 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.annotation.RequiresApi;
-import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 import android.view.View;
@@ -51,7 +43,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.Call;
@@ -70,6 +61,12 @@ public class SystemUtil {
 
     static final String SYS_NOTIFY_ACTION = "sys.notify";
 
+    //最大alarm数量
+    static final int MAX_ALARM_REQUEST_CODE = 200;
+    static final String NOTIFICATION_CHANNEL_ID = "defaults_chanenel_id";
+    static final String NOTIFICATION_CHANNEL_NAME = "defaults_chanenel_name";
+
+
     private static final String TAG = "SystemUtil";
     private static final String PREFS_FILE = "device_id";
     private static final String PREFS_DEVICE_ID = "device_id";
@@ -81,6 +78,10 @@ public class SystemUtil {
     private KProgressHUD mProgressHUD;
     private Handler mMainHandler = new Handler(Looper.getMainLooper());
     private String mUUID;
+
+    private int mAlarmRequestCode = 0;
+    private int mNotificationId = 0;
+    private String mNotificationExtra;
 
 
     private final static int[][] AnalyticDataDiscrete = {
@@ -140,7 +141,12 @@ public class SystemUtil {
     }
 
     public void onCreate() {
-        this.changeSPLocation();
+//        this.changeSPLocation();
+        this.systemOnCreate();
+    }
+
+    public void onResume(Activity activity) {
+        this.systemOnResume(activity);
     }
 
     /**
@@ -265,6 +271,21 @@ public class SystemUtil {
     public String getIDFA() {
         //TODO
         return "";
+    }
+
+    /**
+     * 获取android设备导航栏高度
+     * 主要用于notch 屏幕判断
+     * @return
+     */
+    public int getStatusBarHeight() {
+//        Context context = this.mActivity.getApplicationContext();
+        int resourceId = this.mActivity.getResources().getIdentifier("status_bar_height", "dimen", "android");
+        int barHeight = 0;
+        if (resourceId > 0) {
+            barHeight = this.mActivity.getResources().getDimensionPixelSize(resourceId);
+        }
+        return barHeight;
     }
 
     public String getUUID() {
@@ -433,11 +454,19 @@ public class SystemUtil {
     }
 
     public void setNotificationState(boolean enabled) {
-        Context context = mActivity.getApplicationContext();
-        NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
-        mNotificationManager.cancelAll();
+        if (!enabled) {
+            NotificationManager notificationManager =
+                    (NotificationManager) this.mActivity.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.cancelAll();
+            }
+        }
     }
 
+    /**
+     * 注册系统通知
+     * @param notifications
+     */
     public void postNotification(HashMap notifications) {
         Log.e(TAG, "postNotification: " + notifications.toString());
         int notiTime = 0;
@@ -448,28 +477,8 @@ public class SystemUtil {
         } else {
             notiTime = (int) delayObject;
         }
-        long anHour =  notiTime * 1000;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            try {
-                // Extras, work duration.
-                PersistableBundle extras = new PersistableBundle();
-                extras.putString("title",this.getAppName());
-                extras.putString("content",content);
-                JobScheduler jobScheduler = (JobScheduler) this.mActivity.getSystemService(Context.JOB_SCHEDULER_SERVICE);
-                JobInfo jobInfo = new JobInfo.Builder(1, new ComponentName(this.mActivity.getPackageName(), NotificationService.class.getName()))
-                        .setRequiresCharging(false)
-                        .setRequiredNetworkType(JobInfo.NETWORK_TYPE_NONE) //任何状态
-                        .setPersisted(true) //系统重启后保留job
-                        .setMinimumLatency(anHour)
-                        .setOverrideDeadline(anHour+1)
-                        .setExtras(extras)
-                        .build();
-                jobScheduler.schedule(jobInfo);
-            } catch (Exception ex) {
-                Log.e(TAG,"scheduleNotifications failure");
-                ex.printStackTrace();
-            }
-        }
+
+        this.postNotificationEx("",content, notiTime, "");
     }
 
     public void setBadgeNum(int num) {
@@ -617,46 +626,79 @@ public class SystemUtil {
         }
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public static class NotificationService extends JobService
-    {
-
-        public NotificationService()
-        {}
-        @Override
-        public boolean onStartJob(JobParameters params) {
-
-            Context context = NotificationService.this;
-            String title    = params.getExtras().getString("title");
-            String content  = params.getExtras().getString("content");
-
-            NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(context)
-                            .setAutoCancel(true)
-                            .setOngoing(false)
-                            .setSmallIcon(R.mipmap.ic_launcher)
-                            .setDefaults(NotificationCompat.DEFAULT_ALL)
-                            .setNumber(1)
-                            .setContentTitle(title)
-                            .setContentText(content)
-                            .setWhen(System.currentTimeMillis());
-
-            Intent resultIntent = new Intent(SystemUtil.SYS_NOTIFY_ACTION);
-            PendingIntent resultPendingIntent = PendingIntent.getActivity(NotificationService.this,0, resultIntent,
-                    PendingIntent.FLAG_UPDATE_CURRENT);
-
-            mBuilder.setContentIntent(resultPendingIntent);
-            NotificationManagerCompat mNotificationManager = NotificationManagerCompat.from(context);
-            mNotificationManager.notify(0, mBuilder.build());
-
-            return false;
+    /**
+     * 注册系统通知
+     * @param title
+     * @param msg
+     * @param seconds
+     * @param extra
+     */
+    public void postNotificationEx(String title, String msg, int seconds, String extra) {
+        if (this.mAlarmRequestCode >= MAX_ALARM_REQUEST_CODE) {
+            Log.w(TAG, "alarm is too more");
+            return;
         }
 
-        @Override
-        public boolean onStopJob(JobParameters params) {
-            return false;
+        long futureInMillis = System.currentTimeMillis() + seconds * 1000;
+
+        Intent publisherIntent = new Intent(this.mActivity, NotificationPublisher.class);
+        publisherIntent.putExtra(NotificationPublisher.NOTIFICATION_ID, this.mNotificationId);
+        publisherIntent.putExtra(NotificationPublisher.NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_ID);
+        publisherIntent.putExtra(NotificationPublisher.NOTIFICATION_TITLE, title);
+        publisherIntent.putExtra(NotificationPublisher.NOTIFICATION_MSG, msg);
+        publisherIntent.putExtra(NotificationPublisher.NOTIFICATION_WHEN, futureInMillis);
+        publisherIntent.putExtra(NotificationPublisher.NOTIFICATION_EXTRA, extra);
+        PendingIntent publisherPendingIntent = PendingIntent
+                .getBroadcast(this.mActivity, this.mAlarmRequestCode, publisherIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) this.mActivity.getSystemService(Context.ALARM_SERVICE);
+        if (alarmManager != null) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP, futureInMillis, publisherPendingIntent);
         }
+
+        this.mAlarmRequestCode++;
+        this.mNotificationId++;
+    }
+
+    private void systemOnCreate() {
+        // 创建 notification channel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, NOTIFICATION_CHANNEL_NAME, importance);
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setShowBadge(true);
+            channel.enableLights(true);
+            channel.enableVibration(true);
+            NotificationManager notificationManager = this.mActivity.getSystemService(NotificationManager.class);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+        // 初始化 notification id
+        mNotificationId = Math.round(System.currentTimeMillis()/1000);
+
+        // 记录是否从通知打开
+        Intent intent = this.mActivity.getIntent();
+        this.mNotificationExtra = intent.getStringExtra(NotificationPublisher.NOTIFICATION_EXTRA);
+    }
+
+    private void systemOnResume(Activity activity) {
+        // 取消已注册的 notification publisher
+        AlarmManager alarmManager = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
+        for (int i = 0; i < MAX_ALARM_REQUEST_CODE; i++) {
+            Intent publisherIntent = new Intent(activity, NotificationPublisher.class);
+            PendingIntent publisherPendingIntent = PendingIntent
+                    .getBroadcast(activity, i, publisherIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            if (alarmManager != null) {
+                alarmManager.cancel(publisherPendingIntent);
+            }
+        }
+        // 清除通知
+        NotificationManager notificationManager =
+                (NotificationManager) activity.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancelAll();
+        }
+        this.mAlarmRequestCode = 0;
     }
 
     private static JSONArray arrayList2JsonArray(ArrayList arrayList) throws JSONException {

@@ -100,6 +100,7 @@ public class GamePlugin implements LifeCycleDelegate {
             public void run() {
                 android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
                 SystemUtil.getInstance().setActivity(mActivity);
+                SystemUtil.getInstance().onCreate();
 
                 long st1 = System.currentTimeMillis();
                 AnalyticHelper.getInstance().onCreate(mActivity, mState);
@@ -190,6 +191,7 @@ public class GamePlugin implements LifeCycleDelegate {
         GoogleIabHelper.getInstance().onResume(activity);
         KCAnalyticHelper.getInstance().onResume(activity);
         GameAnalyticsHelper.getInstance().onResume(activity);
+        SystemUtil.getInstance().onResume(activity);
     }
 
     @Override
