@@ -9,7 +9,12 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
         android:name="org.cocos2dx.lua.MyApplication">
-        <activity android:name="org.cocos2dx.lua.AppActivity">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
+
+        <activity android:name="org.cocos2dx.lua.AppActivity"
+                  android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

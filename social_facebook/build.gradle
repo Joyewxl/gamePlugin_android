@@ -1,12 +1,11 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -23,10 +22,10 @@ repositories {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     implementation 'com.facebook.android:facebook-login:[4,5)'
 
-    compile project(path: ':gameplugin_base')
+    implementation project(path: ':gameplugin_base')
 }

@@ -1,8 +1,8 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '28.0.0'
+    compileSdkVersion 28
+
 
     dexOptions {
         javaMaxHeapSize "4g"
@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.gameplugin.app"
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
 //        versionCode 122
 //        versionName "1.0"
         versionCode 18
@@ -29,6 +29,7 @@ android {
     }
     buildTypes {
         debug{
+            resValue "integer", "game_mode", "3"
             minifyEnabled false
             debuggable true
         }
@@ -40,22 +41,22 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    testCompile 'junit:junit:4.12'
-    implementation 'com.android.support:design:27.0.2'
-    compile 'com.android.support:multidex:1.0.2'
-    compile project(path: ':gameplugin_base');
-    compile project(path: ':gameplugin')
-    compile project(path: ':advertise_admob')
-    compile project(path: ':analytic_flurry')
-    compile project(path: ':analytic_kochava')
-    compile project(path: ':analytic_gameanalytics')
-    compile project(path: ':analytic_facebook')
-    compile project(path: ':advertise_admob_adapter_vungle')
-    compile project(path: ':advertise_admob_adapter_applovin')
-    compile project(path: ':advertise_admob_adapter_facebook')
-    compile project(path: ':iap_googleplay')
-    compile project(path: ':social_facebook')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+//    testImplementation 'junit:junit:4.12'
+//    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation project(path: ':gameplugin_base');
+    implementation project(path: ':gameplugin')
+    implementation project(path: ':advertise_admob')
+    implementation project(path: ':analytic_flurry')
+    implementation project(path: ':analytic_kochava')
+    implementation project(path: ':analytic_gameanalytics')
+    implementation project(path: ':analytic_facebook')
+    implementation project(path: ':advertise_admob_adapter_vungle')
+    implementation project(path: ':advertise_admob_adapter_applovin')
+    implementation project(path: ':advertise_admob_adapter_facebook')
+    implementation project(path: ':iap_googleplay')
+    implementation project(path: ':social_facebook')
 
 }
 

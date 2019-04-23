@@ -56,7 +56,7 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
 
             }
         });
-
+        SystemUtil.getInstance().getDebugMode();
         arrayList = new ArrayList<>();
 
         ///////////////////////////////Analytic///////////////////////////////
@@ -549,6 +549,9 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 reqData.put("message","♥ ♠ Your FREE BONUS is ready NOW! ♣ ♦");
                 reqData.put("delay", 10.0);
                 SystemUtil.getInstance().postNotification(reqData);
+
+                int height = SystemUtil.getInstance().getNotchZone();
+//                showAlert(String.valueOf(heigt));
             }
         });
         addToArrayList("copyToClipboard", new OnClickListener() {

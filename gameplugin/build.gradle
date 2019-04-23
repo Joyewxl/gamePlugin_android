@@ -1,12 +1,12 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 28
+
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
     }
@@ -19,12 +19,12 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
-    compile project(path: ':gameplugin_base')
-    compile project(path: ':social_facebook')
-    compile project(path: ':iap_googleplay')
-    compile project(path: ':analytic_kochava')
-    compile project(path: ':analytic_gameanalytics')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+//    testCompile 'junit:junit:4.12'
+    implementation project(path: ':gameplugin_base')
+    implementation project(path: ':social_facebook')
+    implementation project(path: ':iap_googleplay')
+    implementation project(path: ':analytic_kochava')
+    implementation project(path: ':analytic_gameanalytics')
 
 }

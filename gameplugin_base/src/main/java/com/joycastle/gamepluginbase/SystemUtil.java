@@ -1,5 +1,6 @@
 package com.joycastle.gamepluginbase;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -18,6 +19,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
@@ -27,9 +30,12 @@ import android.os.Looper;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
+import android.view.Display;
+import android.view.DisplayCutout;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
 
 import com.kaopiz.kprogresshud.KProgressHUD;
 
@@ -43,6 +49,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.Call;
@@ -274,18 +281,45 @@ public class SystemUtil {
     }
 
     /**
-     * 获取android设备导航栏高度
-     * 主要用于notch 屏幕判断
+     * 获取android 顶部刘海区域的高度
+     *
      * @return
      */
-    public int getStatusBarHeight() {
-//        Context context = this.mActivity.getApplicationContext();
-        int resourceId = this.mActivity.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        int barHeight = 0;
-        if (resourceId > 0) {
-            barHeight = this.mActivity.getResources().getDimensionPixelSize(resourceId);
+    public int getTopNotchHeight() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+
+            View decorView = this.mActivity.getWindow().getDecorView();
+            DisplayCutout displayCutout = decorView.getRootWindowInsets().getDisplayCutout();
+            if (displayCutout != null){
+                List<Rect> rects = displayCutout.getBoundingRects();
+                Point size = new Point();
+                Display display = this.mActivity.getWindowManager().getDefaultDisplay();
+                display.getRealSize(size);
+                int width   = size. x;
+                int height  = size. y;
+                Rect rect   = rects.get(0);
+                int top     = rect.top;
+                int bottom  = rect.bottom;
+                int right   = rect.right;
+                int left    = rect.left;
+                return bottom;
+            }
+            else{
+                return 0;
+            }
         }
-        return barHeight;
+        return 0;
+    }
+
+    /**
+     * dp 转 pixel
+     * @param context
+     * @param dpValue
+     * @return
+     */
+    public static int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
     }
 
     public String getUUID() {

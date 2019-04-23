@@ -22,5 +22,5 @@
     <string name="facebook_app_id">392706894400250</string>
     <string name="fb_login_protocol_scheme">fb392706894400250</string>
 
-    <string name="game_mode">99</string>
+    <!--<string name="game_mode">99</string>-->
 </resources>
