@@ -12,16 +12,7 @@
         android:supportsRtl="true">
 
         <receiver android:name="com.joycastle.gamepluginbase.NotificationPublisher" />
-        <!--<service android:name="com.joycastle.gamepluginbase.SystemUtil$NotificationService"-->
-            <!--android:permission="android.permission.BIND_JOB_SERVICE"-->
-            <!--android:exported="true"/>-->
-
-
-            <!--<intent-filter>-->
-                <!--<action android:name="sys.notify"/>-->
-                <!--<category android:name="android.intent.category.DEFAULT" />-->
-            <!--</intent-filter>-->
-        <!---->
+        <receiver android:name="com.joycastle.gamepluginbase.NotificationClickReceiver" />
 
     </application>
 

@@ -90,6 +90,8 @@ public class SystemUtil {
     private int mNotificationId = 0;
     private String mNotificationExtra;
 
+    private InvokeJavaMethodDelegate mNotifyDelegate;
+
 
     private final static int[][] AnalyticDataDiscrete = {
             {0, 10, 10},
@@ -154,6 +156,25 @@ public class SystemUtil {
 
     public void onResume(Activity activity) {
         this.systemOnResume(activity);
+    }
+
+    /**
+     * 设置系统通知点击的回调函数
+     * @param delegate
+     */
+    public void setNotifyLaunchAppHandler(InvokeJavaMethodDelegate delegate){
+        this.mNotifyDelegate = delegate;
+    }
+
+    /**
+     * 执行点击系统通知的回调
+     */
+    public void exeNotifyHandler(HashMap extra) {
+        if (this.mNotifyDelegate != null) {
+            ArrayList extraArr = new ArrayList();
+            extraArr.add(extra);
+            this.mNotifyDelegate.onFinish(extraArr);
+        }
     }
 
     /**
@@ -281,22 +302,15 @@ public class SystemUtil {
     }
 
     /**
-     * 获取android 顶部刘海区域的高度
-     *
+     * 获取android顶部刘海区域的高度
      * @return
      */
     public int getTopNotchHeight() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-
             View decorView = this.mActivity.getWindow().getDecorView();
             DisplayCutout displayCutout = decorView.getRootWindowInsets().getDisplayCutout();
             if (displayCutout != null){
                 List<Rect> rects = displayCutout.getBoundingRects();
-                Point size = new Point();
-                Display display = this.mActivity.getWindowManager().getDefaultDisplay();
-                display.getRealSize(size);
-                int width   = size. x;
-                int height  = size. y;
                 Rect rect   = rects.get(0);
                 int top     = rect.top;
                 int bottom  = rect.bottom;
@@ -504,15 +518,17 @@ public class SystemUtil {
     public void postNotification(HashMap notifications) {
         Log.e(TAG, "postNotification: " + notifications.toString());
         int notiTime = 0;
-        String  content = (String)notifications.get("message");
-        Object delayObject = notifications.get("delay");
+        String content      = (String)notifications.get("message");
+        Object delayObject  = notifications.get("delay");
+        String from         = (String)notifications.get("from");
+        Integer badge       = (Integer)notifications.get("badge");
         if (delayObject instanceof Double) {
             notiTime = ((Double)delayObject).intValue();
         } else {
             notiTime = (int) delayObject;
         }
 
-        this.postNotificationEx("",content, notiTime, "");
+        this.postNotificationEx("",content, notiTime, from);
     }
 
     public void setBadgeNum(int num) {

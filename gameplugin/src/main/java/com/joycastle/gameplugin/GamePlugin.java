@@ -237,6 +237,7 @@ public class GamePlugin implements LifeCycleDelegate {
 
     public void setNotifyHandler(InvokeJavaMethodDelegate delegate) {
         mNotifyDelegate = delegate;
+        SystemUtil.getInstance().setNotifyLaunchAppHandler(delegate);
     }
 
     public void setIapVerifyUrlAndSign(String url, String sign) {
