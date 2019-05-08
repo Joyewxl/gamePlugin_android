@@ -179,6 +179,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                             hashMap.put("productId", purchase.getSku());
                             hashMap.put("environment", environment);
                             setSuspensiveIap(hashMap);
+                            quertInventory();
                         }
                     });
                 } catch (IabHelper.IabAsyncInProgressException e) {
