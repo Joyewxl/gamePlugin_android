@@ -515,13 +515,13 @@ public class SystemUtil {
      * 注册系统通知
      * @param notifications
      */
-    public void postNotification(HashMap notifications) {
+    public void postNotification(HashMap<String, Object> notifications) {
 //        Log.e(TAG, "postNotification: " + notifications.toString());
         int notiTime = 0;
         String content      = (String)notifications.get("message");
         Object delayObject  = notifications.get("delay");
         String from         = (String)notifications.get("from");
-        Integer badge       = (Integer)notifications.get("badge");
+//        Integer badge       = (Integer)notifications.get("badge");
         if (delayObject instanceof Double) {
             notiTime = ((Double)delayObject).intValue();
         } else {
