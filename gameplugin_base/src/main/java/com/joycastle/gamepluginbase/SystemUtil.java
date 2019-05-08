@@ -516,7 +516,7 @@ public class SystemUtil {
      * @param notifications
      */
     public void postNotification(HashMap notifications) {
-        Log.e(TAG, "postNotification: " + notifications.toString());
+//        Log.e(TAG, "postNotification: " + notifications.toString());
         int notiTime = 0;
         String content      = (String)notifications.get("message");
         Object delayObject  = notifications.get("delay");
