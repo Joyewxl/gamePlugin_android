@@ -550,8 +550,6 @@ public class AppActivity extends Activity implements AdapterView.OnItemClickList
                 reqData.put("delay", 10.0);
                 SystemUtil.getInstance().postNotification(reqData);
 
-                int height = SystemUtil.getInstance().getNotchZone();
-//                showAlert(String.valueOf(heigt));
             }
         });
         addToArrayList("copyToClipboard", new OnClickListener() {
