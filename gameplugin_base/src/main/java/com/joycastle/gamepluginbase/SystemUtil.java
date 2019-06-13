@@ -209,12 +209,19 @@ public class SystemUtil {
     }
 
     public void executeVerifyResult(boolean isSuccess, String environment) {
-        HashMap extra = new HashMap();
-        extra.put("isSuccess", isSuccess);
-        extra.put("environment", environment);
-        ArrayList extraArr = new ArrayList();
-        extraArr.add(extra);
-        this.mConsumeHanlder.onFinish(extraArr);
+        final boolean _isSuccess    =  isSuccess;
+        final String _environment   =  environment;
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                HashMap extra = new HashMap();
+                extra.put("isSuccess", _isSuccess);
+                extra.put("environment", _environment);
+                ArrayList extraArr = new ArrayList();
+                extraArr.add(extra);
+                SystemUtil.getInstance().mConsumeHanlder.onFinish(extraArr);
+            }}
+            );
     }
 
     /**

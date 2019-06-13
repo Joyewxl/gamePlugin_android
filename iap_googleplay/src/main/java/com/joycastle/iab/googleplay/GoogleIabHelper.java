@@ -281,8 +281,8 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                         delegate.onFinish(respon);
                         return;
                     }
-
-                    InvokeJavaMethodDelegate consumeHandler = new InvokeJavaMethodDelegate() {
+                    //设置订单消费验证的handler
+                    SystemUtil.getInstance().setConsumeHandler(new InvokeJavaMethodDelegate() {
                         @Override
                         public void onFinish(final ArrayList<Object> resArrayList) {
                             try {
@@ -304,9 +304,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                                 Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
                             }
                         }
-                    };
-                    //设置订单消费验证的handler
-                    SystemUtil.getInstance().setConsumeHandler(consumeHandler);
+                    });
 
                     verifyIap(info, new InvokeJavaMethodDelegate() {
                         @Override
