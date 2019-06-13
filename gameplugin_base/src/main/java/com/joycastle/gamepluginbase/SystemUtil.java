@@ -92,6 +92,9 @@ public class SystemUtil {
 
     private InvokeJavaMethodDelegate mNotifyDelegate;
 
+    private InvokeJavaMethodDelegate mIapVerifyHandler  = null;
+    private InvokeJavaMethodDelegate mUnconsumeHandler  = null;
+    private InvokeJavaMethodDelegate mConsumeHanlder    = null;
 
     private final static int[][] AnalyticDataDiscrete = {
             {0, 10, 10},
@@ -175,6 +178,43 @@ public class SystemUtil {
             extraArr.add(extra);
             this.mNotifyDelegate.onFinish(extraArr);
         }
+    }
+
+    public void setIapVerifyHandler(InvokeJavaMethodDelegate delegate) {
+        this.mIapVerifyHandler = delegate;
+    }
+
+    public void exeIapVerifyHandler(HashMap extra) {
+        if (this.mIapVerifyHandler != null) {
+            ArrayList extraArr = new ArrayList();
+            extraArr.add(extra);
+            this.mIapVerifyHandler.onFinish(extraArr);
+        }
+    }
+
+    public void setUnconsumedHandler(InvokeJavaMethodDelegate delegate) {
+        this.mUnconsumeHandler = delegate;
+    }
+
+    public void exeUnconsumedHandler(HashMap extra) {
+        if (this.mUnconsumeHandler != null) {
+            ArrayList extraArr = new ArrayList();
+            extraArr.add(extra);
+            this.mUnconsumeHandler.onFinish(extraArr);
+        }
+    }
+
+    public void setConsumeHandler(InvokeJavaMethodDelegate delegate) {
+        this.mConsumeHanlder = delegate;
+    }
+
+    public void executeVerifyResult(boolean isSuccess, String environment) {
+        HashMap extra = new HashMap();
+        extra.put("isSuccess", isSuccess);
+        extra.put("environment", environment);
+        ArrayList extraArr = new ArrayList();
+        extraArr.add(extra);
+        this.mConsumeHanlder.onFinish(extraArr);
     }
 
     /**

@@ -20,6 +20,7 @@ import com.joycastle.analytic.kochava.KCAnalyticHelper;
 import com.joycastle.analytic.gameanalytics.GameAnalyticsHelper;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -39,6 +40,8 @@ public class GamePlugin implements LifeCycleDelegate {
     private static long iabInitTime = 0;
     private static long kcInitTime  = 0;
     private static long gaInitTime  = 0;
+
+
 
     private GamePlugin() {}
 
@@ -263,7 +266,26 @@ public class GamePlugin implements LifeCycleDelegate {
                 GoogleIabHelper.getInstance().doIap(iapId, userId, delegate);
             };
         });
+    }
 
+    public void setIapVerifyHandler(InvokeJavaMethodDelegate delegate) {
+        SystemUtil.getInstance().setIapVerifyHandler(delegate);
+    }
+
+    public void exeIapVerifyHandler(HashMap extra) {
+        SystemUtil.getInstance().exeIapVerifyHandler(extra);
+    }
+
+    public void setUnconsumedHandler(InvokeJavaMethodDelegate delegate) {
+        SystemUtil.getInstance().setUnconsumedHandler(delegate);
+    }
+
+    public void exeUnconsumedHandler(HashMap extra) {
+        SystemUtil.getInstance().exeUnconsumedHandler(extra);
+    }
+
+    public void executeVerifyResult(boolean isSuccess, String environment) {
+        SystemUtil.getInstance().executeVerifyResult(isSuccess, environment);
     }
 
     public void rateGame() {
