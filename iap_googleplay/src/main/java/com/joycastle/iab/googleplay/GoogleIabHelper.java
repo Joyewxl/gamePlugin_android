@@ -160,33 +160,50 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
         // 只处理一个，下次在处理剩余的
         final Purchase purchase = purchases.get(0);
-        verifyIap(purchase, new InvokeJavaMethodDelegate() {
-            @Override
-            public void onFinish(final ArrayList<Object> resArrayList) {
-                try {
-                    mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
-                        @Override
-                        public void onConsumeFinished(Purchase purchase, IabResult result) {
-                            if (result.isFailure()) {
-                                return;
-                            }
-                            boolean payResult = (boolean) resArrayList.get(0);
-                            if (!payResult) {
-                                return;
-                            }
-                            String environment = (String) resArrayList.get(1);
-                            HashMap hashMap = new HashMap();
-                            hashMap.put("productId", purchase.getSku());
-                            hashMap.put("environment", environment);
-                            setSuspensiveIap(hashMap);
-                            quertInventory();
-                        }
-                    });
-                } catch (IabHelper.IabAsyncInProgressException e) {
-                    Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
+        try {
+            mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+                @Override
+                public void onConsumeFinished(Purchase purchase, IabResult result) {
+                    if (result.isFailure()) {
+                        return;
+                    }
+                    HashMap hashMap = new HashMap();
+                    hashMap.put("productId", purchase.getSku());
+                    hashMap.put("environment", "");
+                    setSuspensiveIap(hashMap);
+                    quertInventory();
                 }
-            }
-        });
+            });
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
+        }
+//        verifyIap(purchase, new InvokeJavaMethodDelegate() {
+//            @Override
+//            public void onFinish(final ArrayList<Object> resArrayList) {
+//                try {
+//                    mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+//                        @Override
+//                        public void onConsumeFinished(Purchase purchase, IabResult result) {
+//                            if (result.isFailure()) {
+//                                return;
+//                            }
+//                            boolean payResult = (boolean) resArrayList.get(0);
+//                            if (!payResult) {
+//                                return;
+//                            }
+//                            String environment = (String) resArrayList.get(1);
+//                            HashMap hashMap = new HashMap();
+//                            hashMap.put("productId", purchase.getSku());
+//                            hashMap.put("environment", environment);
+//                            setSuspensiveIap(hashMap);
+//                            quertInventory();
+//                        }
+//                    });
+//                } catch (IabHelper.IabAsyncInProgressException e) {
+//                    Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
+//                }
+//            }
+//        });
     }
 
     public void setIapVerifyUrlAndSign(String url, String sign) {
