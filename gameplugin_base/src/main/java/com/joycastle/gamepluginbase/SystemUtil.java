@@ -196,6 +196,10 @@ public class SystemUtil {
         this.mUnconsumeHandler = delegate;
     }
 
+    public boolean checkUnconsumedHandler() {
+        return this.mUnconsumeHandler != null;
+    }
+
     public void exeUnconsumedHandler(HashMap extra) {
         if (this.mUnconsumeHandler != null) {
             ArrayList extraArr = new ArrayList();

@@ -163,27 +163,64 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         // 只处理一个，下次在处理剩余的
         final Purchase purchase = purchases.get(0);
 
-        String iapConfig = purchase.getDeveloperPayload();
-        HashMap map = JSON.parseObject(iapConfig, HashMap.class);
-        SystemUtil.getInstance().exeUnconsumedHandler(map);
-        try {
-            mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+        if (SystemUtil.getInstance().checkUnconsumedHandler()) {
+
+            String iapConfig = purchase.getDeveloperPayload();
+            HashMap purchaseConfig = new HashMap();
+            purchaseConfig.put("iapConfig", JSON.parseObject(iapConfig, HashMap.class));
+            purchaseConfig.put("receipt", purchase.getToken());
+            purchaseConfig.put("productId", purchase.getSku());
+            SystemUtil.getInstance().exeUnconsumedHandler(purchaseConfig);
+
+            //设置订单消费验证的handler
+            SystemUtil.getInstance().setConsumeHandler(new InvokeJavaMethodDelegate() {
                 @Override
-                public void onConsumeFinished(Purchase purchase, IabResult result) {
-                    if (result.isFailure()) {
-                        quertInventory();
-                        return;
+                public void onFinish(final ArrayList<Object> resArrayList) {
+                    try {
+                        mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+                            @Override
+                            public void onConsumeFinished(Purchase purchase, IabResult result) {
+                                if (result.isFailure()) {
+                                    quertInventory();
+                                    return;
+                                }
+                                HashMap hashMap = new HashMap();
+                                hashMap.put("productId", purchase.getSku());
+                                hashMap.put("environment", "");
+                                setSuspensiveIap(hashMap);
+                                quertInventory();
+                            }
+                        });
+                    } catch (IabHelper.IabAsyncInProgressException e) {
+                        Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
                     }
-                    HashMap hashMap = new HashMap();
-                    hashMap.put("productId", purchase.getSku());
-                    hashMap.put("environment", "");
-                    setSuspensiveIap(hashMap);
-                    quertInventory();
                 }
             });
-        } catch (IabHelper.IabAsyncInProgressException e) {
-            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
         }
+        else
+        {
+            quertInventory();
+        }
+
+
+//        try {
+//            mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+//                @Override
+//                public void onConsumeFinished(Purchase purchase, IabResult result) {
+//                    if (result.isFailure()) {
+//                        quertInventory();
+//                        return;
+//                    }
+//                    HashMap hashMap = new HashMap();
+//                    hashMap.put("productId", purchase.getSku());
+//                    hashMap.put("environment", "");
+//                    setSuspensiveIap(hashMap);
+//                    quertInventory();
+//                }
+//            });
+//        } catch (IabHelper.IabAsyncInProgressException e) {
+//            Log.w(TAG, "Error comsume purchases. Another async operation in progress.");
+//        }
 //        verifyIap(purchase, new InvokeJavaMethodDelegate() {
 //            @Override
 //            public void onFinish(final ArrayList<Object> resArrayList) {
