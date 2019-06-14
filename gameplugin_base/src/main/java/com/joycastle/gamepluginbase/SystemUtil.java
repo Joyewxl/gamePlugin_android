@@ -1,6 +1,5 @@
 package com.joycastle.gamepluginbase;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -19,7 +18,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -31,12 +29,8 @@ import android.os.SystemClock;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Display;
 import android.view.DisplayCutout;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowInsets;
-
 import com.kaopiz.kprogresshud.KProgressHUD;
 
 import org.json.JSONArray;
@@ -180,10 +174,18 @@ public class SystemUtil {
         }
     }
 
+    /**
+     * 设置内购验证的函数handler
+     * @param delegate
+     */
     public void setIapVerifyHandler(InvokeJavaMethodDelegate delegate) {
         this.mIapVerifyHandler = delegate;
     }
 
+    /**
+     * 执行内购验证
+     * @param extra
+     */
     public void exeIapVerifyHandler(HashMap extra) {
         if (this.mIapVerifyHandler != null) {
             ArrayList extraArr = new ArrayList();
@@ -192,14 +194,26 @@ public class SystemUtil {
         }
     }
 
+    /**
+     * 设置未消费订单处理的handler
+     * @param delegate
+     */
     public void setUnconsumedHandler(InvokeJavaMethodDelegate delegate) {
         this.mUnconsumeHandler = delegate;
     }
 
+    /**
+     * 检查未消费订单handler是否可用
+     * @return
+     */
     public boolean checkUnconsumedHandler() {
         return this.mUnconsumeHandler != null;
     }
 
+    /**
+     * 执行未消费订单handler
+     * @param extra
+     */
     public void exeUnconsumedHandler(HashMap extra) {
         if (this.mUnconsumeHandler != null) {
             ArrayList extraArr = new ArrayList();
@@ -208,10 +222,19 @@ public class SystemUtil {
         }
     }
 
+    /**
+     * 设置订单消费的handler
+     * @param delegate
+     */
     public void setConsumeHandler(InvokeJavaMethodDelegate delegate) {
         this.mConsumeHanlder = delegate;
     }
 
+    /**
+     * 执行订单验证的结果
+     * @param isSuccess
+     * @param environment
+     */
     public void executeVerifyResult(boolean isSuccess, String environment) {
         final boolean _isSuccess    =  isSuccess;
         final String _environment   =  environment;
