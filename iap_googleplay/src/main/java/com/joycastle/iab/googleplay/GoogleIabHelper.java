@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.joycastle.gamepluginbase.InvokeJavaMethodDelegate;
 import com.joycastle.gamepluginbase.LifeCycleDelegate;
 import com.joycastle.gamepluginbase.SystemUtil;
@@ -160,11 +162,16 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
         // 只处理一个，下次在处理剩余的
         final Purchase purchase = purchases.get(0);
+
+        String iapConfig = purchase.getDeveloperPayload();
+        HashMap map = JSON.parseObject(iapConfig, HashMap.class);
+        SystemUtil.getInstance().exeUnconsumedHandler(map);
         try {
             mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
                 @Override
                 public void onConsumeFinished(Purchase purchase, IabResult result) {
                     if (result.isFailure()) {
+                        quertInventory();
                         return;
                     }
                     HashMap hashMap = new HashMap();
