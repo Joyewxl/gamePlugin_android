@@ -176,6 +176,18 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
             SystemUtil.getInstance().setConsumeHandler(new InvokeJavaMethodDelegate() {
                 @Override
                 public void onFinish(final ArrayList<Object> resArrayList) {
+
+                    if (resArrayList.size() > 0 && resArrayList.get(0) != null) {
+                        HashMap map = (HashMap) resArrayList.get(0);
+                        boolean _isSuccess = (boolean)map.get("isSuccess");
+                        String _environment = (String)map.get("environment");
+
+                        if (_isSuccess == false && _environment == "") {
+                            //不关闭订单
+                            return;
+                        }
+                    }
+
                     try {
                         mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
                             @Override
