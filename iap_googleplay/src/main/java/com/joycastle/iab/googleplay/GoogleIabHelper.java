@@ -182,7 +182,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                         boolean _isSuccess = (boolean)map.get("isSuccess");
                         String _environment = (String)map.get("environment");
 
-                        if (_isSuccess == false && _environment == "") {
+                        if (_isSuccess == false && _environment.equals("")) {
                             //不关闭订单
                             return;
                         }
@@ -297,10 +297,10 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
                             if (resArrayList.size() > 0 && resArrayList.get(0) != null) {
                                 HashMap map = (HashMap) resArrayList.get(0);
-                                boolean _isSuccess = (boolean)map.get("isSuccess");
-                                String _environment = (String)map.get("environment");
+                                boolean _isSuccess  = (boolean) map.get("isSuccess");
+                                String _environment = (String) map.get("environment");
 
-                                if (_isSuccess == false && _environment == "") {
+                                if (_isSuccess == false && _environment.equals("")) {
                                     //不关闭订单
                                     return;
                                 }
