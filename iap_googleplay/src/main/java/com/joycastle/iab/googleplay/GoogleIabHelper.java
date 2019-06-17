@@ -166,11 +166,16 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         if (SystemUtil.getInstance().checkUnconsumedHandler()) {
 
             String iapConfig = purchase.getDeveloperPayload();
-            HashMap purchaseConfig = new HashMap();
+            final HashMap purchaseConfig = new HashMap();
             purchaseConfig.put("iapConfig", JSON.parseObject(iapConfig, HashMap.class));
             purchaseConfig.put("receipt", purchase.getToken());
             purchaseConfig.put("productId", purchase.getSku());
-            SystemUtil.getInstance().exeUnconsumedHandler(purchaseConfig);
+            mMainHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    SystemUtil.getInstance().exeUnconsumedHandler(purchaseConfig);
+                }
+            });
 
             //设置订单消费验证的handler
             SystemUtil.getInstance().setConsumeHandler(new InvokeJavaMethodDelegate() {
