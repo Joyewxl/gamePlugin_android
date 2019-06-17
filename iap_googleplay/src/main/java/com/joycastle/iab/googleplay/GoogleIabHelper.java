@@ -155,9 +155,9 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         if (purchases.size() <= 0)
             return;
 
-        HashMap suspensiveIap = getSuspensiveIap();
-        if (!suspensiveIap.isEmpty())
-            return;
+//        HashMap suspensiveIap = getSuspensiveIap();
+//        if (!suspensiveIap.isEmpty())
+//            return;
 
         // 只处理一个，下次在处理剩余的
         final Purchase purchase = purchases.get(0);
@@ -195,17 +195,18 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                     }
 
                     try {
+                        //关闭订单
                         mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
                             @Override
                             public void onConsumeFinished(Purchase purchase, IabResult result) {
-                                if (result.isFailure()) {
-                                    quertInventory();
-                                    return;
-                                }
-                                HashMap hashMap = new HashMap();
-                                hashMap.put("productId", purchase.getSku());
-                                hashMap.put("environment", "");
-                                setSuspensiveIap(hashMap);
+//                                if (result.isFailure()) {
+//                                    quertInventory();
+//                                    return;
+//                                }
+//                                HashMap hashMap = new HashMap();
+//                                hashMap.put("productId", purchase.getSku());
+//                                hashMap.put("environment", "");
+//                                setSuspensiveIap(hashMap);
                                 quertInventory();
                             }
                         });
