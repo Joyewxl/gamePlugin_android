@@ -302,6 +302,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
                                 if (_isSuccess == false && _environment.equals("")) {
                                     //不关闭订单
+                                    SystemUtil.getInstance().hideLoading();
                                     return;
                                 }
                             }
