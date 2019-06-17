@@ -168,7 +168,8 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
             String iapConfig = purchase.getDeveloperPayload();
             final HashMap purchaseConfig = new HashMap();
             purchaseConfig.put("iapConfig", JSON.parseObject(iapConfig, HashMap.class));
-            purchaseConfig.put("receipt", purchase.getToken());
+            purchaseConfig.put("receipt", purchase.getOriginalJson());
+            purchaseConfig.put("signatrue", purchase.getSignature());
             purchaseConfig.put("productId", purchase.getSku());
             mMainHandler.post(new Runnable() {
                 @Override
@@ -354,13 +355,15 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        final String receipt = jsonObject.toString();
+        String receipt = purchase.getOriginalJson();
+        String signatrue = purchase.getSignature();
         String token = purchase.getDeveloperPayload();
         String sign = calcSign(mVerifySign+receipt+token);
         HashMap hashMap = new HashMap();
         hashMap.put("receipt", receipt);
         hashMap.put("token", purchase.getDeveloperPayload());
         hashMap.put("sign", sign);
+        hashMap.put("signatrue", signatrue);
 
         //验证订单
         SystemUtil.getInstance().exeIapVerifyHandler(hashMap);
