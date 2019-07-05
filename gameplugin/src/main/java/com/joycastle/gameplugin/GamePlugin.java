@@ -288,6 +288,10 @@ public class GamePlugin implements LifeCycleDelegate {
         SystemUtil.getInstance().executeVerifyResult(isSuccess, environment);
     }
 
+    public void restoreTransactions(InvokeJavaMethodDelegate delegate) {
+        GoogleIabHelper.getInstance().receivedBroadcast();
+    }
+
     public void rateGame() {
         Activity activity = SystemUtil.getInstance().getActivity();
         final String appPackageName = SystemUtil.getInstance().getAppBundleId(); // getAppBundleId() from Context or Activity object
