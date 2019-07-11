@@ -134,6 +134,10 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         }
     }
 
+    public void restoreTransactions() {
+        this.quertInventory();
+    }
+
     @Override
     public void receivedBroadcast() {
         quertInventory();
