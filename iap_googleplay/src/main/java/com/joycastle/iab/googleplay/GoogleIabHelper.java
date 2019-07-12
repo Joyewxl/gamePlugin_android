@@ -128,6 +128,7 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         try {
             if(mHelper.isSetupDone() && !mHelper.isAsyncInProgress()) {
                 mHelper.queryInventoryAsync(this);
+
             }
         } catch (IabHelper.IabAsyncInProgressException e) {
             Log.w(TAG, "Error querying inventory. Another async operation in progress.");
@@ -136,6 +137,11 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
 
     public void restoreTransactions() {
         Log.w(TAG, "restoreTransactions");
+        try {
+            mHelper.queryInventoryAsync(false, null, null, this);
+        } catch (IabHelper.IabAsyncInProgressException e) {
+            Log.w(TAG, "Error querying inventory. Another async operation in progress.");
+        }
     }
 
     @Override
