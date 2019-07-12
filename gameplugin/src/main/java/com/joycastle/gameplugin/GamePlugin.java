@@ -289,7 +289,12 @@ public class GamePlugin implements LifeCycleDelegate {
     }
 
     public void restoreTransactions(InvokeJavaMethodDelegate delegate) {
-        GoogleIabHelper.getInstance().restoreTransactions();
+        mMainHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                GoogleIabHelper.getInstance().restoreTransactions();
+            };
+        });
     }
 
     public void rateGame() {
