@@ -268,26 +268,51 @@ public class GamePlugin implements LifeCycleDelegate {
         });
     }
 
+    /**
+     * 设置内购验证的回调
+     * @param delegate
+     */
     public void setIapVerifyHandler(InvokeJavaMethodDelegate delegate) {
         SystemUtil.getInstance().setIapVerifyHandler(delegate);
     }
 
+    /**
+     * 执行内购验证
+     * @param extra
+     */
     public void exeIapVerifyHandler(HashMap extra) {
         SystemUtil.getInstance().exeIapVerifyHandler(extra);
     }
 
+    /**
+     * 设置未消费订单的回调
+     * @param delegate
+     */
     public void setUnconsumedHandler(InvokeJavaMethodDelegate delegate) {
         SystemUtil.getInstance().setUnconsumedHandler(delegate);
     }
 
+    /**
+     * 执行验证未消费订单
+     * @param extra
+     */
     public void exeUnconsumedHandler(HashMap extra) {
         SystemUtil.getInstance().exeUnconsumedHandler(extra);
     }
 
+    /**
+     * 执行验证后订单的处理
+     * @param isSuccess
+     * @param environment
+     */
     public void executeVerifyResult(boolean isSuccess, String environment) {
         SystemUtil.getInstance().executeVerifyResult(isSuccess, environment);
     }
 
+    /**
+     * 主动处理未验证订单
+     * @param delegate
+     */
     public void restoreTransactions(InvokeJavaMethodDelegate delegate) {
         mMainHandler.post(new Runnable() {
             @Override

@@ -134,7 +134,10 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
             Log.w(TAG, "Error querying inventory. Another async operation in progress.");
         }
     }
-
+    /**
+     *  验证未完成的订单
+     *
+     */
     public void restoreTransactions() {
         quertInventory();
     }
@@ -159,10 +162,6 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
         List<Purchase> purchases = inventory.getAllPurchases();
         if (purchases.size() <= 0)
             return;
-
-//        HashMap suspensiveIap = getSuspensiveIap();
-//        if (!suspensiveIap.isEmpty())
-//            return;
 
         // 只处理一个，下次在处理剩余的
         final Purchase purchase = purchases.get(0);
@@ -204,14 +203,6 @@ public class GoogleIabHelper implements LifeCycleDelegate, IabBroadcastReceiver.
                         mHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
                             @Override
                             public void onConsumeFinished(Purchase purchase, IabResult result) {
-//                                if (result.isFailure()) {
-//                                    quertInventory();
-//                                    return;
-//                                }
-//                                HashMap hashMap = new HashMap();
-//                                hashMap.put("productId", purchase.getSku());
-//                                hashMap.put("environment", "");
-//                                setSuspensiveIap(hashMap);
                                 quertInventory();
                             }
                         });
