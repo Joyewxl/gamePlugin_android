@@ -805,6 +805,26 @@ public class SystemUtil {
         this.mNotificationExtra = intent.getStringExtra(NotificationPublisher.NOTIFICATION_EXTRA);
     }
 
+    /**
+     * 取消指定通知
+     * @param notifyId
+     */
+    public void cancelNotificationById(String notifyId) {
+        AlarmManager alarmManager = (AlarmManager)this.mActivity.getSystemService(Context.ALARM_SERVICE);
+        for (int i = 0; i < MAX_ALARM_REQUEST_CODE; i++) {
+            Intent publisherIntent = new Intent(this.mActivity, NotificationPublisher.class);
+            PendingIntent publisherPendingIntent = PendingIntent
+                    .getBroadcast(this.mActivity, i, publisherIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            String nId =  publisherIntent.getStringExtra(NotificationPublisher.NOTIFICATION_EXTRA);
+
+            if (notifyId.equals(nId)) {
+                if (alarmManager != null) {
+                    alarmManager.cancel(publisherPendingIntent);
+                }
+            }
+        }
+    }
+
     private void systemOnResume(Activity activity) {
         // 取消已注册的 notification publisher
         AlarmManager alarmManager = (AlarmManager)activity.getSystemService(Context.ALARM_SERVICE);
