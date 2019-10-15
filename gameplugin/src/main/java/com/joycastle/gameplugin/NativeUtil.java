@@ -66,9 +66,7 @@ public class NativeUtil {
             Method targetMethod = clazz.getMethod(methodName, classArr);
             Object ret = targetMethod.invoke(instance, objectArr);
             ArrayList<Object> resArrayList = new ArrayList<>();
-            if (ret != null) {
-                resArrayList.add(ret);
-            }
+            resArrayList.add(ret);
             resJson = generateJson(resArrayList);
         } catch (Exception e) {
             e.printStackTrace();
