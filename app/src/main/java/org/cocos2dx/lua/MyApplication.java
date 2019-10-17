@@ -1,6 +1,6 @@
 package org.cocos2dx.lua;
 
-import android.support.multidex.MultiDexApplication;
+import androidx.multidex.MultiDexApplication;
 
 import com.joycastle.gameplugin.GamePlugin;
 

@@ -9,6 +9,7 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
         android:name="org.cocos2dx.lua.MyApplication">
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/admob_app_id"/>
@@ -26,6 +27,7 @@
             </intent-filter>
 
         </activity>
+
     </application>
 
 </manifest>

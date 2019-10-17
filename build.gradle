@@ -6,9 +6,10 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.google.gms:google-services:3.0.0'
     }
+
 }
 
 allprojects {
@@ -27,6 +28,9 @@ allprojects {
         }
         maven {
             url 'http://maven.gameanalytics.com/release'
+        }
+        maven {
+            url "https://s3.amazonaws.com/moat-sdk-builds"
         }
         google()
     }

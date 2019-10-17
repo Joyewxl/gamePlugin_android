@@ -302,7 +302,7 @@ public class GamePlugin implements LifeCycleDelegate {
 
     /**
      * 执行验证后订单的处理
-     * @param isSuccess
+     * @param isSuccesscrashReportException
      * @param environment
      */
     public void executeVerifyResult(boolean isSuccess, String environment) {
